@@ -1,0 +1,15 @@
+#!/bin/bash
+#set -x
+
+PATCH='/usr/bin/patch -R'
+
+# Remove os patches aplicados
+$PATCH '/etc/X11/Xwrapper.config' '/etc/X11/Xwrapper.config.patch'
+$PATCH '/etc/rc.local' '/etc/rc.local.patch'
+$PATCH '/etc/pam.d/common-session' '/etc/pam.d/common-session.patch'
+$PATCH '/usr/share/initramfs-tools/scripts/casper-bottom/12fstab' '/usr/share/initramfs-tools/scripts/casper-bottom/12fstab.patch'
+
+# Remove os diretórios requeridos pelo arquivo /etc/security/namespace.d/moodle-provas.conf
+rm -rf '/tmp/tmp-users/'
+rm -rf '/var/tmp/tmp-users/'
+rm -rf '/dev/shm/tmp-users/'

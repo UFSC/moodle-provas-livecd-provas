@@ -1,0 +1,4 @@
+manifest components/components.manifest
+override chrome://browser/content/aboutPrivateBrowsing.xhtml data:text/html,Disabled
+override chrome://global/content/config.xul data:text/html,Disabled
+override chrome://mozapps/content/extensions/extensions.xul data:text/html,Disabled

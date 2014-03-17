@@ -1,0 +1,8 @@
+--- Xwrapper.config.orig	2013-06-10 14:33:02.017995252 -0300
++++ Xwrapper.config.modif	2013-06-10 14:33:02.017995252 -0300
+@@ -11,4 +11,4 @@
+ # If you have edited this file but would like it to be automatically updated
+ # again, run the following command as root:
+ #   dpkg-reconfigure x11-common
+-allowed_users=console
++allowed_users=anybody

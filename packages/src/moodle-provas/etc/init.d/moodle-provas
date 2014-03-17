@@ -1,0 +1,58 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          moodle-provas
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Script de inicialização do Moodle Provas
+# Description:       Script de inicialização do Moodle Provas
+#                    
+### END INIT INFO
+
+# Author: Juliao Gesse Fernandes <juliao@inf.ufsc.br>
+
+# PATH should only include /usr/* if it runs after the mountnfs.sh script
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DESC="Script de inicialização do Moodle Provas"
+NAME=moodle-provas
+DAEMON_ARGS="--options args"
+PIDFILE=/var/run/$NAME.pid
+SCRIPTNAME=/etc/init.d/$NAME
+
+# Read configuration variable file if it is present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+
+# Load the VERBOSE setting and other rcS variables
+. /lib/init/vars.sh
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.2-14) to ensure that this file is present
+# and status_of_proc is working.
+. /lib/lsb/init-functions
+
+#
+# Function that starts the daemon/service
+#
+do_start()
+{
+    /opt/provas/init_script.sh
+}
+
+case "$1" in
+  start)
+	[ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
+	do_start
+	case "$?" in
+		0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
+		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+	esac
+	;;
+  stop|status|restart|force-reload)
+    ;;
+  *)
+	echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
+	exit 3
+	;;
+esac
+

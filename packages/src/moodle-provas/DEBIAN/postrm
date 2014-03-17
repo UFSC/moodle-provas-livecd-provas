@@ -1,0 +1,5 @@
+#!/bin/bash
+#set -x
+
+update-rc.d -f moodle-provas remove >/dev/null
+update-rc.d -f iptables-persistent remove >/dev/null

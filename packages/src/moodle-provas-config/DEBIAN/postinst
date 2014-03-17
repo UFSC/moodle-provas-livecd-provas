@@ -1,0 +1,8 @@
+#!/bin/bash
+#set -x
+
+CHMOD='/bin/chmod'
+
+# Ajusta as permissões dos arquivos e diretórios
+$CHMOD 600 '/opt/provas/moodle_provas.conf'
+

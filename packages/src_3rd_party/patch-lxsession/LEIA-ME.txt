@@ -1,0 +1,5 @@
+lxsession-logout.c.patch : Desativa as opções de logout, reboot, hibernate e suspend no menu de desligar.
+
+Patch gerado com o comando: diff -u ORIGINAL MODIFICADO > PATCH
+
+O script _build.sh aplica os patches e gera o novo pacote.

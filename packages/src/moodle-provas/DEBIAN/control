@@ -1,0 +1,27 @@
+Package: moodle-provas
+Version: 2.0-2014031703
+Architecture: all
+Conflicts: iptables-persistent
+Depends: alsa-utils,
+         bash,
+         bind9-host,
+         coreutils,
+         cron,
+         curl,
+         firefox-default-settings (>= 2.0),
+         grep,
+         iproute,
+         iptables,
+         iputils-ping,
+         lxde-default-settings (>= 2.0),
+         mtr-tiny,
+         network-manager-gnome,
+         patch (>= 2.6.1),
+         pciutils,
+         procps,
+         python2.7 (>= 2.7.3),
+         sed
+Priority: required
+Section: misc
+Maintainer: Admin Moodle UFSC <admin@moodle.ufsc.br>
+Description: Pacote para instalação de scripts e arquivos de configuração do sistema executado a partir de um LiveCD, que serve para realização de provas online através do Moodle. 

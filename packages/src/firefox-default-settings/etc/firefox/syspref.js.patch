@@ -1,0 +1,58 @@
+--- syspref.js.orig	2013-04-29 10:33:32.506497429 -0300
++++ syspref.js.modif	2013-05-29 08:54:14.914270222 -0300
+@@ -2,3 +2,55 @@
+ // Example: Homepage
+ //pref("browser.startup.homepage", "http://www.weebls-stuff.com/wab/");
+ 
++// Parâmetros em ordem alfabética
++
++// Desativa a notificação de atualizações
++lockPref("app.update.enabled", false);
++
++// Não salva os arquivos automaticamente, pergunta ao usuário
++lockPref("browser.download.useDownloadDir", false);
++
++// Desativa a mensagem 'Know your rights' na primeira execução do Firefox
++lockPref("browser.rights.3.shown", true);
++
++// Desativa a restauração das abas abertas em caso de crash
++lockPref("browser.sessionstore.resume_from_crash", false);
++
++// Página inicial, o valor %homepage% deve ser alterado via script
++lockPref("browser.startup.homepage", "%homepage%");
++
++// Não redireciona para a página definida em homepage override URL
++lockPref("browser.startup.homepage_override.mstone", "ignore");
++
++// Ao iniciar exibe a página inicial que foi configurada
++lockPref("browser.startup.page", 1);
++
++// Seleciona a URL da barra de endereços ao ser clicada
++lockPref("browser.urlbar.clickSelectsAll", true);
++
++// Desativa o Healt Report
++lockPref("datareporting.healthreport.service.enabled", false);
++lockPref("datareporting.healthreport.service.firstRun", false);
++lockPref("datareporting.healthreport.uploadEnabled", false);
++
++// Arquivo autoconfig, localizado em /usr/lib/firefox/firefox.cfg
++lockPref("general.config.filename", "firefox.cfg");
++
++// Opção necessária se este arquivo não for codificado com ROT-13
++lockPref("general.config.obscure_value", 0);
++
++// Configura o proxy com a opção "Sem proxy"
++lockPref("network.proxy.type", 0);
++
++// Desativa a opção de salvar senhas
++lockPref("signon.rememberSignons", false);
++
++// URL usada como página inicial após um upgrade do Firefox
++lockPref("startup.homepage_override_url", "");
++
++// URL exibida quando um novo perfil é carregado no Firefox pela primeira vez
++lockPref("startup.homepage_welcome_url", "");
++
++// Desativa a instalação de extensões
++lockPref("xpinstall.enabled", false);
++lockPref("xpinstall.whitelist.required", true);

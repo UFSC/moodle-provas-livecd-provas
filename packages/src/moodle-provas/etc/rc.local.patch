@@ -1,0 +1,9 @@
+--- rc.local.orig	2013-06-06 09:52:37.165549621 -0300
++++ rc.local.modif	2013-06-06 09:53:18.473743496 -0300
+@@ -11,4 +11,6 @@
+ #
+ # By default this script does nothing.
+ 
++/opt/provas/start_X.sh
++
+ exit 0

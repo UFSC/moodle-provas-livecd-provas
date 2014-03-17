@@ -1,0 +1,8 @@
+#!/bin/bash
+#set -x
+
+PIP='/usr/bin/pip'
+YES='/usr/bin/yes'
+
+$YES | $PIP uninstall evdev
+

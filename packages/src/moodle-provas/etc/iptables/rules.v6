@@ -1,0 +1,41 @@
+# Este arquivo contêm as regras padrões, regras baseadas em IP devem ir em um shell script.
+# O log será gerado no arquivo definido em /etc/rsyslog.d/21-firewall.conf
+
+*filter
+# Bloquear tudo por padrão
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+
+# Permitir tráfego na interface local (loopback)
+-A INPUT -i lo -j ACCEPT
+-A OUTPUT -o lo -j ACCEPT
+
+# Registrar tudo o que for negado na entrada (log)
+-A INPUT -j LOG --log-prefix "IPv6 - Pacote negado INPUT: "
+
+# Permitir a volta de conexões abertas
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Ping
+-A OUTPUT -p ipv6-icmp -j ACCEPT
+
+# SSH
+-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+-A OUTPUT -p tcp -m state --state RELATED,ESTABLISHED -m tcp --sport 22 -j ACCEPT
+
+# DNS
+-A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
+
+# NFS
+-A OUTPUT -p udp -m udp --dport 111 -j ACCEPT
+-A OUTPUT -p udp -m udp --dport 2049 -j ACCEPT
+-A OUTPUT -p tcp -m tcp --dport 2049 -j ACCEPT
+-A INPUT -p tcp -m state --state RELATED,ESTABLISHED -m tcp --sport 2049 -j ACCEPT
+
+# NTP
+-A OUTPUT -p udp -m udp --dport 123 -j ACCEPT
+
+# Registrar tudo que for negado na saída (log)
+-A OUTPUT -j LOG --log-prefix "IPv6 - Pacote negado OUTPUT: "
+COMMIT

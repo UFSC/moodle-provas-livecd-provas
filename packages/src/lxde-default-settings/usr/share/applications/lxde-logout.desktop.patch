@@ -1,0 +1,10 @@
+--- lxde-logout.desktop.orig	2013-05-09 14:37:40.069296249 -0300
++++ lxde-logout.desktop.modif	2013-05-09 15:34:21.507651678 -0300
+@@ -2,6 +2,7 @@
+ Encoding=UTF-8
+ Type=Application
+ Name=Shutdown
++Name[pt_BR]=Desligar o computador
+ Name[zh_TW]=關機
+ Comment=Shutdown or Reboot
+ Icon=stock_exit

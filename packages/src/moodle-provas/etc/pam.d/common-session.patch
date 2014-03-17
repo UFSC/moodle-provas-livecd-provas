@@ -1,0 +1,10 @@
+--- common-session.orig	2013-11-20 12:04:49.489507788 -0200
++++ common-session.modif	2013-11-20 13:13:11.786260005 -0200
+@@ -25,6 +25,7 @@
+ # umask settings with different shells, display managers, remote sessions etc.
+ # See "man pam_umask".
+ session optional			pam_umask.so
++session required			pam_namespace.so
+ # and here are more per-package modules (the "Additional" block)
+ session	required	pam_unix.so 
+ session	optional			pam_winbind.so 

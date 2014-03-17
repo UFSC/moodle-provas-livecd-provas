@@ -1,0 +1,19 @@
+Package: lxde-default-settings
+Version: 2.0-2014031703
+Architecture: all
+Depends: dmz-cursor-theme (>= 0.4.3),
+         gtk2-engines (>= 2.20),
+         gtk2-engines-pixbuf (>= 2.24.10),
+         lubuntu-artwork (>= 0.27),
+         lubuntu-icon-theme (>= 0.27),
+         lxde (>= 0.5.0),
+         murrine-themes (>= 0.98),
+         network-manager (>= 0.9.4.0),
+         network-manager-gnome (>= 0.9.4.0),
+         patch (>= 2.6.1),
+         pavucontrol (>= 0.99.2),
+         pulseaudio (>= 1.1)
+Priority: required
+Section: misc
+Maintainer: Admin Moodle UFSC <admin@moodle.ufsc.br>
+Description: Pacote para instalação das personalizações do ambiente gráfico LXDE. 

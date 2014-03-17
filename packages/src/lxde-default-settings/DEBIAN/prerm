@@ -1,0 +1,12 @@
+#!/bin/bash
+#set -x
+
+PATCH='/usr/bin/patch -R'
+CHMOD='/bin/chmod'
+
+# Remove os patches aplicados
+$PATCH '/etc/xdg/lxsession/LXDE/desktop.conf' '/etc/xdg/lxsession/LXDE/desktop.conf.patch'
+$PATCH '/usr/share/applications/lxde-logout.desktop' '/usr/share/applications/lxde-logout.desktop.patch'
+$PATCH '/usr/bin/lxde-logout' '/usr/bin/lxde-logout.patch'
+
+#$CHMOD u-s /usr/bin/lxsession-logout

@@ -1,0 +1,5 @@
+panel.c.patch e plugin.c.patch : Desabilita o menu que aparece ao clicar com o botão direito do mouse no painel.
+
+Patch gerado com o comando: diff -u ORIGINAL MODIFICADO > PATCH
+
+O script _build.sh aplica os patches e gera o novo pacote.

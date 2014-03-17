@@ -1,0 +1,11 @@
+--- casper.orig	2013-08-22 11:47:02.478127854 -0300
++++ casper.modif.cd	2013-09-06 12:43:09.546426292 -0300
+@@ -118,7 +118,7 @@
+     [ "$prompt" ] || return 0
+ 
+     # XXX - i18n
+-    MSG="Please remove installation media and close the tray (if any) then press ENTER: "
++    MSG="\n\n\n\n\tRemova o CD e feche a bandeja do drive de CD (se necessario),\n\tem seguida pressione a tecla <ENTER> para desligar."
+ 
+     if [ -x /bin/plymouth ] && plymouth --ping; then
+         plymouth message --text="$MSG"

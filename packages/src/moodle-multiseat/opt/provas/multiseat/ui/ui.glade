@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 3.0 -->
+  <object class="GtkWindow" id="WindowError">
+    <property name="can_focus">False</property>
+    <signal name="destroy" handler="onWindowErrorDestroy" swapped="no"/>
+    <child>
+      <object class="GtkAlignment" id="alignment_WError">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkTable" id="table_WError">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkFixed" id="fixed_WError">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkImage" id="image_WError">
+                    <property name="width_request">50</property>
+                    <property name="height_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">dialog-error</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="message_WError">
+                    <property name="width_request">820</property>
+                    <property name="height_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">ERROR</property>
+                    <attributes>
+                      <attribute name="size" value="20000"/>
+                    </attributes>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="x_options">GTK_EXPAND</property>
+                <property name="y_options">GTK_EXPAND</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="WindowMouse">
+    <property name="can_focus">False</property>
+    <signal name="destroy" handler="onWindowMouseDestroy" swapped="no"/>
+    <child>
+      <object class="GtkAlignment" id="alignment_WMouse">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkTable" id="table_WMouse">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkFixed" id="fixed_WMouse">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel" id="message_WMouse">
+                    <property name="width_request">820</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Press the left button of mouse associated with this monitor</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                      <attribute name="size" value="18000"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImage" id="image_WMouse">
+                    <property name="width_request">820</property>
+                    <property name="height_request">320</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="pixbuf">images/mouse.svg</property>
+                  </object>
+                  <packing>
+                    <property name="y">70</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="assignedKbds_WMouse">
+                    <property name="width_request">135</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">Assigned keyboards:</property>
+                  </object>
+                  <packing>
+                    <property name="x">500</property>
+                    <property name="y">440</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="assignedKbdsValue_WMouse">
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">0 of 0</property>
+                  </object>
+                  <packing>
+                    <property name="x">635</property>
+                    <property name="y">440</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="assignedMouses_WMouse">
+                    <property name="width_request">135</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">Assigned mouse:</property>
+                  </object>
+                  <packing>
+                    <property name="x">500</property>
+                    <property name="y">460</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="assignedMousesValue_WMouse">
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">0 of 0</property>
+                  </object>
+                  <packing>
+                    <property name="x">635</property>
+                    <property name="y">460</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="seatId_WMouse">
+                    <property name="width_request">120</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">Seat ID:</property>
+                  </object>
+                  <packing>
+                    <property name="x">180</property>
+                    <property name="y">440</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="seatIdValue_WMouse">
+                    <property name="width_request">80</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">0 of 0</property>
+                  </object>
+                  <packing>
+                    <property name="x">300</property>
+                    <property name="y">440</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="vgaBusId_WMouse">
+                    <property name="width_request">120</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">VGA bus ID:</property>
+                  </object>
+                  <packing>
+                    <property name="x">180</property>
+                    <property name="y">460</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="vgaBusIdValue_WMouse">
+                    <property name="width_request">80</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">0</property>
+                  </object>
+                  <packing>
+                    <property name="x">300</property>
+                    <property name="y">460</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="x_options">GTK_EXPAND</property>
+                <property name="y_options">GTK_EXPAND</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="WindowPressKey">
+    <property name="can_focus">False</property>
+    <signal name="destroy" handler="onWindowPressKeyDestroy" swapped="no"/>
+    <child>
+      <object class="GtkAlignment" id="alignment_WPressKey">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkTable" id="table_WPressKey">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkFixed" id="fixed_WPressKey">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel" id="message_WPressKey">
+                    <property name="width_request">820</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Press the F1 key on the keyboard associated with this monitor</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                      <attribute name="size" value="18000"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImage" id="image_WPressKey">
+                    <property name="width_request">820</property>
+                    <property name="height_request">320</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="pixbuf">images/keyboard_f1.svg</property>
+                  </object>
+                  <packing>
+                    <property name="y">70</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="assignedKbds_WPressKey">
+                    <property name="width_request">135</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">Assigned keyboards:</property>
+                  </object>
+                  <packing>
+                    <property name="x">500</property>
+                    <property name="y">440</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="assignedKbdsValue_WPressKey">
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">0 of 0</property>
+                  </object>
+                  <packing>
+                    <property name="x">635</property>
+                    <property name="y">440</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="assignedMouses_WPressKey">
+                    <property name="width_request">135</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">Assigned mouses:</property>
+                  </object>
+                  <packing>
+                    <property name="x">500</property>
+                    <property name="y">460</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="assignedMousesValue_WPressKey">
+                    <property name="width_request">50</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">0 of 0</property>
+                  </object>
+                  <packing>
+                    <property name="x">635</property>
+                    <property name="y">460</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="seatId_WPressKey">
+                    <property name="width_request">120</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">Seat ID:</property>
+                  </object>
+                  <packing>
+                    <property name="x">180</property>
+                    <property name="y">440</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="seatIdValue_WPressKey">
+                    <property name="width_request">80</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">0 of 0</property>
+                  </object>
+                  <packing>
+                    <property name="x">300</property>
+                    <property name="y">440</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="vgaBusId_WPressKey">
+                    <property name="width_request">120</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">VGA bus ID:</property>
+                  </object>
+                  <packing>
+                    <property name="x">180</property>
+                    <property name="y">460</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="vgaBusIdValue_WPressKey">
+                    <property name="width_request">80</property>
+                    <property name="height_request">25</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">0</property>
+                  </object>
+                  <packing>
+                    <property name="x">300</property>
+                    <property name="y">460</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="x_options">GTK_EXPAND</property>
+                <property name="y_options">GTK_EXPAND</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="WindowWait">
+    <property name="can_focus">False</property>
+    <signal name="destroy" handler="onWindowWaitDestroy" swapped="no"/>
+    <child>
+      <object class="GtkAlignment" id="alignment_WWait">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkTable" id="table_WWait">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkFixed" id="fixed_WWait">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel" id="message_WWait">
+                    <property name="width_request">820</property>
+                    <property name="height_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0.40000000596046448</property>
+                    <property name="label" translatable="yes">WAIT</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                      <attribute name="size" value="50000"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSpinner" id="spinner_WWait">
+                    <property name="width_request">100</property>
+                    <property name="height_request">100</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="active">True</property>
+                  </object>
+                  <packing>
+                    <property name="x">560</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="x_options">GTK_EXPAND</property>
+                <property name="y_options">GTK_EXPAND</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

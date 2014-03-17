@@ -1,0 +1,35 @@
+version: 1
+
+general:
+  seatId: "ID do Terminal:"
+  vgaBusId: "VGA bus ID:"
+  assignedKeyboards: "Teclados atribuídos:"
+  assignedMouses: "Mouses atribuídos:"
+  
+  
+WindowPressKey:
+  seat1:
+    message: "Pressione a tecla F1 do teclado associado a este monitor"
+    image: "/opt/provas/multiseat/ui/images/keyboard_f1.svg"
+    
+  seat2:
+    message: "Pressione a tecla F1 do teclado associado a este monitor"
+    image: "/opt/provas/multiseat/ui/images/keyboard_f1.svg"
+
+
+WindowMouse:
+  seat1:
+    message: &id001 "Pressione o botão esquerdo do mouse associado a este monitor"
+    image: &id002 "/opt/provas/multiseat/ui/images/mouse.svg"
+
+  seat2:
+    message: *id001
+    image: *id002
+
+
+WindowWait:
+  message: "AGUARDE"
+
+
+WindowError:
+  message: "Erro: Mensagem de erro"

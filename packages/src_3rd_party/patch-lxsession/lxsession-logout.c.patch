@@ -1,0 +1,118 @@
+--- lxsession-logout.c.orig	2013-05-13 14:25:54.566396082 -0300
++++ lxsession-logout.c.modif	2013-07-08 08:35:21.105067819 -0300
+@@ -397,20 +397,20 @@
+     }
+     if (dbus_ConsoleKit_CanRestart())
+     {
+-        handler_context.reboot_available = TRUE;
+-        handler_context.reboot_ConsoleKit = TRUE;
++        handler_context.reboot_available = FALSE;
++        handler_context.reboot_ConsoleKit = FALSE;
+     }
+ 
+     /* Initialize capabilities of the UPower mechanism. */
+     if (dbus_UPower_CanSuspend())
+     {
+-        handler_context.suspend_available = TRUE;
+-        handler_context.suspend_UPower = TRUE;
++        handler_context.suspend_available = FALSE;
++        handler_context.suspend_UPower = FALSE;
+     }
+     if (dbus_UPower_CanHibernate())
+     {
+-        handler_context.hibernate_available = TRUE;
+-        handler_context.hibernate_UPower = TRUE;
++        handler_context.hibernate_available = FALSE;
++        handler_context.hibernate_UPower = FALSE;
+     }
+ 
+     /* Initialize capabilities of the HAL mechanism. */
+@@ -421,46 +421,46 @@
+     }
+     if (!handler_context.reboot_available && dbus_HAL_CanReboot())
+     {
+-        handler_context.reboot_available = TRUE;
+-        handler_context.reboot_HAL = TRUE;
++        handler_context.reboot_available = FALSE;
++        handler_context.reboot_HAL = FALSE;
+     }
+     if (!handler_context.suspend_available && dbus_HAL_CanSuspend())
+     {
+-        handler_context.suspend_available = TRUE;
+-        handler_context.suspend_HAL = TRUE;
++        handler_context.suspend_available = FALSE;
++        handler_context.suspend_HAL = FALSE;
+     }
+     if (!handler_context.hibernate_available && dbus_HAL_CanHibernate())
+     {
+-        handler_context.hibernate_available = TRUE;
+-        handler_context.hibernate_HAL = TRUE;
++        handler_context.hibernate_available = FALSE;
++        handler_context.hibernate_HAL = FALSE;
+     }
+ 
+     /* If we are under GDM, its "Switch User" is available. */
+     if (verify_running("gdm", "gdmflexiserver"))
+     {
+-        handler_context.switch_user_available = TRUE;
+-        handler_context.switch_user_GDM = TRUE;
++        handler_context.switch_user_available = FALSE;
++        handler_context.switch_user_GDM = FALSE;
+     }
+ 
+     /* If we are under GDM3, its "Switch User" is available. */
+     if (verify_running("gdm3", "gdmflexiserver"))
+     {
+-        handler_context.switch_user_available = TRUE;
+-        handler_context.switch_user_GDM = TRUE;
++        handler_context.switch_user_available = FALSE;
++        handler_context.switch_user_GDM = FALSE;
+     }
+ 
+     /* lightdm also use gdmflexiserver */
+     if (verify_running("lightdm", "gdmflexiserver"))
+     {
+-        handler_context.switch_user_available = TRUE;
+-        handler_context.switch_user_GDM = TRUE;
++        handler_context.switch_user_available = FALSE;
++        handler_context.switch_user_GDM = FALSE;
+     }
+ 
+     /* If we are under KDM, its "Switch User" is available. */
+     if (verify_running("kdm", "kdmctl"))
+     {
+-        handler_context.switch_user_available = TRUE;
+-        handler_context.switch_user_KDM = TRUE;
++        handler_context.switch_user_available = FALSE;
++        handler_context.switch_user_KDM = FALSE;
+     }
+ 
+     /* LTSP support */
+@@ -468,7 +468,7 @@
+     {
+         handler_context.ltsp = TRUE;
+         handler_context.shutdown_available = TRUE;
+-        handler_context.reboot_available = TRUE;
++        handler_context.reboot_available = FALSE;
+     }
+ 
+     /* Make the button images accessible. */
+@@ -615,12 +615,12 @@
+     }
+ 
+     /* Create the Logout button. */
+-    GtkWidget * logout_button = gtk_button_new_with_mnemonic(_("_Logout"));
+-    GtkWidget * image = gtk_image_new_from_icon_name("system-log-out", GTK_ICON_SIZE_BUTTON);
+-    gtk_button_set_image(GTK_BUTTON(logout_button), image);
+-    gtk_button_set_alignment(GTK_BUTTON(logout_button), 0.0, 0.5);
+-    g_signal_connect(G_OBJECT(logout_button), "clicked", G_CALLBACK(logout_clicked), &handler_context);
+-    gtk_box_pack_start(GTK_BOX(controls), logout_button, FALSE, FALSE, 4);
++    //GtkWidget * logout_button = gtk_button_new_with_mnemonic(_("_Logout"));
++    //GtkWidget * image = gtk_image_new_from_icon_name("system-log-out", GTK_ICON_SIZE_BUTTON);
++    //gtk_button_set_image(GTK_BUTTON(logout_button), image);
++    //gtk_button_set_alignment(GTK_BUTTON(logout_button), 0.0, 0.5);
++    //g_signal_connect(G_OBJECT(logout_button), "clicked", G_CALLBACK(logout_clicked), &handler_context);
++    //gtk_box_pack_start(GTK_BOX(controls), logout_button, FALSE, FALSE, 4);
+ 
+     /* Create the Cancel button. */
+     GtkWidget * cancel_button = gtk_button_new_from_stock(GTK_STOCK_CANCEL);

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Network Diagnostic
+Name[pt_BR]=Diagnóstico da Rede
+Comment=Execute a network diagnostic
+Comment[pt_BR]=Executa uma série de testes na rede
+Icon=preferences-system-network
+Exec=/opt/provas/network-diagnostic/main.py
+Terminal=false
+StartupNotify=true
+Type=Application
+Categories=GNOME;GTK;Settings;X-GNOME-NetworkSettings;
+NotShowIn=KDE;

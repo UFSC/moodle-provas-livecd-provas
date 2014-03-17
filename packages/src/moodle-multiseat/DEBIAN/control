@@ -1,0 +1,22 @@
+Package: moodle-multiseat
+Version: 2.0-2014031703
+Architecture: all
+Depends: gcc,
+         grep,
+         mawk,
+         moodle-provas (>= 2.0),
+         pciutils,
+         pulseaudio,
+         pulseaudio-utils,
+         python2.7 (>= 2.7.3),
+         python2.7-dev (>= 2.7.3),
+         python-gi (>= 3.2.2),
+         python-pip (>= 1.0),
+         python-yaml (>= 3.10),
+         python-zmq (>= 2.1.11),
+         sed,
+         sysvinit-utils
+Priority: required
+Section: misc
+Maintainer: Admin Moodle UFSC <admin@moodle.ufsc.br>
+Description: Pacote para instalação do suporte a multiterminal no LiveCD de provas, ele permite que computadores que suporte multiterminal funcionem corretamente usando o LiveCD. 

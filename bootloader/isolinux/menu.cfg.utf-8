@@ -1,0 +1,48 @@
+# Configurações visuais do menu
+include stdmenu.cfg
+
+# Mensagens mostradas na tela
+menu autoboot %MSG_TIMEOUT%
+menu notabmsg %MSG_BOTTOM%
+#menu title Moodle Provas 2.0
+
+# Opção padrão
+default monoterminal
+
+# Opções do menu
+
+## MONOTERMINAL (4 linhas)
+label monoterminal
+  menu label ^Iniciar Moodle Provas %PROVAS_VERSION%
+  kernel /casper/vmlinuz
+  append boot=casper initrd=/casper/initrd.lz --
+
+## MULTITERMINAL (8 linhas)
+#label multiterminal1
+#  menu label Iniciar ^Moodle Provas %PROVAS_VERSION% [multiterminal 1]
+#  kernel /casper/vmlinuz
+#  append boot=casper initrd=/casper/initrd.lz -- multiseat
+#label multiterminal2
+#  menu label Iniciar ^Moodle Provas %PROVAS_VERSION% [multiterminal 2]
+#  kernel /casper/vmlinuz
+#  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas
+
+## SEND_LOGS (12 linhas)
+#label sendlogs1
+#  menu label Enviar logs para diagnóstico
+#  kernel /casper/vmlinuz
+#  append boot=casper initrd=/casper/initrd.lz -- send_logs
+#label sendlogs2
+#  menu label Enviar logs para diagnóstico [multiterminal 1]
+#  kernel /casper/vmlinuz
+#  append boot=casper initrd=/casper/initrd.lz -- multiseat send_logs
+#label sendlogs3
+#  menu label Enviar logs para diagnóstico [multiterminal 2]
+#  kernel /casper/vmlinuz
+#  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas send_logs
+
+## CHECK_DISK (4 linhas)
+label check
+  menu label ^Verificar defeitos no CD
+  kernel /casper/vmlinuz
+  append boot=casper integrity-check initrd=/casper/initrd.lz -- splash

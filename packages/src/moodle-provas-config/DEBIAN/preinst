@@ -1,0 +1,7 @@
+#!/bin/bash
+#set -x
+
+DIVERT="/usr/bin/dpkg-divert"
+
+$DIVERT --add --rename "/opt/provas/images/logout-banner.png"
+$DIVERT --add --rename "/opt/provas/images/wallpaper.png"

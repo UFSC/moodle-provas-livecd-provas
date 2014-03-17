@@ -1,0 +1,39 @@
+#!/bin/bash
+#set -x
+
+PATCH='/usr/bin/patch'
+CHMOD='/bin/chmod'
+
+update-rc.d iptables-persistent start 37 2 3 4 5 . stop 37 0 1 6 . >/dev/null
+update-rc.d moodle-provas defaults >/dev/null
+
+$PATCH '/etc/X11/Xwrapper.config' '/etc/X11/Xwrapper.config.patch'
+$PATCH '/etc/rc.local' '/etc/rc.local.patch'
+$PATCH '/etc/pam.d/common-session' '/etc/pam.d/common-session.patch'
+
+# Patch necessário porque o /etc/fstab.d ainda não funciona
+# Detalhes em: http://askubuntu.com/questions/168290/why-cant-mount-read-files-in-etc-fstab-d
+$PATCH '/usr/share/initramfs-tools/scripts/casper-bottom/12fstab' '/usr/share/initramfs-tools/scripts/casper-bottom/12fstab.patch'
+
+# Diretórios requeridos pelo arquivo /etc/security/namespace.d/moodle-provas.conf
+mkdir -pm 000 '/tmp/tmp-users/'
+mkdir -pm 000 '/var/tmp/tmp-users/'
+mkdir -pm 000 '/dev/shm/tmp-users/'
+
+# Reconfigura a libpam pra recarregar o patch pro startx
+dpkg-reconfigure 'libpam-runtime'
+
+# Ajusta as permissões dos arquivos e diretórios
+$CHMOD 400 '/etc/cron.d/moodle-provas'
+$CHMOD 400 '/etc/iptables/rules.v4'
+$CHMOD 400 '/etc/iptables/rules.v6'
+
+$CHMOD 700 '/opt/provas/cron_script.sh'
+$CHMOD 700 '/opt/provas/get_supported_seats.py'
+$CHMOD 700 '/opt/provas/init_script.sh'
+$CHMOD 700 '/opt/provas/send_logs.sh'
+$CHMOD 700 '/opt/provas/start_user_apps.sh'
+$CHMOD 700 '/opt/provas/start_X.sh'
+
+$CHMOD -R 700 '/opt/provas/includes'
+

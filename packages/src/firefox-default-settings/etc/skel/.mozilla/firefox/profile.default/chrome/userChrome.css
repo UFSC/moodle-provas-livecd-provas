@@ -1,0 +1,20 @@
+/* Remove completamente a barra de menus e o botão do menu reduzido caso
+ * o menu normal esteja desativado. */
+#toolbar-menubar,
+#appmenu-toolbar-button
+    { display: none !important; }
+
+/* Desativa o menu contextual da barra de ferramentas, pois através dele é
+ * possível ativar a barra de menus novamente */
+#toolbar-context-menu
+    { display: none !important; }
+
+/* Desativa a barra de busca (Google e cia) */
+#search-container,
+#searchbar
+    { display: none !important; }
+
+/* Desativa o botão de download e de home da barra de botões */
+#nav-bar #downloads-button,
+#nav-bar #home-button
+    { display: none !important; }

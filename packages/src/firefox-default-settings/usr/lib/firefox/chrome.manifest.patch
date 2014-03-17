@@ -1,0 +1,7 @@
+--- chrome.manifest.orig	2013-06-27 08:59:55.586901369 -0300
++++ chrome.manifest.modif	2013-06-27 09:00:27.871008378 -0300
+@@ -1 +1,4 @@
+ manifest components/components.manifest
++override chrome://browser/content/aboutPrivateBrowsing.xhtml data:text/html,Disabled
++override chrome://global/content/config.xul data:text/html,Disabled
++override chrome://mozapps/content/extensions/extensions.xul data:text/html,Disabled

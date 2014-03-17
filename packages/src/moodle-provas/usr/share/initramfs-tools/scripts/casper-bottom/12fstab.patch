@@ -1,0 +1,12 @@
+--- 12fstab.orig	2013-11-21 10:06:25.268047859 -0200
++++ 12fstab.modif	2013-11-21 11:10:22.524751484 -0200
+@@ -23,7 +23,8 @@
+ 
+ cat > $FSTAB <<EOF
+ ${UNIONFS} / ${UNIONFS} rw 0 0
+-tmpfs /tmp tmpfs nosuid,nodev 0 0
++tmpfs /tmp tmpfs nosuid,nodev,noexec 0 0
++tmpfs /home tmpfs nosuid,nodev,noexec 0 0
+ EOF
+ 
+ rm -f /root/etc/rcS.d/S*checkroot.sh

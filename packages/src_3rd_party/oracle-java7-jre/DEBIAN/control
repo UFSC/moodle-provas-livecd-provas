@@ -1,0 +1,9 @@
+Package: oracle-java7-jre
+Version: 1.7.0u51-2014030701
+Architecture: all
+Maintainer: Nathan Rennie-Waldock <nathan.renniewaldock@gmail.com>
+Provides: java-runtime, java2-runtime, java5-runtime, java6-runtime, sun-java6-bin, sun-java6-jre, sun-java6-plugin
+Section: utils
+Priority: optional
+Homepage: http://www.oracle.com
+Description: Oracle Java virtual machine

@@ -1,0 +1,10 @@
+Package: firefox-default-settings
+Version: 2.0-2014031703
+Architecture: all
+Depends: firefox (>= 21.0),
+         firefox-locale-pt (>= 21.0),
+         flashplugin-installer
+Priority: required
+Section: misc
+Maintainer: Admin Moodle UFSC <admin@moodle.ufsc.br>
+Description: Pacote para instalação das personalizações do navegador Mozilla Firefox. 

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Shutdown
+Name[pt_BR]=Desligar o computador
+Name[zh_TW]=關機
+Comment=Shutdown or Reboot
+Icon=stock_exit
+Exec=lxde-logout
+NoDisplay=true

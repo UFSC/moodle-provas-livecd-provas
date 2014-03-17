@@ -1,0 +1,15 @@
+--- panel.c.orig	2013-05-13 14:26:32.506510701 -0300
++++ panel.c.modif	2013-05-13 14:26:32.542510808 -0300
+@@ -543,12 +543,6 @@
+ /* Handler for "button_press_event" signal with Panel as parameter. */
+ static gboolean panel_button_press_event_with_panel(GtkWidget *widget, GdkEventButton *event, Panel *panel)
+ {
+-    if (event->button == 3)	 /* right button */
+-    {
+-        GtkMenu* popup = (GtkMenu*) lxpanel_get_panel_menu(panel, NULL, FALSE);
+-        gtk_menu_popup(popup, NULL, NULL, NULL, NULL, event->button, event->time);
+-        return TRUE;
+-    }    
+     return FALSE;
+ }
+ 
