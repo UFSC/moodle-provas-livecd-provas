@@ -1,37 +1,34 @@
-Descrição dos arquivos:
+***** Sistema de geração do LiveCD do Moodle Provas *****
 
-Dependência principal: make
-
-apt-get install make
-
-As demais dependências serão instaladas a primeira vez que você executar o make.
+Este diretório contêm os arquivos e scripts do sistema de geração do LiveCD do Moodle Provas, o objetivo principal deste sistema é gerar um arquivo .ISO do LiveCD, que poderá ser utilizado para gravar um CD ou um pendrive e ser utilizado para realizar as provas online do Moodle Provas.
 
 
+*** Pré-requisitos ***
 
-bootloader - Contêm os arquivos do bootloader do LiveCD, o processo responsável por exibir o menu de inicialização.
+Para utilizar este sistema você precisa atender aos seguintes requisitos:
 
-bootstrap - Base do sistema gerada com o comando debootstrap e comprimida.
+ - Utilizar o sistema operacional Ubuntu em uma versão homologada (veja a lista de versões homologadas no arquivo config/livecd_config.conf , variável 'distro_ubuntu_versions'.
+ - Possuir o utilitário 'sudo' configurado para que seu usuário possa executar comandos como root.
+ - Possuir o utilitário 'make' instalado (as demais dependências serão instaladas na primeira vez em que você executar o make).
 
-dependencies.txt - Contém uma lista de pacotes necessários para gerar o LiveCD.
 
-docs - Contêm informações sobre o funcionamento do LiveCD.
+*** Utilização ***
 
-includes - Arquivos utilizados por alguns shell scripts.
+Após atender aos pré-requisitos e estando dentro do diretório raiz do sistema de geração do LiveCD, basta executar o comando 'make', será solicitada sua senha (através do comando sudo) e será exibido um menu no terminal com as opções disponíveis, as opções são auto-descritivas.
 
-Makefile
 
-pkgs_built - Contêm os pacotes Debian gerados, prontos para instalação.
+*** Descrição dos diretórios e arquivos ***
 
-pkgs_src - Contêm os arquivos fonte usados para gerar os pacotes Debian do diretório anterior.
-
-pkgs_src_3rd - Contêm arquivos fonte e patches para pacotes mantidos por terceiros ou que não estão disponíveis nos repositórios oficiais.
-
-scripts - Shell scripts
-
-bootstrap - Base do sistema gerada com o comando debootstrap e comprimida.
-
-livecd_provas.conf - Arquivo de configuração global para geração do LiveCD.
-
-make_livecd.sh
-
-root_fs
+\
+ |_ bootloader - Contêm os arquivos do bootloader do LiveCD, o processo responsável por exibir o menu de inicialização.
+ |_ bootstrap - Base do sistema gerada com o comando debootstrap e comprimida.
+ |_ config - Diretório que contêm todos arquivos de configuração do LiveCD.
+ |_ docs - Documentação adicional do LiveCD.
+ |_ extra - Contêm arquivos extras que podem ser úteis.
+ |_ Makefile - Arquivo Makefile que oferece as opções de gerar o LiveCD e remover arquivos temporários.
+ |_ packages/built - Contêm os pacotes Debian gerados, prontos para instalação.
+ |_ packages/src - Contêm os arquivos fonte usados para gerar os pacotes Debian do diretório anterior.
+ |_ packages/src_3rd_party - Contêm arquivos fonte e/ou patches para pacotes mantidos por terceiros.
+ |_ README.txt - Este arquivo.
+ |_ scripts - Shell scripts de geração do LiveCD.
+ |_ scripts/chroot - Shell scripts que são executados dentro do ambiente CHROOT.
