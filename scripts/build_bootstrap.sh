@@ -8,7 +8,7 @@
 
 
 old_dir="$(pwd)"
-output_filename="base-${livecd_hw_arch}_${build_date}.tar.gz"
+output_filename="base-${distro_codename}-${livecd_hw_arch}_${build_date}.tar.gz"
 
 # Verifica se o bootstrap já não foi atualizado no dia atual
 if [ -f "$bootstrap_dir/$output_filename" ]; then
@@ -17,7 +17,7 @@ if [ -f "$bootstrap_dir/$output_filename" ]; then
     read option
     if ! [ "$option" = 'sim' -o "$option" = 'SIM' ]; then
         msg "$prefix Saindo..."
-        return
+        return 1
     fi
 else
     msg_w "$prefix A atualização do pacote .tar.gz do bootstrap pode demorar vários minutos, deseja continuar?"
@@ -25,11 +25,11 @@ else
     read option
     if ! [ "$option" = 'sim' -o "$option" = 'SIM' ]; then
         msg "$prefix Saindo..."
-        return
+        return 1
     fi
 fi
 
-msg "$prefix Iniciando a geração do bootstrap para a arquitetura '$livecd_hw_arch'"
+msg "$prefix Iniciando a geração do bootstrap para a arquitetura '$livecd_hw_arch' (Codename: $distro_codename)"
 
 # Devido a um bug no debootstrap, ele não completa a geração do bootstrap corretamente
 # caso o caminho absoluto até o diretório de trabalho contenha algum espaço.
@@ -44,7 +44,7 @@ fi
 cd "$bootstrap_dir"
 # Baixa e prepara a base do sistema, mais os pacotes definidos no parâmetro '--include'
 msg_d "$sub_prefix Baixando a nova base utilizando o debootstrap (pode demorar vários minutos)..."
-sudo debootstrap --arch="$livecd_hw_arch" --include=dnsutils precise base >>"$std_out" 2>>"$std_err"
+sudo debootstrap --arch="$livecd_hw_arch" --include=dnsutils "$distro_codename" base >>"$std_out" 2>>"$std_err"
 
 msg_d "$sub_prefix Removendo o bootstrap antigo se existir..."
 rm -rf "base-${livecd_hw_arch}_"*".tar.gz"

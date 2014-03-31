@@ -86,12 +86,17 @@ prepare_files() {
     init
 
     # Se o arquivo de bootstrap não existir, chama o script que gerará.
-    if ! ls -u "$bootstrap_dir/base-$livecd_hw_arch"*".tar.gz" >/dev/null 2>&1; then
+    if ! ls -u "$bootstrap_dir/base-${distro_codename}-$livecd_hw_arch"*".tar.gz" >/dev/null 2>&1; then
+        msg_w "$prefix AVISO: Nenhum bootstrap para a distro '$distro_codename ($livecd_hw_arch)' foi encontrado, um novo bootstrap será gerado."
         source "$scripts_dir/build_bootstrap.sh"
+
+        if [ "$?" -eq 1 ]; then
+            return
+        fi
     fi
 
     msg_d "$sub_prefix Extraindo o bootstrap para o root_fs em $root_fs"
-    sudo tar xzvf "$bootstrap_dir/base-$livecd_hw_arch"*".tar.gz" -C "$root_fs/" >/dev/null 2>>"$std_err"
+    sudo tar xzvf "$bootstrap_dir/base-${distro_codename}-$livecd_hw_arch"*".tar.gz" -C "$root_fs/" >/dev/null 2>>"$std_err"
 
     make_sources_list "$root_fs/etc/apt"
     make_resolv_conf "$root_fs/etc"
