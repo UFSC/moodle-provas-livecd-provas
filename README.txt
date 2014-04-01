@@ -20,11 +20,13 @@ Após atender aos pré-requisitos e estando dentro do diretório raiz do sistema
 *** Descrição dos diretórios e arquivos ***
 
 \
- |_ bootloader - Contêm os arquivos do bootloader do LiveCD, o processo responsável por exibir o menu de inicialização.
- |_ bootstrap - Base do sistema gerada com o comando debootstrap e comprimida.
+ |_ bootloader - Contêm os arquivos do bootloader do LiveCD, ele é responsável por exibir o menu de inicialização.
+ |_ bootstrap - Base do sistema gerada com o comando debootstrap e comprimida com tar.gz.
+ |_ build.log - Arquivo de log criado durante a geração do LiveCD.
  |_ config - Diretório que contêm todos arquivos de configuração do LiveCD.
  |_ docs - Documentação adicional do LiveCD.
  |_ extra - Contêm arquivos extras que podem ser úteis.
+ |_ iso - Diretório onde os arquivos .ISO gerados são gravados.
  |_ Makefile - Arquivo Makefile que oferece as opções de gerar o LiveCD e remover arquivos temporários.
  |_ packages/built - Contêm os pacotes Debian gerados, prontos para instalação.
  |_ packages/src - Contêm os arquivos fonte usados para gerar os pacotes Debian do diretório anterior.
@@ -32,3 +34,4 @@ Após atender aos pré-requisitos e estando dentro do diretório raiz do sistema
  |_ README.txt - Este arquivo.
  |_ scripts - Shell scripts de geração do LiveCD.
  |_ scripts/chroot - Shell scripts que são executados dentro do ambiente CHROOT.
+ |_ tmp - Diretório de trabalho, onde os arquivos temporários são gravados.
