@@ -7,20 +7,6 @@ functions_file="$provas_dir/includes/functions.sh"
 [ -r "$functions_file" ] && source "$functions_file" || exit 1
 
 
-# Arquivos que devem ser comprimidos e enviados
-files="\
-    /etc/X11/xorg* \
-    /var/log/auth.log \
-    /var/log/boot.log \
-    /var/log/casper.log \
-    /var/log/dmesg \
-    /var/log/firewall* \
-    /var/log/kern.log \
-    /var/log/moodle-provas.log \
-    /var/log/multiseat* \
-    /var/log/syslog \
-    /var/log/Xorg.*"
-
 # Diretório temporário onde os arquivos serão copiados
 files_dir='/tmp/logs'
 filename="logs-$(date +%Y%m%d-%Hh%M).tar.gz"
@@ -31,8 +17,8 @@ if [ -d "$files_dir" ]; then
 fi
 mkdir "$files_dir"
 
-log "Copiando alguns arquivos para $files_dir..."
-for file in $files; do
+log "Copiando alguns arquivos do sistema para $files_dir..."
+for file in $log_system_files; do
     cp "$file" "$files_dir/" >>"$log_file_provas" 2>&1
 done
 

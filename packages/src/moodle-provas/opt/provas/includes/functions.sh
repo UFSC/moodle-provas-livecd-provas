@@ -127,11 +127,6 @@ start_multiseat_mode() {
     usermod -a -G netdev ${username_base}1 >/dev/null 2>&1
     usermod -a -G netdev ${username_base}2 >/dev/null 2>&1
 
-    if should_switch_vgas; then
-        multiseat_switch_vgas="yes"
-        sed -i 's/multiseat_switch_vgas.*/multiseat_switch_vgas="yes"/g' "$provas_config"
-    fi
-
     seats=$(/opt/provas/multiseat/pre-setup.sh)
     log "start_multiseat_mode() Retorno do pre-setup.sh: $seats"
     log 'start_multiseat_mode() Iniciando o /opt/provas/multiseat/setup.py'

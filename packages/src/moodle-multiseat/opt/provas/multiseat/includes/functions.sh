@@ -41,7 +41,7 @@ get_vga_bus_id() {
         return
     fi
 
-    if [ "$multiseat_switch_vgas" = 'yes' ]; then
+    if $(grep -q 'switch_vgas' '/proc/cmdline' 2>/dev/null); then
         log "get_vga_bus_id() A opção 'switch_vgas' está ativada."
         if [ "$vga" = '1' ]; then
             vga='2'
