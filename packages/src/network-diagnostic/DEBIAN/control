@@ -1,5 +1,5 @@
 Package: network-diagnostic
-Version: 2.0-2014040101
+Version: 2.0-2014040202
 Architecture: all
 Depends: grep,
          iproute,
