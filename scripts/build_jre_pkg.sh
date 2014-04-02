@@ -9,12 +9,7 @@
 # Mais informações sobre o download do JRE usando o wget no endereço abaixo:
 # https://ivan-site.com/2012/05/download-oracle-java-jre-jdk-using-a-script/
 
-# O link da versão atual do JRE para Linux versão 32-bit pode ser copiado do site:
-# http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html
-# Após copiar o novo link, você deve atualizar a variável 'jre_version' abaixo.
-jre_url='http://download.oracle.com/otn-pub/java/jdk/7u51-b13/jre-7u51-linux-i586.tar.gz'
-jre64_url='http://download.oracle.com/otn-pub/java/jdk/7u51-b13/jre-7u51-linux-x64.tar.gz'
-jre_version='1.7.0_51'
+# Header que deve ser enviado para o site de download da oracle, para que o download seja autorizado.
 oracle_header='Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie'
 
 # Se a arquitetura de hardware do LiveCD estiver configurada para 'amd64', define a URL correta.
@@ -45,7 +40,7 @@ cp -R "$pkgs_src_3rd_dir/$pkg_name" "$working_dir/"
 cd "$working_dir"
 
 msg "$prefix Iniciando a geração do pacote do JRE da Oracle"
-msg_d "$sub_prefix Obtendo o arquivo do jre da oracle..."
+msg_d "$sub_prefix Baixando o arquivo do jre da oracle (Versão: $jre_version)..."
 if [ ! -f "$jre_file" ]; then
     wget -nv --no-cookies --no-check-certificate --header "$oracle_header" "$jre_url" >>"$std_out" 2>>"$std_err"
 fi

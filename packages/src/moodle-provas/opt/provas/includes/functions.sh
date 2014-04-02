@@ -143,34 +143,36 @@ start_normal_mode() {
     su - "${username_base}1" -c 'startx -- :1 -br -audit 0 -novtswitch -nolisten tcp' &
 }
 
+# Obtem o endereço IP do servidor NFS (função atualmente não utilizada)
 get_nfs_server_address() {
     nfs_server="$(cat /proc/cmdline | awk '/nfsroot/{print $1}' RS=" " FS=":" | cut -d "=" -f 2)"
 
     echo "$nfs_server"
 }
 
+# Mostra uma mensagem no monitor do primeiro usuário com a mensagem de problema na conexão de rede.
 show_no_connection() {
     msg='A conexão de rede não está funcionando e talvez você precise configurá-la manualmente. Para que esta mensagem não apareça novamente, configure a conexão de rede e clique em OK.'
 
     gxmessage -display ":1" -bg orange -geometry 500x200 -center -font "ubuntu 13" -title "Conexão de rede" -wrap "$msg"
 }
 
-# Mensagem exibida quando o usuário deve aguardar o envio dos logs de diagnóstico.
+# Mostra uma mensagem no monitor do primeiro usuário dizendo para aguardar o envio dos logs de diagnóstico.
 show_send_logs_wait() {
     msg='Aguarde os arquivos de log serem enviados.'
 
     gxmessage -display ':1' -bg 'orange' -geometry '300x150' -center -font "ubuntu 16" -title 'Aguarde...' -wrap "$msg" &
 }
 
-# Mensagem exibida quando houve sucesso no envio dos logs de diagnóstico.
+# Mostra uma mensagem no monitor do primeiro usuário dizendo que houve sucesso no envio dos logs de diagnóstico.
 show_send_logs_ok() {
     pkill gxmessage
-    msg='Os arquivos de log foram enviados com sucesso, agora você pode desligar este computador e enviar um e-mail para admin@moodle.ufsc.br informando que o procedimento foi realizado.'
+    msg="Os arquivos de log foram enviados com sucesso, agora você pode desligar este computador e enviar um e-mail para $log_email informando que o procedimento foi realizado."
 
     gxmessage -display ':1' -bg 'green' -geometry '450x200' -center -font 'ubuntu 13' -title 'Envio dos arquivos de log' -wrap "$msg"
 }
 
-# Mensagem exibida quando ocorre algum erro no envio dos logs de diagnóstico.
+# Mostra uma mensagem no monitor do primeiro usuário dizendo que ocorreu algum erro no envio dos logs de diagnóstico.
 show_send_logs_bad() {
     pkill gxmessage
     msg='Erro no envio dos arquivos de log, informe o problema ao suporte técnico.'
@@ -178,7 +180,7 @@ show_send_logs_bad() {
     gxmessage -display ':1' -bg 'red' -fg 'white' -geometry '700x500' -center -font 'ubuntu 13' -title "$msg" -file '/tmp/send_logs.log'
 }
 
-
+# Prepara e envia os logs para o servidor remoto via POST, utilizando o script /opt/provas/send_logs.sh
 send_logs() {
     log 'Preparando para enviar os logs'
     log 'Liberando o acesso ao servidor de logs'
@@ -200,6 +202,7 @@ send_logs() {
     exit
 }
 
+# Configura a página inicial do navegador Mozilla Firefox.
 set_browser_homepage() {
     log 'Atualizando as configuração da página inicial do Firefox'
     $SED -i "s|%homepage%|$provas_homepage|g" '/etc/firefox/syspref.js'
@@ -220,7 +223,7 @@ configure_browser() {
     $SED -i "s|%local_network%|$local_network|g" "$firefox_bin/$firefox_autoconfig"
 }
 
-
+# Libera o acesso via HTTP e HTTPS aos IPs definidos no arquivo de configuração e salva as regras atualizadas.
 configure_firewall() {
     # Libera o acesso aos IPs via HTTP (porta 80)
     for ip in $allowed_ips_http; do
@@ -238,6 +241,7 @@ configure_firewall() {
     /etc/init.d/iptables-persistent save
 }
 
+# Aguarda a sessão do usuário informado ser carregada para montar o diretório do userChrome.css.
 configure_session_for_user() {
     user_id="$1"
     username="${username_base}${user_id}"
@@ -260,6 +264,7 @@ configure_session_for_user() {
     sleep 2
 }
 
+# Inicia o navegador Mozilla Firefox na sessão do usuário informado.
 start_browser_for_user() {
     user_id="$1"
     username="${username_base}${user_id}"

@@ -377,7 +377,9 @@ make_iso() {
 
     iso_name="$iso_name_base"
 
-    if [ "$enable_admin_access" = 'yes' ]; then
+    # Se o $admin_user existir no /etc/passwd, é porque ele foi ativado via arquivo de configuração em algum momento,
+    # só é possível desativá-lo alterando a opção no arquivo de configuração e executando a atualização dos pacotes.
+    if $(grep -q "$admin_user" "$root_fs/etc/passwd" 2>/dev/null); then
         iso_name="${iso_name}_admin"
     fi
 

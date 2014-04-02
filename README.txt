@@ -24,8 +24,7 @@ Após atender aos pré-requisitos e estando dentro do diretório raiz do sistema
  |_ bootstrap - Base do sistema gerada com o comando debootstrap e comprimida com tar.gz.
  |_ build.log - Arquivo de log criado durante a geração do LiveCD.
  |_ config - Diretório que contêm todos arquivos de configuração do LiveCD.
- |_ docs - Documentação adicional do LiveCD.
- |_ extra - Contêm arquivos extras que podem ser úteis.
+ |_ extra - Contêm arquivos extras que podem ser úteis para ativar algum recurso e documentação extra.
  |_ iso - Diretório onde os arquivos .ISO gerados são gravados.
  |_ Makefile - Arquivo Makefile que oferece as opções de gerar o LiveCD e remover arquivos temporários.
  |_ packages/built - Contêm os pacotes Debian gerados, prontos para instalação.
