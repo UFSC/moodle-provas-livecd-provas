@@ -75,7 +75,7 @@ show_main_menu() {
     msg "   [4] Gerar apenas o novo SquashFS e a nova ISO do LiveCD"
     msg "   [5] Gerar apenas a nova ISO do LiveCD"
     msg "   ---------------------------------------------"
-    msg "   [6] Gerar novamente os pacote debian do Moodle Provas"
+    msg "   [6] Gerar novamente os pacotes debian do Moodle Provas"
     msg "   [7] Gerar novamente os pacotes debian do lxpanel e lxsession (com os patches)"
     msg "   [8] Gerar novamente o pacote debian do JRE da Oracle (Java)"
     msg "   [9] Gerar novamente o pacote .tar.gz do bootstrap (base do sistema)"

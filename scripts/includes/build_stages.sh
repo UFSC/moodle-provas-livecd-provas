@@ -324,7 +324,7 @@ make_disk_info() {
     
     enabled_options=''
 
-    if [ "$enable_admin_access" = 'yes' ]; then
+    if $(grep -q "$admin_user" "$root_fs/etc/passwd" 2>/dev/null); then
         enabled_options='admin'
     fi
 
