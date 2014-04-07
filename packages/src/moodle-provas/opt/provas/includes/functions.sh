@@ -109,40 +109,6 @@ create_user() {
     return $(useradd $username -m -c "$username" -s "/bin/bash" >/dev/null 2>&1)
 }
 
-# Inicia as sessões dos usuários em modo multiterminal
-start_multiseat_mode() {
-    # Desativa as configurações adicionais do Xorg, elas já estão incluídas nos arquivos
-    # gerados em /etc/X11/xorg*, mas se este arquivo existir a seção ServerLayout será afetada.
-    if [ -f '/usr/share/X11/xorg.conf.d/60-moodle-provas.conf' ]; then
-        rm '/usr/share/X11/xorg.conf.d/60-moodle-provas.conf'
-    fi
-
-    # Desativa a opção de desligar e muda a mensagem
-    chmod u-s '/usr/bin/lxsession-logout'
-    sed -i 's/--prompt ".*"/--prompt "Multiterminal: Utilize o botão liga\/desliga do computador."/' "/usr/bin/lxde-logout"
-
-    create_user "${username_base}1" && log "Usuário ${username_base}1 criado."
-    create_user "${username_base}2" && log "Usuário ${username_base}2 criado."
-
-    usermod -a -G netdev ${username_base}1 >/dev/null 2>&1
-    usermod -a -G netdev ${username_base}2 >/dev/null 2>&1
-
-    seats=$(/opt/provas/multiseat/pre-setup.sh)
-    log "start_multiseat_mode() Retorno do pre-setup.sh: $seats"
-    log 'start_multiseat_mode() Iniciando o /opt/provas/multiseat/setup.py'
-    /usr/bin/env python /opt/provas/multiseat/setup.py "$seats" "$username_base"
-}
-
-# Inicia a sessão do usuário em modo normal, sem multiterminal
-start_normal_mode() {
-    # Cria o usuário e adiciona ao grupo de audio
-    create_user "${username_base}1" && log "Usuário ${username_base}1 criado."
-    usermod -a -G audio ${username_base}1 >/dev/null 2>&1
-    usermod -a -G netdev ${username_base}1 >/dev/null 2>&1
-
-    su - "${username_base}1" -c 'startx -- :1 -br -audit 0 -novtswitch -nolisten tcp' &
-}
-
 # Obtem o endereço IP do servidor NFS (função atualmente não utilizada)
 get_nfs_server_address() {
     nfs_server="$(cat /proc/cmdline | awk '/nfsroot/{print $1}' RS=" " FS=":" | cut -d "=" -f 2)"
@@ -242,14 +208,9 @@ configure_firewall() {
 }
 
 # Aguarda a sessão do usuário informado ser carregada para montar o diretório do userChrome.css.
-configure_session_for_user() {
+lock_firefox_userchrome_file_for_user() {
     user_id="$1"
     username="${username_base}${user_id}"
-
-    log "Aguardando o processo 'lxsession' do usuário '$username' iniciar..."
-    while ! $(pgrep -u "$username" lxsession &>/dev/null); do
-        sleep 1
-    done
 
     # Monta o diretório do firefox onde fica o arquivo userChrome.css como somente leitura,
     # para que o usuário não possa modificá-lo
@@ -259,6 +220,17 @@ configure_session_for_user() {
         mount --bind "$firefox_chrome_dir" "$firefox_chrome_dir" >>"$log_file_provas" 2>&1
         mount -o remount,ro "$firefox_chrome_dir" >>"$log_file_provas" 2>&1
     fi
+}
+
+#Bloqueia a execução até que o Xorg com o LXDE do usuário tenha carregado
+wait_session_load_for_user() {
+    user_id="$1"
+    username="${username_base}${user_id}"
+    
+    log "Aguardando o processo 'lxsession' do usuário '$username' iniciar..."
+    while ! $(pgrep -u "$username" lxsession &>/dev/null); do
+        sleep 1
+    done
 
     log "Aguardando alguns segundos para a sessão do usuário '$username' carregar..."
     sleep 2
@@ -275,5 +247,44 @@ start_browser_for_user() {
     export DISPLAY=":$user_id"
     pkill -u "$username" firefox
     su - "$username" -c firefox &
+}
+
+# Inicia as sessões dos usuários em modo multiterminal
+start_multiseat_mode() {
+    # Desativa as configurações adicionais do Xorg, elas já estão incluídas nos arquivos
+    # gerados em /etc/X11/xorg*, mas se este arquivo existir a seção ServerLayout será afetada.
+    if [ -f '/usr/share/X11/xorg.conf.d/60-moodle-provas.conf' ]; then
+        rm '/usr/share/X11/xorg.conf.d/60-moodle-provas.conf'
+    fi  
+
+    # Desativa a opção de desligar e muda a mensagem
+    chmod u-s '/usr/bin/lxsession-logout'
+    sed -i 's/--prompt ".*"/--prompt "Multiterminal: Utilize o botão liga\/desliga do computador."/' "/usr/bin/lxde-logout"
+
+    create_user "${username_base}1" && log "Usuário ${username_base}1 criado."
+    create_user "${username_base}2" && log "Usuário ${username_base}2 criado."
+
+    usermod -a -G netdev ${username_base}1 >/dev/null 2>&1
+    usermod -a -G netdev ${username_base}2 >/dev/null 2>&1
+
+    lock_firefox_userchrome_file_for_user '1'
+    lock_firefox_userchrome_file_for_user '2'
+
+    seats=$(/opt/provas/multiseat/pre-setup.sh)
+    log "start_multiseat_mode() Retorno do pre-setup.sh: $seats"
+    log 'start_multiseat_mode() Iniciando o /opt/provas/multiseat/setup.py'
+    /usr/bin/env python /opt/provas/multiseat/setup.py "$seats" "$username_base"
+}
+
+# Inicia a sessão do usuário em modo normal, sem multiterminal
+start_normal_mode() {
+    # Cria o usuário e adiciona ao grupo de audio
+    create_user "${username_base}1" && log "Usuário ${username_base}1 criado."
+    usermod -a -G audio ${username_base}1 >/dev/null 2>&1
+    usermod -a -G netdev ${username_base}1 >/dev/null 2>&1
+
+    lock_firefox_userchrome_file_for_user '1' 
+
+    su - "${username_base}1" -c 'startx -- :1 -br -audit 0 -novtswitch -nolisten tcp' &
 }
 

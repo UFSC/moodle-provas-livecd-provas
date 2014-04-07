@@ -16,8 +16,11 @@ first_user_id='1'
 second_user_id='2'
 username="${username_base}1"
 
+# Configura o navegador de internet com a página inicial definida no arquivo de configuração.
 set_browser_homepage
-configure_session_for_user "$first_user_id"
+
+# Aguarda a sessão do usuário carregar (Xorg + Desktop)
+wait_session_load_for_user "$first_user_id"
 
 # Se não tiver iniciado via PXE e não tiver internet, exibe uma mensagem sobre a conexão de rede.
 if ! is_pxe_booted; then
@@ -56,13 +59,17 @@ else
     log 'O envio de logs não foi ativado no boot.'
 fi
 
-# Inicia o navegador na sessão do primeiro usuário
+log "Iniciando o navegador na sessão do primeiro usuário"
 start_browser_for_user "$first_user_id"
 
 log 'Verificando se o computador é um multiterminal...'
 if is_multiseat; then
     log 'O computador é um multiterminal, iniciando a configuração para o segundo usuário...'
-    configure_session_for_user "$second_user_id"
+
+    # Aguarda a sessão do usuário carregar (Xorg + Desktop)
+    wait_session_load_for_user "$second_user_id"
+
+    log "Iniciando o navegador na sessão do segundo usuário"
     start_browser_for_user "$second_user_id"
 else
     log 'O computador não é um multiterminal, nada mais a ser feito.'
