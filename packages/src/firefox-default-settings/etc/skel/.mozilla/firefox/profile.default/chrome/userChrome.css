@@ -1,8 +1,4 @@
-/* Remove completamente a barra de menus e o botão do menu reduzido caso
- * o menu normal esteja desativado. */
-#toolbar-menubar,
-#appmenu-toolbar-button
-    { display: none !important; }
+/* Versão compatível com o Firefox 29.0+ */
 
 /* Desativa o menu contextual da barra de ferramentas, pois através dele é
  * possível ativar a barra de menus novamente */
@@ -14,7 +10,11 @@
 #searchbar
     { display: none !important; }
 
-/* Desativa o botão de download e de home da barra de botões */
+/* Desativa o botão de download, de home, de favoritos e o botão principal de
+   opções da barra de botões */
 #nav-bar #downloads-button,
-#nav-bar #home-button
+#nav-bar #home-button,
+#nav-bar #bookmarks-menu-button,
+#nav-bar #PanelUI-menu-button
     { display: none !important; }
+
