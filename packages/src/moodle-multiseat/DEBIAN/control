@@ -1,5 +1,5 @@
 Package: moodle-multiseat
-Version: 2.0-2014040711
+Version: 2.0-2014050501
 Architecture: all
 Depends: gcc,
          grep,
@@ -15,7 +15,8 @@ Depends: gcc,
          python-yaml (>= 3.10),
          python-zmq (>= 2.1.11),
          sed,
-         sysvinit-utils
+         sysvinit-utils,
+         usbutils
 Priority: required
 Section: misc
 Maintainer: Admin Moodle UFSC <admin@moodle.ufsc.br>
