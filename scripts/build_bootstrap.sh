@@ -47,7 +47,7 @@ msg_d "$sub_prefix Baixando a nova base utilizando o debootstrap (pode demorar v
 sudo debootstrap --arch="$livecd_hw_arch" --include=dnsutils "$distro_codename" base >>"$std_out" 2>>"$std_err"
 
 msg_d "$sub_prefix Removendo o bootstrap antigo se existir..."
-rm -rf "base-${livecd_hw_arch}_"*".tar.gz"
+rm -rf "base-${distro_codename}-${livecd_hw_arch}_"*".tar.gz"
 cd 'base'
 
 msg_d "$sub_prefix Removendo arquivos desnecessários..."
