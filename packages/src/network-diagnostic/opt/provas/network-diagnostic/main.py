@@ -162,7 +162,7 @@ class MainWindow(Gtk.Window):
                 else:
                     row[0] = Gtk.STOCK_CANCEL
                     
-            except Exception, e:
+            except Exception:
                 print(traceback.format_exc())
                 
             self.__refresh_ui()

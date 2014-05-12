@@ -34,7 +34,7 @@ class NetworkTest():
     
     
     def has_network_iface(self):
-        cmd = "lspci | grep 'Ethernet' | wc -l"
+        cmd = "lspci | grep -e 'Ethernet' -e 'Network' | wc -l"
         status, output = self.run_command(cmd)
         
         if not status:
@@ -46,7 +46,7 @@ class NetworkTest():
     
     def get_ifaces(self):
         if self.has_network_iface():
-            cmd = "lspci | grep 'Ethernet'"
+            cmd = "lspci | grep -e 'Ethernet' -e 'Network'"
             return self.run_command(cmd)
         else:
             status = 1
