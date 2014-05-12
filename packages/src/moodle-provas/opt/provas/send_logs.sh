@@ -26,7 +26,8 @@ log 'Gravando a saída de alguns comandos...'
 ck-list-sessions >"$files_dir/cmd_ck-list-sessions.log" 2>&1
 ip a >"$files_dir/cmd_ip-a.log" 2>&1
 lspci >"$files_dir/cmd_lspci.log" 2>&1
-lspci -v >"$files_dir/cmd_lspci-v.log" 2>&1
+lspci -vvv >"$files_dir/cmd_lspci-vvv.log" 2>&1
+lspci -nn >"$files_dir/cmd_lspci-nn.log" 2>&1
 lsusb -t >"$files_dir/cmd_lsusb-t.log" 2>&1
 lsusb -v >"$files_dir/cmd_lsusb-v.log" 2>&1
 ps aux >"$files_dir/cmd_ps-aux.log" 2>&1
