@@ -171,7 +171,7 @@ send_logs() {
 # Configura a página inicial do navegador Mozilla Firefox.
 set_browser_homepage() {
     log 'Atualizando as configuração da página inicial do Firefox'
-    $SED -i "s|%homepage%|$provas_homepage|g" '/etc/firefox/syspref.js'
+    $SED -i "s|%homepage%|$provas_homepage|g" "$firefox_syspref"
 }
 
 # Configura o arquivo de autoconfig do navegador Mozilla Firefox.
