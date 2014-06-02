@@ -40,6 +40,11 @@ should_switch_vgas() {
     return $(cmdline_contains 'switch_vgas')
 }
 
+# Verifica se a opção de mostrar a tela de AGUARDE... foi ativada no boot
+should_show_wait_screen() {
+    return $(cmdline_contains 'wait_screen')
+}
+
 # Verifica se a conexão com a internet está funcionando
 is_internet_online() {
     if [ -z "$timeout_host_test" ] ||
@@ -270,10 +275,13 @@ start_multiseat_mode() {
     lock_firefox_userchrome_file_for_user '1'
     lock_firefox_userchrome_file_for_user '2'
 
+    # Define a variável show_wait_screen com 'yes' se a função retornar zero.
+    should_show_wait_screen && show_wait_screen='yes'
+
     seats=$(/opt/provas/multiseat/pre-setup.sh)
     log "start_multiseat_mode() Retorno do pre-setup.sh: $seats"
     log 'start_multiseat_mode() Iniciando o /opt/provas/multiseat/setup.py'
-    /usr/bin/env python /opt/provas/multiseat/setup.py "$seats" "$username_base"
+    /usr/bin/env python /opt/provas/multiseat/setup.py "$seats" "$username_base" "$show_wait_screen"
 }
 
 # Inicia a sessão do usuário em modo normal, sem multiterminal

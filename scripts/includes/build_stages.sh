@@ -238,13 +238,21 @@ make_bootmenu() {
     cp -r "$bootloader_dir/isolinux" "$dest_dir/"
 
     # Habilita as opções de multiterminal no menu de boot
-    if [ "$enable_multiseat" = "yes" ]; then
-        sed -i '/^## MULTITERMINAL/,+8 { /^## MULTITERMINAL/ b; s/^#//; }' "$dest_dir/isolinux/menu.cfg.utf-8"
+    if [ "$enable_multiseat" = 'yes' ]; then
+        if [ "$multiseat_enable_wait_screen" = 'yes' ]; then
+            sed -i '/^## MULTITERMINAL/,+16 { /^## MULTITERMINAL/ b; s/^#//; }' "$dest_dir/isolinux/menu.cfg.utf-8"
+        else
+            sed -i '/^## MULTITERMINAL/,+8 { /^## MULTITERMINAL/ b; s/^#//; }' "$dest_dir/isolinux/menu.cfg.utf-8"
+        fi
     fi
 
     # Habilita as opções de envio de logs no menu de boot.
-    if [ "$enable_send_logs" = "yes" ]; then
-        sed -i '/^## SEND_LOGS/,+12 { /^## SEND_LOGS/ b; s/^#//; }' "$dest_dir/isolinux/menu.cfg.utf-8"
+    if [ "$enable_send_logs" = 'yes' ]; then
+        if [ "$multiseat_enable_wait_screen" = 'yes' ]; then
+            sed -i '/^## SEND_LOGS/,+20 { /^## SEND_LOGS/ b; s/^#//; }' "$dest_dir/isolinux/menu.cfg.utf-8"
+        else
+            sed -i '/^## SEND_LOGS/,+12 { /^## SEND_LOGS/ b; s/^#//; }' "$dest_dir/isolinux/menu.cfg.utf-8"
+        fi
     fi
 
     kernel_version="$(get_kernel_version)"

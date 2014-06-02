@@ -4,7 +4,7 @@ include stdmenu.cfg
 # Mensagens mostradas na tela
 menu autoboot %MSG_TIMEOUT%
 menu notabmsg %MSG_BOTTOM%
-#menu title Moodle Provas 2.0
+#menu title Moodle Provas %PROVAS_VERSION%
 
 # Opção padrão
 default monoterminal
@@ -17,7 +17,7 @@ label monoterminal
   kernel /casper/vmlinuz
   append boot=casper initrd=/casper/initrd.lz --
 
-## MULTITERMINAL (8 linhas)
+## MULTITERMINAL (16 linhas)
 #label multiterminal1
 #  menu label Iniciar ^Moodle Provas %PROVAS_VERSION% [multiterminal 1]
 #  kernel /casper/vmlinuz
@@ -26,8 +26,17 @@ label monoterminal
 #  menu label Iniciar ^Moodle Provas %PROVAS_VERSION% [multiterminal 2]
 #  kernel /casper/vmlinuz
 #  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas
+#label multiterminal3
+#  menu label Iniciar ^Moodle Provas %PROVAS_VERSION% [multiterminal 3]
+#  kernel /casper/vmlinuz
+#  append boot=casper initrd=/casper/initrd.lz -- multiseat wait_screen
+#label multiterminal4
+#  menu label Iniciar ^Moodle Provas %PROVAS_VERSION% [multiterminal 4]
+#  kernel /casper/vmlinuz
+#  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas wait_screen
 
-## SEND_LOGS (12 linhas)
+
+## SEND_LOGS (20 linhas)
 #label sendlogs1
 #  menu label Enviar logs para diagnóstico
 #  kernel /casper/vmlinuz
@@ -40,6 +49,15 @@ label monoterminal
 #  menu label Enviar logs para diagnóstico [multiterminal 2]
 #  kernel /casper/vmlinuz
 #  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas send_logs
+#label sendlogs4
+#  menu label Enviar logs para diagnóstico [multiterminal 3]
+#  kernel /casper/vmlinuz
+#  append boot=casper initrd=/casper/initrd.lz -- multiseat wait_screen send_logs
+#label sendlogs5
+#  menu label Enviar logs para diagnóstico [multiterminal 4]
+#  kernel /casper/vmlinuz
+#  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas wait_screen send_logs
+
 
 ## CHECK_DISK (4 linhas)
 label check
