@@ -13,7 +13,12 @@ $CHMOD 600 '/opt/provas/multiseat/logging.yaml'
 $CHMOD 700 '/opt/provas/multiseat/pre-setup.sh'
 $CHMOD 700 '/opt/provas/multiseat/setup.py'
 
-$CHMOD -R 700 '/opt/provas/multiseat/includes'
-$CHMOD -R 700 '/opt/provas/multiseat/scripts'
-$CHMOD -R 700 '/opt/provas/multiseat/templates'
-$CHMOD -R 700 '/opt/provas/multiseat/ui'
+$CHMOD 700 '/opt/provas/multiseat/includes'
+$CHMOD 700 '/opt/provas/multiseat/scripts'
+$CHMOD 700 '/opt/provas/multiseat/templates'
+$CHMOD 700 '/opt/provas/multiseat/ui'
+
+$CHMOD 600 '/opt/provas/multiseat/includes/'*
+$CHMOD 600 '/opt/provas/multiseat/templates/'*
+$CHMOD 600 '/opt/provas/multiseat/templates/'*
+$CHMOD 600 '/opt/provas/multiseat/ui/'*
