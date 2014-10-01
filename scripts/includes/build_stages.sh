@@ -300,7 +300,7 @@ make_bootmenu() {
     rm "$dest_dir/isolinux/pt_BR.hlp.utf-8"
 }
 
-# Gera o novo SquashFS, juntamento com outros arquivos necessários para o seu funcionamento.
+# Gera o novo SquashFS, juntamente com os outros arquivos necessários para o seu funcionamento.
 make_squashfs() {
     if ! is_root_fs_valid; then
         return
