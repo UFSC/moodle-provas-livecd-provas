@@ -1,5 +1,5 @@
 Package: firefox-default-settings
-Version: 2.0-2014060204
+Version: 2.0-2014100102
 Architecture: all
 Depends: firefox (>= 21.0),
          firefox-locale-pt (>= 21.0),

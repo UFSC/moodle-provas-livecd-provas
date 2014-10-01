@@ -1,5 +1,5 @@
 Package: moodle-multiseat
-Version: 2.0-2014060204
+Version: 2.0-2014100102
 Architecture: all
 Depends: gcc,
          grep,
