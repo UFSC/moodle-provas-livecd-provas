@@ -55,6 +55,7 @@ EndSection
 
 Section "Device"
     Identifier  "Card__SEAT_ID__"
+#    Driver      "nouveau"
     BusID       "__BUSID__"
     Screen      0
     Option "NoLogo" "true"
@@ -65,6 +66,7 @@ Section "Screen"
     Identifier "Screen__SEAT_ID__"
     Device     "Card__SEAT_ID__"
     Monitor    "Monitor__SEAT_ID__"
+    DefaultDepth 24
     SubSection "Display"
         Viewport   0 0
         Depth     24
