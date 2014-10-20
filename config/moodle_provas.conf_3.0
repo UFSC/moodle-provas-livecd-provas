@@ -14,10 +14,10 @@ provas_dir="/opt/provas"
 institution_name='Universidade Federal de Santa Catarina'
 
 # Versão do LiveCD do Moodle Provas
-provas_version="2.0"
+provas_version="3.0"
 
 # Endereço do host onde está hospedado o Moodle Provas.
-provas_host='provas2.moodle.ufsc.br'
+provas_host='provas3.moodle.ufsc.br'
 
 # Endereço IP do servidor do moodle provas (para ser liberado no firewall)
 provas_host_ip=$(dig $provas_host a +short | tail -n1)
@@ -26,7 +26,7 @@ provas_host_ip=$(dig $provas_host a +short | tail -n1)
 provas_homepage="https://${provas_host}"
 
 # URL completa do script que recebe os dados enviados pelo '/opt/provas/cron_script.sh';
-provas_receive_data_url="${provas_homepage}/local/provas_access_key/receive_data.php"
+provas_receive_data_url="${provas_homepage}/local/exam_authorization/receive_data.php"
 
 # Nome base que os usuários criados no sistema terão, por exemplo se o 'username_base'
 # for 'kiosk', o primeiro usuário criado será 'kiosk1' e o segundo será 'kiosk2'.
