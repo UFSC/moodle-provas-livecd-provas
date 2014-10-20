@@ -17,7 +17,7 @@ local e sites que não sejam o próprio site do Moodle provas.
     Inicia o sistema de provas nos dois terminais de um computador que
     suporte multiterminal, caso o computador não suporte multiterminal,
     apenas um monitor do computador ficará ativo.
-    * OBS: Utilize a opção [multiterminal 2] caso a primeira não funcione.
+     * OBS: Utilize a opção [multiterminal 2] caso a primeira não funcione.
  02* Verificar erros no CD07
     Verifica se o CD contêm erros de leitura que podem prejudicar a
     inicialização e o funcionamento do sistema de provas.

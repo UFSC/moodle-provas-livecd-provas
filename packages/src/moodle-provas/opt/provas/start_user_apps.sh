@@ -16,6 +16,9 @@ first_user_id='1'
 second_user_id='2'
 username="${username_base}1"
 
+# Configura os servidores NTP do computador, para sincronizar o horário do computador.
+set_ntp_servers
+
 # Configura o navegador de internet com a página inicial definida no arquivo de configuração.
 set_browser_homepage
 

@@ -11,56 +11,54 @@ default monoterminal
 
 # Opções do menu
 
-## MONOTERMINAL (4 linhas)
+#####################################################################################
+#  OBSERVAÇÃO IMPORTANTE: O título de cada seção do menu é utilizado pela função    #
+#  make_bootmenu() no arquivo scripts/includes/build_stages.sh, incluíndo o número  #
+#  de linhas, portanto ambos devem ser mantidos no formato em que estão e o número  #
+#  de linhas deve ser atualizado sempre que ele mudar.                              #
+#####################################################################################
+
+## MONOTERMINAL - 4 linhas
 label monoterminal
-  menu label ^Iniciar Moodle Provas %PROVAS_VERSION%
+  menu label Iniciar Moodle Provas %PROVAS_VERSION%
   kernel /casper/vmlinuz
   append boot=casper initrd=/casper/initrd.lz --
 
-## MULTITERMINAL (16 linhas)
+
+## MULTITERMINAL - 8 linhas
 #label multiterminal1
-#  menu label Iniciar ^Moodle Provas %PROVAS_VERSION% [multiterminal 1]
+#  menu label Iniciar Moodle Provas %PROVAS_VERSION% [Multiterminal 1]
 #  kernel /casper/vmlinuz
 #  append boot=casper initrd=/casper/initrd.lz -- multiseat
 #label multiterminal2
-#  menu label Iniciar ^Moodle Provas %PROVAS_VERSION% [multiterminal 2]
+#  menu label Iniciar Moodle Provas %PROVAS_VERSION% [Multiterminal 2]
 #  kernel /casper/vmlinuz
 #  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas
-#label multiterminal3
-#  menu label Iniciar ^Moodle Provas %PROVAS_VERSION% [multiterminal 3]
-#  kernel /casper/vmlinuz
-#  append boot=casper initrd=/casper/initrd.lz -- multiseat wait_screen
-#label multiterminal4
-#  menu label Iniciar ^Moodle Provas %PROVAS_VERSION% [multiterminal 4]
-#  kernel /casper/vmlinuz
-#  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas wait_screen
 
 
-## SEND_LOGS (20 linhas)
+## SEND_LOGS - 12 linhas
 #label sendlogs1
 #  menu label Enviar logs para diagnóstico
 #  kernel /casper/vmlinuz
 #  append boot=casper initrd=/casper/initrd.lz -- send_logs
 #label sendlogs2
-#  menu label Enviar logs para diagnóstico [multiterminal 1]
+#  menu label Enviar logs para diagnóstico [Multiterminal 1]
 #  kernel /casper/vmlinuz
 #  append boot=casper initrd=/casper/initrd.lz -- multiseat send_logs
 #label sendlogs3
-#  menu label Enviar logs para diagnóstico [multiterminal 2]
+#  menu label Enviar logs para diagnóstico [Multiterminal 2]
 #  kernel /casper/vmlinuz
 #  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas send_logs
-#label sendlogs4
-#  menu label Enviar logs para diagnóstico [multiterminal 3]
-#  kernel /casper/vmlinuz
-#  append boot=casper initrd=/casper/initrd.lz -- multiseat wait_screen send_logs
-#label sendlogs5
-#  menu label Enviar logs para diagnóstico [multiterminal 4]
-#  kernel /casper/vmlinuz
-#  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas wait_screen send_logs
 
 
-## CHECK_DISK (4 linhas)
+## CHECK_DISK - 4 linhas
 label check
-  menu label ^Verificar defeitos no CD
+  menu label Verificar defeitos no CD
   kernel /casper/vmlinuz
   append boot=casper integrity-check initrd=/casper/initrd.lz -- splash
+
+
+## MEMTEST - 3 linhas
+#label memtest
+#  menu label Verificar a memória do computador
+#  kernel /memtest/mt86plus

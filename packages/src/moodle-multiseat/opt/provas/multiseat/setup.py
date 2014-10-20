@@ -272,7 +272,7 @@ if __name__ == "__main__":
     log = initLogging()
     log.info("================ Multiseat wizard started ================ ")
 
-    qtdParams = 4
+    qtdParams = 3
     if len(sys.argv) != qtdParams:
         log.error("Error: Invalid number of parameters, takes: %d, given: %d." % (qtdParams, len(sys.argv)))
         sys.exit(1)
@@ -286,7 +286,6 @@ if __name__ == "__main__":
 
     vgaBusIds = [args[1], args[2]]
     username_base = sys.argv[2]
-    multiseat_enable_wait_screen = sys.argv[3]
 
     ui = {}
 
@@ -298,15 +297,9 @@ if __name__ == "__main__":
 
     log.info("Seats : %d", seats)
 
-    if multiseat_enable_wait_screen == 'yes':
-        for seat in range(1, seats + 1):
-            log.info('Initializing seat%s', seat)
-            initializeConfigSeat(seat)
-
     for seat in range(1, seats + 1):
-        if multiseat_enable_wait_screen != 'yes':
-            log.info('Initializing seat%s', seat)
-            initializeConfigSeat(seat)
+        log.info('Initializing seat%s', seat)
+        initializeConfigSeat(seat)
 
         seatStr = 'seat' + str(seat)
 

@@ -12,6 +12,31 @@ log() {
     echo "${date:0:23} $log_msg" >> $log_file_multiseat
 }
 
+# Converte os valores em Hexadecimal para Decimal e imprime na saída padrão o BusId desejado.
+# Só é compatível com o mawk, não é compatível com o gawk.
+bus_id_hex2dec() {
+    bus_id="$1"
+    echo "$bus_id" | mawk -F: '{ p1 = "0x" $1;
+                                 p2 = "0x" $2;
+                                 p3 = "0x" $3;
+                                 printf "PCI:%d:%d:%d\n", p1, p2, p3;
+                               }'
+}
+
+# Obtem o BusId da placa de vídeo Silicon Motion SM750, presente nos multiterminais
+# do Pregão 23/2012, ela é uma placa da Thin Networks, modelo TN-750 - http://www.thinnetworks.com.br/?page_id=1153
+# Se a placa não existir no sistema, retorna uma string vazia.
+get_sm750_bus_id() {
+    # '126f:0750' é o 'PCI vendor' e o 'device code' da placa de vídeo:
+    # VGA compatible controller [0300]: Silicon Motion, Inc. Device [126f:0750] (rev a1)
+    if lspci -nn | grep '126f:0750' >/dev/null 2>&1; then
+        bus_id=$(lspci -nn | grep '126f:0750' | cut -d ' ' -f 1 | sed -n '1p' | tr '.' ':')
+        bus_id_hex2dec "$bus_id"
+    else
+        echo ''
+    fi
+}
+
 # Retorna a quantidade de placas de vídeo detectadas, requer o comando 'lspci'.
 get_qtd_vgas() {
     # Algumas placas de vídeo são identificadas como 'VGA' e outras como 'Display'.
@@ -61,13 +86,7 @@ get_vga_bus_id() {
         return
     fi
 
-    # Converte os valores em Hexadecimal para Decimal e imprime na saída padrão o BusId desejado.
-    # Só é compatível com o mawk, não é compatível com o gawk.
-    echo "$bus_id" | mawk -F: '{ p1 = "0x" $1;
-                                p2 = "0x" $2;
-                                p3 = "0x" $3;
-                                printf "PCI:%d:%d:%d\n", p1, p2, p3;
-                              }'
+    bus_id_hex2dec "$bus_id"
 }
 
 # Esta função substitui o BusId e o ID do seat no arquivo padrão do Xorg.
@@ -99,6 +118,7 @@ make_xorg_config() {
     files='xorg-seat#.conf.tpl xorg-config#.conf.tpl'
     X11_dir='/etc/X11'
     templates_dir="$provas_dir/multiseat/templates"
+    sm750=$(get_sm750_bus_id)
 
     # Para cada arquivo modelo, cria uma cópia em /etc/X11 e altera os parâmetros necessários.
     for file in $files; do
@@ -112,6 +132,19 @@ make_xorg_config() {
             cp "$templates_dir/$file" "$X11_dir/$new_file"
             sed -i "s/__BUSID__/$bus_id/g" "$X11_dir/$new_file"
             sed -i "s/__SEAT_ID__/$seat/g" "$X11_dir/$new_file"
+
+            ##################################################################################################
+            # Fix para placas de vídeo Silicon Motion SM750 utilizadas nos Multiterminais do Pregão 23/2012. #
+            ##################################################################################################
+            # Se $sm750 não está vazia, é porque existe uma placa com o Chip SM750 no sistema, então se o BusId
+            # dela for igual ao que está em teste, o xorg.conf deve ser gerado com a diretiva 'Driver "siliconmotion"',
+            # para o driver dela ser carregado, pois o Xorg não consegue identificar a placa e carregar o driver certo.
+            if [ -n "$sm750" ] && [ "$bus_id" = "$sm750" ]; then
+                log "make_xorg_config() FIX-SM750: Ativando o driver 'siliconmotion' para a placa com BusID $bus_id no $new_file"
+                sed -i 's/.*Driver.*__VGA_DRIVER__.*/    Driver "siliconmotion"/g' "$X11_dir/$new_file"
+            fi
+            ##################################################################################################
+            
             log "make_xorg_config() Arquivo '$X11_dir/$new_file' gerado."
         else
             log "make_xorg_config() ERRO: O arquivo '$templates_dir/$file' não existe!"

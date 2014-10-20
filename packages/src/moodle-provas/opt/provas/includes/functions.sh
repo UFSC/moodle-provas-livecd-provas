@@ -40,11 +40,6 @@ should_switch_vgas() {
     return $(cmdline_contains 'switch_vgas')
 }
 
-# Verifica se a opção de mostrar a tela de AGUARDE... foi ativada no boot
-should_show_wait_screen() {
-    return $(cmdline_contains 'wait_screen')
-}
-
 # Verifica se a conexão com a internet está funcionando
 is_internet_online() {
     if [ -z "$timeout_host_test" ] ||
@@ -188,7 +183,6 @@ configure_browser() {
     cp "$firefox_bin/$firefox_autoconfig.tpl" "$firefox_bin/$firefox_autoconfig"
 
     log "Atualizando as configurações do autoconfig do Firefox"
-    $SED -i "s|%provas_host%|$provas_host|g" "$firefox_bin/$firefox_autoconfig"
     $SED -i "s|%provas_version%|$provas_version|g" "$firefox_bin/$firefox_autoconfig"
     $SED -i "s|%local_ip%|$local_ip|g" "$firefox_bin/$firefox_autoconfig"
     $SED -i "s|%local_network%|$local_network|g" "$firefox_bin/$firefox_autoconfig"
@@ -275,13 +269,10 @@ start_multiseat_mode() {
     lock_firefox_userchrome_file_for_user '1'
     lock_firefox_userchrome_file_for_user '2'
 
-    # Define a variável show_wait_screen com 'yes' se a função retornar zero.
-    should_show_wait_screen && show_wait_screen='yes'
-
     seats=$(/opt/provas/multiseat/pre-setup.sh)
     log "start_multiseat_mode() Retorno do pre-setup.sh: $seats"
     log 'start_multiseat_mode() Iniciando o /opt/provas/multiseat/setup.py'
-    /usr/bin/env python /opt/provas/multiseat/setup.py "$seats" "$username_base" "$show_wait_screen"
+    /usr/bin/env python /opt/provas/multiseat/setup.py "$seats" "$username_base"
 }
 
 # Inicia a sessão do usuário em modo normal, sem multiterminal
@@ -296,3 +287,13 @@ start_normal_mode() {
     su - "${username_base}1" -c 'startx -- :1 -br -audit 0 -novtswitch -nolisten tcp' &
 }
 
+set_ntp_servers() {
+    if [ -e '/etc/default/ntpdate' ]; then
+        log "Definindo os novos servidores NTP no arquivo /etc/default/ntpdate: $ntp_servers"
+        sed -i "s|NTPSERVERS=.*|NTPSERVERS=\"$ntp_servers\"|g" /etc/default/ntpdate
+
+        ntpdate-debian &
+    else
+        log 'ERRO: O arquivo /etc/default/ntpdate não pode ser lido.'
+    fi
+}

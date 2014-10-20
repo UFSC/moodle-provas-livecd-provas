@@ -103,6 +103,8 @@ prepare_files() {
     make_config_pkg
     sudo cp "$pkgs_built_dir/"*"all.deb" "$root_fs/tmp/"
     sudo cp "$pkgs_built_dir/"*"$livecd_hw_arch.deb" "$root_fs/tmp/"
+
+    sudo cp -R "$pkgs_src_3rd_dir/siliconmotion_4.0.11" "$root_fs/tmp/"
 }
 
 
@@ -179,6 +181,7 @@ chroot_upgrade() {
     make_resolv_conf "$root_fs/etc"
     make_config_pkg
     sudo cp "$pkgs_built_dir/"*'.deb' "$root_fs/tmp/"
+    sudo cp -R "$pkgs_src_3rd_dir/siliconmotion_4.0.11" "$root_fs/tmp/"
 
     chroot_run_script "upgrade_packages.sh"
 }
@@ -239,20 +242,24 @@ make_bootmenu() {
 
     # Habilita as opções de multiterminal no menu de boot
     if [ "$enable_multiseat" = 'yes' ]; then
-        if [ "$multiseat_enable_wait_screen" = 'yes' ]; then
-            sed -i '/^## MULTITERMINAL/,+16 { /^## MULTITERMINAL/ b; s/^#//; }' "$dest_dir/isolinux/menu.cfg.utf-8"
-        else
-            sed -i '/^## MULTITERMINAL/,+8 { /^## MULTITERMINAL/ b; s/^#//; }' "$dest_dir/isolinux/menu.cfg.utf-8"
-        fi
+        line_count=$(grep '## MULTITERMINAL' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
+        sed -i "/^## MULTITERMINAL/,+$line_count { /^## MULTITERMINAL/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
     fi
 
     # Habilita as opções de envio de logs no menu de boot.
     if [ "$enable_send_logs" = 'yes' ]; then
-        if [ "$multiseat_enable_wait_screen" = 'yes' ]; then
-            sed -i '/^## SEND_LOGS/,+20 { /^## SEND_LOGS/ b; s/^#//; }' "$dest_dir/isolinux/menu.cfg.utf-8"
-        else
-            sed -i '/^## SEND_LOGS/,+12 { /^## SEND_LOGS/ b; s/^#//; }' "$dest_dir/isolinux/menu.cfg.utf-8"
-        fi
+        line_count=$(grep '## SEND_LOGS' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
+        sed -i "/^## SEND_LOGS/,+$line_count { /^## SEND_LOGS/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
+    fi
+
+    # Habilita o memtest no menu de boot.
+    if [ "$enable_memtest" = 'yes' ]; then
+        mkdir "$dest_dir/memtest"
+        cp '/boot/memtest86+.bin' "$dest_dir/memtest/mt86plus" ||
+            msg_e "$sub_prefix ERRO: O arquivo do 'memtest' não existe no caminho: /boot/memtest86+.bin"
+
+        line_count=$(grep '## MEMTEST' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
+        sed -i "/^## MEMTEST/,+$line_count { /^## MEMTEST/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
     fi
 
     kernel_version="$(get_kernel_version)"

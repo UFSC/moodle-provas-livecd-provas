@@ -27,7 +27,7 @@ EndSection
 
 Section "Device"
     Identifier  "Card__SEAT_ID__"
-#    Driver      "nouveau"
+#    Driver      "__VGA_DRIVER__"
     BusID       "__BUSID__"
     Screen      0
     Option "NoLogo" "true"
