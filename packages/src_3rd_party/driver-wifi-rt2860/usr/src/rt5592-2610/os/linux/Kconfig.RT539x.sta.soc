@@ -1,0 +1,38 @@
+config RT5390_STA
+	tristate "Ralink RT5390 802.11n STA support"
+	select WIRELESS_EXT
+	select WEXT_PRIV
+	
+config  RT5390_STA_WSC
+	bool "WSC (WiFi Simple Config)"
+	depends on RT5390_STA
+
+config  RT5390_STA_LLTD
+	bool "LLTD (Link Layer Topology Discovery Protocol)"
+	depends on RT5390_STA
+
+config  RT5390_STA_NETIF_BLOCK
+	bool "NETIF Block"
+	depends on RT5390_STA
+	help
+	Support Net interface block while Tx-Sw queue full
+
+config  RT5390_STA_DLS
+	bool "DLS ((Direct-Link Setup) Support"
+	depends on RT5390_STA
+
+config  RT5390_80211N_DRAFT3
+	bool "802.11n Draft3"
+	depends on RT5390_STA
+
+config  RT5390_AUTO_PROVISION
+	bool "Auto Provision"
+	depends on RT5390_STA
+
+config  RT5390_STA_ETH_CONVERT
+	bool "Ethernet Convert"
+	depends on RT5390_STA
+
+config  RT5390_STA_P2P
+	bool "WiFi Direct"
+	depends on RT5390_STA
