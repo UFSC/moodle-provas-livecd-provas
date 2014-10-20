@@ -1,0 +1,8 @@
+#!/bin/bash
+#set -x
+
+DIVERT="/usr/bin/dpkg-divert"
+
+rm -f "/usr/lib/xorg/modules/drivers/siliconmotion_drv.so"
+$DIVERT --remove --rename "/usr/lib/xorg/modules/drivers/siliconmotion_drv.so"
+

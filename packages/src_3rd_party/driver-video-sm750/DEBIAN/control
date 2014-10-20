@@ -1,0 +1,8 @@
+Package: driver-video-sm750
+Version: 4.0.11-2014100101
+Maintainer: Admin Moodle UFSC <admin@moodle.ufsc.br>
+Architecture: i386
+Section: main
+Priority: important
+Depends: xserver-xorg-lts-saucy
+Description: Driver para placa de vídeo TN-750 com chipset Silicon Motion SM750, para os computadores do "Pregão 23/2012", ele foi compilado a partir da versão 4.0.11 do driver fornecido via e-mail pelo fabricante do chip.
