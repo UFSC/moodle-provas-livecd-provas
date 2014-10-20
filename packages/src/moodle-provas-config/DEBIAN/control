@@ -1,5 +1,5 @@
 Package: moodle-provas-config
-Version: 2.0-2014100102
+Version: 2.0-2014101606
 Architecture: all
 Depends: moodle-provas (>= 2.0)
 Priority: required
