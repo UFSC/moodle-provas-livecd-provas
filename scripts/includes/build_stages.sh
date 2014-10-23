@@ -103,8 +103,6 @@ prepare_files() {
     make_config_pkg
     sudo cp "$pkgs_built_dir/"*"all.deb" "$root_fs/tmp/"
     sudo cp "$pkgs_built_dir/"*"$livecd_hw_arch.deb" "$root_fs/tmp/"
-
-    sudo cp -R "$pkgs_src_3rd_dir/siliconmotion_4.0.11" "$root_fs/tmp/"
 }
 
 

@@ -1,3 +1,0 @@
-ddk502_os.lo: ddk502_os.c ddk502_os.h
-
-ddk502_os.h:

@@ -1,9 +1,0 @@
-I.  Install Procedures:
-
-    1.  run "sh ./autogen.sh"
-    2.  For 32bit OS: run "./configure -prefix=/usr"
-        For 64bit OS: run "./configure -libdir=/usr/lib64"
-        For disable xrandr functions: "./configure --disable-smirandr"
-				For enable xrandr functions: "./configure --enable-smirandr" or "./configure" 
-    3.  make install
-   4	
