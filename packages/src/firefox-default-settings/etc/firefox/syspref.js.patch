@@ -1,5 +1,5 @@
---- syspref.js.orig	2013-04-29 10:33:32.506497429 -0300
-+++ syspref.js.modif	2013-05-29 08:54:14.914270222 -0300
+--- syspref.js.orig	2014-03-12 11:31:41.960054153 -0300
++++ syspref.js.modif	2015-01-20 15:39:57.222154725 -0200
 @@ -2,3 +2,55 @@
  // Example: Homepage
  //pref("browser.startup.homepage", "http://www.weebls-stuff.com/wab/");
@@ -18,8 +18,8 @@
 +// Desativa a restauração das abas abertas em caso de crash
 +lockPref("browser.sessionstore.resume_from_crash", false);
 +
-+// Página inicial, o valor %homepage% deve ser alterado via script
-+lockPref("browser.startup.homepage", "%homepage%");
++// Página inicial, o valor "about:blank" deve ser alterado via script
++lockPref("browser.startup.homepage", "about:blank");
 +
 +// Não redireciona para a página definida em homepage override URL
 +lockPref("browser.startup.homepage_override.mstone", "ignore");
