@@ -22,7 +22,7 @@ local e sites que não sejam o próprio site do Moodle provas.
     Verifica se o CD contêm erros de leitura que podem prejudicar a
     inicialização e o funcionamento do sistema de provas.
 
-03Instituição:07 %INSTITUTION_NAME%
 03Versão do kernel Linux:07 %KERNEL_VERSION% (%HARDWARE_ARCH%)
+
 
 0ePressione qualquer tecla para voltar ao menu anterior.07

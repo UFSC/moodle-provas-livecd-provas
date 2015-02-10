@@ -275,7 +275,6 @@ make_bootmenu() {
 
     sed -i "s/%PROVAS_VERSION%/$provas_version/g" "$dest_dir/isolinux/pt_BR.hlp.utf-8"
     sed -i "s/%BUILD_DATE%/$build_date/g" "$dest_dir/isolinux/pt_BR.hlp.utf-8"
-    sed -i "s/%INSTITUTION_NAME%/$institution_name/g" "$dest_dir/isolinux/pt_BR.hlp.utf-8"
     sed -i "s/%HARDWARE_ARCH%/$livecd_hw_arch/g" "$dest_dir/isolinux/pt_BR.hlp.utf-8"
 
     if [ ! -z "$kernel_version" ]; then
