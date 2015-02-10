@@ -1,19 +1,19 @@
 Package: moodle-multiseat
-Version: 2.0-2014101606
+Version: 3.1-2015020908
 Architecture: all
 Depends: gcc,
          grep,
          mawk,
-         moodle-provas (>= 2.0),
+         moodle-provas,
          pciutils,
          pulseaudio,
          pulseaudio-utils,
-         python2.7 (>= 2.7.3),
-         python2.7-dev (>= 2.7.3),
-         python-gi (>= 3.2.2),
-         python-pip (>= 1.0),
-         python-yaml (>= 3.10),
-         python-zmq (>= 2.1.11),
+         python2.7,
+         python2.7-dev,
+         python-gi,
+         python-pip,
+         python-yaml,
+         python-zmq,
          sed,
          sysvinit-utils,
          usbutils

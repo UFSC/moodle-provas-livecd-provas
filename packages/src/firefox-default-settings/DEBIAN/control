@@ -1,8 +1,8 @@
 Package: firefox-default-settings
-Version: 2.0-2014101606
+Version: 3.1-2015020908
 Architecture: all
-Depends: firefox (>= 21.0),
-         firefox-locale-pt (>= 21.0),
+Depends: firefox,
+         firefox-locale-pt,
          flashplugin-installer
 Priority: required
 Section: misc
