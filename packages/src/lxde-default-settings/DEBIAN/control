@@ -1,5 +1,5 @@
 Package: lxde-default-settings
-Version: 3.1-2015020908
+Version: 3.1-2015021102
 Architecture: all
 Depends: dmz-cursor-theme,
          gtk2-engines,

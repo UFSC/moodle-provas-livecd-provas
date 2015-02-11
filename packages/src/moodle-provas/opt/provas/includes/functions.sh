@@ -188,19 +188,50 @@ configure_browser() {
     $SED -i "s|%local_network%|$local_network|g" "$firefox_bin/$firefox_autoconfig"
 }
 
+configure_firewall_ipv4() {
+    for entry in $allowed_out_ipv4; do
+        protocol="${entry/*:/}"
+        ip_port="${entry%:*}"
+        ip="${ip_port%:*}"
+        port="${ip_port#*:}"
+
+        log "Liberando o acesso ao IP $ip na PORTA $port com o protocolo $protocol"
+        $IPTABLES -A OUTPUT -d "$ip" -p "$protocol" --dport "$port" -j ACCEPT >>"$log_file_provas" 2>&1
+    done
+}
+
+#configure_firewall_ipv4() {
+#    # Libera o acesso aos IPs via HTTP (porta 80)
+#    for ip in $allowed_ipv4_http; do
+#        log "Liberando o acesso via HTTP para o IP $ip"
+#        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 80 -j ACCEPT >>"$log_file_provas" 2>&1
+#    done
+#
+#    # Libera o acesso aos IPs via HTTPS (porta 443)
+#    for ip in $allowed_ipv4_https; do
+#        log "Liberando o acesso via HTTPS para o IP $ip"
+#        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 443 -j ACCEPT >>"$log_file_provas" 2>&1
+#    done
+#}
+
+#configure_firewall_ipv6() {
+#    # Libera o acesso aos IPs via HTTP (porta 80)
+#    for ip in $allowed_ipv6_http; do
+#        log "Liberando o acesso via HTTP para o IP $ip"
+#        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 80 -j ACCEPT >>"$log_file_provas" 2>&1
+#    done
+#
+#    # Libera o acesso aos IPs via HTTPS (porta 443)
+#    for ip in $allowed_ipv6_https; do
+#        log "Liberando o acesso via HTTPS para o IP $ip"
+#        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 443 -j ACCEPT >>"$log_file_provas" 2>&1
+#    done
+#}
+
 # Libera o acesso via HTTP e HTTPS aos IPs definidos no arquivo de configuração e salva as regras atualizadas.
 configure_firewall() {
-    # Libera o acesso aos IPs via HTTP (porta 80)
-    for ip in $allowed_ips_http; do
-        log "Liberando o acesso via HTTP para o IP $ip"
-        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 80 -j ACCEPT >>"$log_file_provas" 2>&1
-    done
-
-    # Libera o acesso aos IPs via HTTPS (porta 443)
-    for ip in $allowed_ips_https; do
-        log "Liberando o acesso via HTTPS para o IP $ip"
-        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 443 -j ACCEPT >>"$log_file_provas" 2>&1
-    done
+    configure_firewall_ipv4
+#    configure_firewall_ipv6
 
     log "Salvando as regras do firewall atualizadas"
     /etc/init.d/iptables-persistent save

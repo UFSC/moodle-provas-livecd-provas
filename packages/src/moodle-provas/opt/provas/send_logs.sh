@@ -1,4 +1,5 @@
 #!/bin/bash
+#set -x
 
 provas_config='/opt/provas/moodle_provas.conf'
 [ -r "$provas_config" ] && source "$provas_config" || exit 1

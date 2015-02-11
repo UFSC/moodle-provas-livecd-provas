@@ -73,9 +73,12 @@ make_config_pkg() {
     msg_d "$sub_prefix Copiando o arquivo de configuração interno do LiveCD..."
     cp -f "$provas_config_build" "$working_dir/moodle-provas-config/opt/provas/moodle_provas.conf"
 
+    msd_d "$sub_prefix Atualizando a data de geração no arquivo de configuração..."
+    sed -i "s/%BUILD_DATE%/$build_date/g" "$working_dir/moodle-provas-config/opt/provas/moodle_provas.conf"
+
     msg_d "$sub_prefix Gerando o novo pacote do 'moodle-provas-config'..."
     build_debian_pkg "true" "$working_dir/moodle-provas-config" "$pkgs_built_dir"
-    
+ 
     msg_d "$sub_prefix Removendo os arquivos temporários do 'moodle-provas-config'..."
     rm -rf "$working_dir/moodle-provas-config"
 }

@@ -1,4 +1,5 @@
 #!/bin/bash
+#set -x
 
 provas_config='/opt/provas/moodle_provas.conf'
 [ -r "$provas_config" ] && source "$provas_config" || exit 1
@@ -16,11 +17,6 @@ first_user_id='1'
 second_user_id='2'
 username="${username_base}1"
 
-# Configura os servidores NTP do computador, para sincronizar o horário do computador.
-set_ntp_servers
-
-# Configura o navegador de internet com a página inicial definida no arquivo de configuração.
-set_browser_homepage
 
 # Aguarda a sessão do usuário carregar (Xorg + Desktop)
 wait_session_load_for_user "$first_user_id"
@@ -40,6 +36,32 @@ if ! is_pxe_booted; then
     log "A internet está funcionando, recarregando as variáveis 'local_ip' e 'local_network'."
     source "$provas_config"
 fi
+
+log "Liberando o acesso HTTP e HTTPS ao servidor de configuração"
+$IPTABLES -A OUTPUT -d "$online_config_host_ip" -p tcp --dport 80 -j ACCEPT
+$IPTABLES -A OUTPUT -d "$online_config_host_ip" -p tcp --dport 443 -j ACCEPT
+
+log "Iniciando o programa de configuração online"
+export LANG="pt_BR.UTF-8"
+export XAUTHORITY="/home/$username/.Xauthority"
+export DISPLAY=":$first_user_id"
+"$provas_dir/online_update.py" "$provas_config" >$provas_log_dir/online_update.log 2>&1
+if [ $? -eq 0 ]; then
+    source "$provas_online_config"
+else
+    exit 1
+fi
+
+if [ "$show_institution_name_in_desktop" = "yes" ]; then
+    log "Atualizando o papel de parede com o nome da instituição"
+    "$provas_dir/update_desktop_wallpaper.sh" 2 'yes' >$provas_log_dir/update_desktop_wallpaper.log 2>&1 &
+fi
+
+# Configura os servidores NTP do computador, para sincronizar o horário do computador.
+set_ntp_servers
+
+# Configura o navegador de internet com a página inicial definida no arquivo de configuração.
+set_browser_homepage
 
 # A configuração do autoconfig do Firefox só pode ser feita após a conexão com a internet estar funcionando.
 log 'Configurando o navegador Mozilla Firefox...'
