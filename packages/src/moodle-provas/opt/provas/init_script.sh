@@ -46,6 +46,6 @@ fi
 
 # O script abaixo deve ser executado em background para não bloquear a inicialização
 # do sistema, é por isso também que ele é um arquivo separado e não parte deste script.
-log 'Iniciando o script /opt/provas/start_user_apps.sh em background'
+log 'Iniciando o script $provas_dir/start_user_apps.sh em background'
 "$provas_dir/start_user_apps.sh" >$provas_log_dir/start_user_apps.log 2>&1 &
 

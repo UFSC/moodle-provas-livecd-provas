@@ -50,7 +50,7 @@ wallpaper_out="$wallpaper_in"
 
 # Adiciona a versão do Moodle Provas ao papel de parede
 if [ "$order" = "1" ] || [ "$order" = "3" ]; then
-    text="Moodle Provas $provas_version Build $provas_build"
+    text="Moodle Provas LiveCD $provas_version Build $provas_build"
     font_size='18'
     font_color='white'
     #font_name='Helvetica'

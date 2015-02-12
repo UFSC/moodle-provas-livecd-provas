@@ -4,48 +4,30 @@
 import os
 import sys
 import traceback
-from gi.repository import Gtk
-import subprocess
 from urllib.request import urlopen
 import json
+
+from gi.repository import Gtk
+
 from includes.provas_config import ProvasConfig
+
 
 # OnlineUpdate Core Class
 class OnlineUpdate():
     def __init__(self, provas_config):
         self.config_cd = ProvasConfig(provas_config)
 
-    def run_command(self, cmd):
-        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        output, error = process.communicate()
-        status = process.wait()
-
-        if error:
-            return status, error
-        else:
-            return status, output
-
-
-
     def get_online_config(self):
         try:
             json_data = urlopen(self.config_cd['online_config_file_url']).readall().decode('utf-8')
-
-            # json_data = urlopen("http://150.162.9.125/~juliao/config.json").readall().decode('utf-8')
-            #json_data = urlopen("http://localhost/~juliao/config.json").readall().decode('utf-8')
         except:
-            pass
-            #raise
+            raise
 
         self.config = json.loads(json_data)
-        self.moodle_provas_minimum_version = self.config["moodle_provas_minimum_version"]
-        self.general_settings = self.config["general_settings"]
+        self.livecd_minimum_version = self.config["livecd_minimum_version"]
+        self.require_load_confirmation = True if self.config["require_load_confirmation"] == "yes" else False
         self.mainstream_log_server_settings = self.config["mainstream_log_server_settings"]
         self.institutions = self.config["institutions"]
-
-        self.require_load_confirmation = True if self.general_settings["require_load_confirmation"] == "yes" else False
-        self.load_default_institution = True if self.general_settings["load_default_institution"] == "yes" else False
-        self.default_institution_id = str(self.general_settings["default_institution_id"])
 
 
     def save_provas_config(self, institution_id):
@@ -60,10 +42,8 @@ class OnlineUpdate():
         except:
             raise KeyError("Não existe uma instituição com o ID = " + institution_id)
 
-
-        use_custom_log_server_settings = True if institution["use_custom_log_server_settings"] == "yes" else False
-
-        if use_custom_log_server_settings:
+        # Check if the institution will use custom log_server_settings
+        if institution["custom_log_server_settings"]:
             log_server_settings = institution["custom_log_server_settings"]
         else:
             log_server_settings = self.mainstream_log_server_settings
@@ -98,7 +78,7 @@ class MainWindow(Gtk.Window):
         self.institutions = ''
 
         title = Gtk.Label()
-        title.set_text('<span size=\"25000\">Selecione a sua instituição abaixo e clique em Prosseguir:</span>')
+        title.set_text('<span size=\"25000\">Selecione a sua instituição abaixo e clique no botão "Prosseguir":</span>')
         title.set_use_markup(True)
         title.set_line_wrap(True)
         title.set_justify(Gtk.Justification.CENTER)
@@ -122,28 +102,25 @@ class MainWindow(Gtk.Window):
                 elif response == Gtk.ResponseType.NO:
                     print("Confirmação: 'Não' clicado")
                     exit(1)
-
                 confirmDialog.destroy()
 
-        livecd_version = config_cd['provas_version']
-        if livecd_version < server.moodle_provas_minimum_version:
+        current_livecd_version = config_cd['livecd_version']
+        if current_livecd_version < server.livecd_minimum_version:
             errorExamVersionDialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
                                                        Gtk.ButtonsType.OK,
                                                        "Erro: Versão do LiveCD não suportada")
             errorExamVersionDialog.format_secondary_text(
                 "Esta versão do LiveCD não é mais suportada, por favor utilize uma versão mais recente.\n\n"
-                " - Versão do seu CD:   " + livecd_version + "\n - Versão mínima requerida:   " + str(
-                    server.moodle_provas_minimum_version))
+                " - Versão do seu CD:   " + current_livecd_version + "\n - Versão mínima requerida:   " + str(
+                    server.livecd_minimum_version))
             errorExamVersionDialog.run()
-            print("Alerta fechado")
-
             errorExamVersionDialog.destroy()
-
             exit(1)
 
-        if server.load_default_institution:
+        # If there is only one institution, loads by default
+        if len(server.institutions) == 1:
             try:
-                server.save_provas_config(server.default_institution_id)
+                server.save_provas_config("1")
             except Exception as err:
                 print(traceback.print_exc())
                 errorSavingDialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
@@ -152,17 +129,13 @@ class MainWindow(Gtk.Window):
                 errorSavingDialog.format_secondary_text("Não foi possível salvar o arquivo moodle_provas.conf\n\n"
                                                         " - Exceção: " + str(err))
                 errorSavingDialog.run()
-                print("Alerta fechado")
-
                 errorSavingDialog.destroy()
-
                 exit(1)
-
             exit(0)
 
         for institution_id in server.institutions.keys():
             institution = server.institutions[institution_id]
-            self.store.append([str(institution_id), institution['institution_name'], institution['provas_host']])
+            self.store.append([str(institution_id), institution['institution_name'], institution['moodle_provas_url']])
 
         self.treeview = Gtk.TreeView(model=self.store)
         self.selection = self.treeview.get_selection()
@@ -229,11 +202,9 @@ class MainWindow(Gtk.Window):
                 response = confirmDialog.run()
 
                 if response == Gtk.ResponseType.YES:
-                    print("Confirmação: 'Sim' clicado")
                     institution_id = str(model[treeiter][0])
                     confirmDialog.destroy()
                 elif response == Gtk.ResponseType.NO:
-                    print("Confirmação: 'Não' clicado")
                     confirmDialog.destroy()
                     return
             else:
