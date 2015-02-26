@@ -8,7 +8,8 @@ functions_file="$provas_dir/includes/functions.sh"
 [ -r "$functions_file" ] && source "$functions_file" || exit 1
 
 
-IPTABLES='/sbin/iptables'
+IPTABLES_IPV4='/sbin/iptables'
+IPTABLES_IPV6='/sbin/ip6tables'
 SED='/bin/sed'
 
 is_root
@@ -33,23 +34,29 @@ if ! is_pxe_booted; then
         sleep 1
     done
 
-    log "A internet está funcionando, recarregando as variáveis 'local_ip' e 'local_network'."
-    source "$provas_config"
+    log "A internet está funcionando, recarregando as variáveis 'livecd_local_ip' e 'livecd_local_network'."
+    source "$provas_config_file"
 fi
 
-log "Liberando o acesso HTTP e HTTPS ao servidor de configuração"
-$IPTABLES -A OUTPUT -d "$online_config_host_ip" -p tcp --dport 80 -j ACCEPT
-$IPTABLES -A OUTPUT -d "$online_config_host_ip" -p tcp --dport 443 -j ACCEPT
-
-log "Iniciando o programa de configuração online"
-export LANG="pt_BR.UTF-8"
-export XAUTHORITY="/home/$username/.Xauthority"
-export DISPLAY=":$first_user_id"
-"$provas_dir/online_update.py" "$provas_config" >$provas_log_dir/online_update.log 2>&1
-if [ $? -eq 0 ]; then
-    source "$provas_online_config"
+if [ -f "$provas_online_config_file" ]; then
+    log "Carregando arquivo de configuração online padrão: $provas_online_config_file"
+    source "$provas_online_config_file"
 else
-    exit 1
+    log "O arquivo de configuração online padrão não existe ($provas_online_config_file)."
+    log "Liberando o acesso HTTP e HTTPS ao servidor de configuração"
+    $IPTABLES_IPV4 -A OUTPUT -d "$livecd_online_config_host_ip" -p tcp --dport 80 -j ACCEPT
+    $IPTABLES_IPV4 -A OUTPUT -d "$livecd_online_config_host_ip" -p tcp --dport 443 -j ACCEPT
+
+    log "Iniciando o programa de configuração online"
+    export LANG="pt_BR.UTF-8"
+    export XAUTHORITY="/home/$username/.Xauthority"
+    export DISPLAY=":$first_user_id"
+    "$provas_dir/online_update.py" "$provas_config_file" >$provas_log_dir/online_update.log 2>&1
+    if [ $? -eq 0 ]; then
+        source "$provas_online_config_file"
+    else
+        exit 1
+    fi
 fi
 
 if [ "$show_institution_name_in_desktop" = "yes" ]; then

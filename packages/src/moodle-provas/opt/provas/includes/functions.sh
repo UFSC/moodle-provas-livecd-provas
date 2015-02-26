@@ -150,7 +150,7 @@ show_send_logs_bad() {
 send_logs() {
     log 'Preparando para enviar os logs'
     log 'Liberando o acesso ao servidor de logs'
-    $IPTABLES -A OUTPUT -d "$log_server_ip" -p tcp --dport 443 -j ACCEPT >>"$log_file_provas" 2>&1
+    $IPTABLES_IPV4 -A OUTPUT -d "$log_server_ip" -p tcp --dport 443 -j ACCEPT >>"$log_file_provas" 2>&1
 
     export LANG="pt_BR.UTF-8"
     export XAUTHORITY="/home/${username_base}1/.Xauthority"
@@ -171,7 +171,7 @@ send_logs() {
 # Configura a página inicial do navegador Mozilla Firefox.
 set_browser_homepage() {
     log 'Atualizando as configuração da página inicial do Firefox'
-    $SED -i "s|about:blank|$provas_homepage|g" "$firefox_syspref"
+    $SED -i "s|about:blank|$moodle_provas_url|g" "$firefox_syspref"
 }
 
 # Configura o arquivo de autoconfig do navegador Mozilla Firefox.
@@ -183,57 +183,39 @@ configure_browser() {
     cp "$firefox_bin/$firefox_autoconfig.tpl" "$firefox_bin/$firefox_autoconfig"
 
     log "Atualizando as configurações do autoconfig do Firefox"
-    $SED -i "s|%provas_version%|$provas_version|g" "$firefox_bin/$firefox_autoconfig"
-    $SED -i "s|%local_ip%|$local_ip|g" "$firefox_bin/$firefox_autoconfig"
-    $SED -i "s|%local_network%|$local_network|g" "$firefox_bin/$firefox_autoconfig"
+    $SED -i "s|%livecd_version%|$livecd_version|g" "$firefox_bin/$firefox_autoconfig"
+    $SED -i "s|%livecd_local_ip%|$livecd_local_ip|g" "$firefox_bin/$firefox_autoconfig"
+    $SED -i "s|%livecd_local_network%|$livecd_local_network|g" "$firefox_bin/$firefox_autoconfig"
 }
 
 configure_firewall_ipv4() {
-    for entry in $allowed_out_ipv4; do
-        protocol="${entry/*:/}"
-        ip_port="${entry%:*}"
-        ip="${ip_port%:*}"
-        port="${ip_port#*:}"
+    for entry in $allowed_tcp_out_ipv4; do
+        ip="${entry%#*}"
+        port="${entry#*#}"
+        protocol='tcp'
 
-        log "Liberando o acesso ao IP $ip na PORTA $port com o protocolo $protocol"
-        $IPTABLES -A OUTPUT -d "$ip" -p "$protocol" --dport "$port" -j ACCEPT >>"$log_file_provas" 2>&1
+        log "configure_firewall_ipv4(): Liberando o acesso ao IP $ip na PORTA $port com o protocolo $protocol"
+        $IPTABLES_IPV4 -A OUTPUT -d "$ip" -p "$protocol" --dport "$port" -j ACCEPT >>"$log_file_provas" 2>&1
     done
 }
 
-#configure_firewall_ipv4() {
-#    # Libera o acesso aos IPs via HTTP (porta 80)
-#    for ip in $allowed_ipv4_http; do
-#        log "Liberando o acesso via HTTP para o IP $ip"
-#        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 80 -j ACCEPT >>"$log_file_provas" 2>&1
-#    done
-#
-#    # Libera o acesso aos IPs via HTTPS (porta 443)
-#    for ip in $allowed_ipv4_https; do
-#        log "Liberando o acesso via HTTPS para o IP $ip"
-#        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 443 -j ACCEPT >>"$log_file_provas" 2>&1
-#    done
-#}
+configure_firewall_ipv6() {
+    for entry in $allowed_tcp_out_ipv6; do
+        ip="${entry%#*}"
+        port="${entry#*#}"
+        protocol='tcp'
 
-#configure_firewall_ipv6() {
-#    # Libera o acesso aos IPs via HTTP (porta 80)
-#    for ip in $allowed_ipv6_http; do
-#        log "Liberando o acesso via HTTP para o IP $ip"
-#        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 80 -j ACCEPT >>"$log_file_provas" 2>&1
-#    done
-#
-#    # Libera o acesso aos IPs via HTTPS (porta 443)
-#    for ip in $allowed_ipv6_https; do
-#        log "Liberando o acesso via HTTPS para o IP $ip"
-#        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 443 -j ACCEPT >>"$log_file_provas" 2>&1
-#    done
-#}
+        log "configure_firewall_ipv6(): Liberando o acesso ao IP $ip na PORTA $port com o protocolo $protocol"
+        $IPTABLES_IPV6 -A OUTPUT -d "$ip" -p "$protocol" --dport "$port" -j ACCEPT >>"$log_file_provas" 2>&1
+    done
+}
 
 # Libera o acesso via HTTP e HTTPS aos IPs definidos no arquivo de configuração e salva as regras atualizadas.
 configure_firewall() {
     configure_firewall_ipv4
-#    configure_firewall_ipv6
+    configure_firewall_ipv6
 
-    log "Salvando as regras do firewall atualizadas"
+    log "Salvando as regras atualizadas do firewall"
     /etc/init.d/iptables-persistent save
 }
 
