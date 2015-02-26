@@ -14,12 +14,12 @@ from includes.provas_config import ProvasConfig
 
 # OnlineUpdate Core Class
 class OnlineUpdate():
-    def __init__(self, provas_config):
-        self.config_cd = ProvasConfig(provas_config)
+    def __init__(self, provas_config_file):
+        self.config_cd = ProvasConfig(provas_config_file)
 
     def get_online_config(self):
         try:
-            json_data = urlopen(self.config_cd['online_config_file_url']).readall().decode('utf-8')
+            json_data = urlopen(self.config_cd['livecd_online_config_url']).readall().decode('utf-8')
         except:
             raise
 
@@ -30,7 +30,7 @@ class OnlineUpdate():
         self.institutions = self.config["institutions"]
 
 
-    def save_provas_config(self, institution_id):
+    def save_provas_config_file(self, institution_id):
         """
 
         :param institution_id: str
@@ -48,21 +48,21 @@ class OnlineUpdate():
         else:
             log_server_settings = self.mainstream_log_server_settings
 
-        provas_config = open(self.config_cd['provas_online_config'], 'w')
-        provas_config.write('#!/bin/bash\n\n')
+        provas_config_file = open(self.config_cd['provas_online_config_file'], 'w')
+        provas_config_file.write('#!/bin/bash\n\n')
 
         # Write the general settings
         for key in sorted(institution.keys()):
             if key != "custom_log_server_settings":
                 print(str(key) + "=\"" + str(institution[key]) + "\"")
-                provas_config.write(str(key) + "=\"" + str(institution[key]) + "\"\n")
+                provas_config_file.write(str(key) + "=\"" + str(institution[key]) + "\"\n")
 
         # Write the log server settings
         for key in sorted(log_server_settings.keys()):
             print(str(key) + "=\"" + str(log_server_settings[key]) + "\"")
-            provas_config.write(str(key) + "=\"" + str(log_server_settings[key]) + "\"\n")
+            provas_config_file.write(str(key) + "=\"" + str(log_server_settings[key]) + "\"\n")
 
-        provas_config.close()
+        provas_config_file.close()
 
 # OnlineUpdate UI Class
 class MainWindow(Gtk.Window):
@@ -120,7 +120,7 @@ class MainWindow(Gtk.Window):
         # If there is only one institution, loads by default
         if len(server.institutions) == 1:
             try:
-                server.save_provas_config("1")
+                server.save_provas_config_file("1")
             except Exception as err:
                 print(traceback.print_exc())
                 errorSavingDialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
@@ -144,40 +144,37 @@ class MainWindow(Gtk.Window):
         institution = Gtk.CellRendererText()
         url = Gtk.CellRendererText()
 
-        column_1 = Gtk.TreeViewColumn("ID", id, text=0)
-        column_2 = Gtk.TreeViewColumn("Instituição", institution, text=1)
-        column_2.set_min_width(400)
-        column_2.set_max_width(500)
-        column_3 = Gtk.TreeViewColumn("Página do Moodle", url, text=2)
+        # column_1 = Gtk.TreeViewColumn("ID", id, text=0)
+        # column_2 = Gtk.TreeViewColumn("Instituição", institution, text=1)
+        # column_2.set_min_width(400)
+        # column_2.set_max_width(500)
+        # column_3 = Gtk.TreeViewColumn("Página do Moodle", url, text=2)
+        column_1 = Gtk.TreeViewColumn("Instituição", institution, text=1)
+        column_1.set_min_width(500)
+        column_1.set_max_width(600)
+        column_2 = Gtk.TreeViewColumn("Página do Moodle", url, text=2)
 
         column_1.set_sort_column_id(0)
         column_2.set_sort_column_id(1)
-        column_3.set_sort_column_id(2)
+        # column_3.set_sort_column_id(2)
         self.store.set_sort_column_id(0, Gtk.SortType.ASCENDING)
 
         self.treeview.append_column(column_1)
         self.treeview.append_column(column_2)
-        self.treeview.append_column(column_3)
+        # self.treeview.append_column(column_3)
 
-        #submit = Gtk.Button("Prosseguir", Gtk.STOCK_INFO)
         submit = Gtk.Button("Prosseguir")
         submit.connect("clicked", self.__onClickSubmit)
-        #submit.new_from_icon_name(Gtk.STOCK_ADD, 100)
         submit.set_size_request(100, 50)
         submit.set_margin_left(400)
         submit.set_margin_right(400)
         submit.set_margin_top(100)
-        # submit.set_margin_bottom(50)
 
         scrolledWindow = Gtk.ScrolledWindow()
-        #scrolledWindow.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        #scrolledWindow.set_hexpand(True)
-        #scrolledWindow.set_vexpand(True)
         scrolledWindow.add(self.treeview)
         scrolledWindow.set_min_content_height(250)
         scrolledWindow.set_margin_left(150)
         scrolledWindow.set_margin_right(150)
-        #scrolledWindow.set_size_request(100, 100)
 
         self.box = Gtk.VBox(spacing=10)
         self.box.pack_start(title, False, False, 0)
@@ -211,14 +208,14 @@ class MainWindow(Gtk.Window):
                 institution_id = str(model[treeiter][0])
 
             try:
-                server.save_provas_config(institution_id)
+                server.save_provas_config_file(institution_id)
             except Exception as err:
                 print(traceback.print_exc())
                 errorSavingDialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
                                                       Gtk.ButtonsType.OK,
                                                       "Erro ao salvar o arquivo de configuração do Moodle Provas")
                 errorSavingDialog.format_secondary_text("Não foi possível salvar o arquivo " +
-                                                        config_cd['provas_online_config'] + "\n\n"
+                                                        config_cd['provas_online_config_file'] + "\n\n"
                                                         "Exceção: " + str(err))
                 errorSavingDialog.run()
                 errorSavingDialog.destroy()
@@ -238,14 +235,14 @@ if __name__ == "__main__":
         print("   Uso: " + sys.argv[0] + " </path/to/moodle_provas.conf>")
         exit(1)
 
-    provas_config = sys.argv[1]
+    provas_config_file = sys.argv[1]
 
-    if not os.path.exists(provas_config):
-        print("Erro: O caminho para o arquivo '" + provas_config + "' não existe!")
+    if not os.path.exists(provas_config_file):
+        print("Erro: O caminho para o arquivo '" + provas_config_file + "' não existe!")
         exit(1)
 
-    config_cd = ProvasConfig(provas_config)
-    server = OnlineUpdate(provas_config)
+    config_cd = ProvasConfig(provas_config_file)
+    server = OnlineUpdate(provas_config_file)
     window = MainWindow()
     window.show_all()
     Gtk.main()

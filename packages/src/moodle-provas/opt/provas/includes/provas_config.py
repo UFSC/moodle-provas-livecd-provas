@@ -6,7 +6,7 @@ import configparser
 
 class ProvasConfig(configparser.ConfigParser):
     def __init__(self, file):
-        """ Adiciona uma seção no começo do arquivo, porque o ConfigParser não suporta arquivos sem seção. """
+        """ Adiciona uma seção no começo do arquivo, porque o ConfigParser não suporta arquivos sem pelo menos uma seção. """
         configparser.ConfigParser.__init__(self)
         fp = open(file)
         fp_str = fp.read()
@@ -14,16 +14,16 @@ class ProvasConfig(configparser.ConfigParser):
         configparser.ConfigParser.read_string(self, fp_str, source='<string>')
 
     def __getitem__(self, item):
-        """ Permite acessar os elementos como se fosse um dicionário, por exemplo: config['provas_version']. """
+        """ Permite acessar os elementos como se fosse um dicionário, por exemplo: config['livecd_version']. """
         value = configparser.ConfigParser.get(self, 'SECTION_GLOBAL', item)
 
-        # Substitui as variáveis do shell script, por exemplo provas_config="$provas_dir/moodle_provas.conf".
-        if item is 'online_config_file_url':
-            if '$online_config_host' in value:
-                online_config_host = configparser.ConfigParser.get(self, 'SECTION_GLOBAL', 'online_config_host')
-                online_config_host = online_config_host.lstrip('\'').rstrip('\'').lstrip('\"').rstrip('\"')
-                value = value.replace('$online_config_host', online_config_host)
-        elif item is 'provas_config' or item is 'provas_online_config':
+        # Substitui as variáveis do shell script, por exemplo provas_config_file="$provas_dir/moodle_provas.conf".
+        if item is 'livecd_online_config_url':
+            if '$livecd_online_config_host' in value:
+                livecd_online_config_host = configparser.ConfigParser.get(self, 'SECTION_GLOBAL', 'livecd_online_config_host')
+                livecd_online_config_host = livecd_online_config_host.lstrip('\'').rstrip('\'').lstrip('\"').rstrip('\"')
+                value = value.replace('$livecd_online_config_host', livecd_online_config_host)
+        elif item is 'provas_config_file' or item is 'provas_online_config_file':
             if '$provas_dir' in value:
                 provas_dir = configparser.ConfigParser.get(self, 'SECTION_GLOBAL', 'provas_dir')
                 provas_dir = provas_dir.lstrip('\'').rstrip('\'').lstrip('\"').rstrip('\"')
