@@ -8,5 +8,5 @@ $CHMOD 600 '/opt/provas/moodle_provas.conf'
 
 /opt/provas/update_desktop_wallpaper.sh 1 'no'
 source /opt/provas/moodle_provas.conf
-rm -f "$provas_wallpaper_path.bak"
+rm -f "$livecd_wallpaper_file.bak"
 

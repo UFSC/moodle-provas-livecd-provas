@@ -1,8 +1,8 @@
 #!/bin/bash
 #set -x
 
-provas_config='/opt/provas/moodle_provas.conf'
-[ -r "$provas_config" ] && source "$provas_config" || exit 1
+provas_config_file='/opt/provas/moodle_provas.conf'
+[ -r "$provas_config_file" ] && source "$provas_config_file" || exit 1
 
 functions_file="$provas_dir/includes/functions.sh"
 [ -r "$functions_file" ] && source "$functions_file" || exit 1

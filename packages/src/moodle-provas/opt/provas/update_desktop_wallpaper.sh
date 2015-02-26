@@ -2,11 +2,11 @@
 #set -x
 
 # Description: Gera um papel de parede com o nome da instituição e/ou a versão do Moodle Provas.
-# Listar as fontes disponíveis: $ convert -list font
+# Para listar as fontes disponíveis no imagemagick: $ convert -list font
 
-provas_config='/opt/provas/moodle_provas.conf'
-[ -r "$provas_config" ] && source "$provas_config" || exit 1
-[ -r "$provas_online_config" ] && source "$provas_online_config"
+provas_config_file='/opt/provas/moodle_provas.conf'
+[ -r "$provas_config_file" ] && source "$provas_config_file" || exit 1
+[ -r "$provas_online_config_file" ] && source "$provas_online_config_file"
 
 functions_file="$provas_dir/includes/functions.sh"
 [ -r "$functions_file" ] && source "$functions_file" || exit 1
@@ -32,7 +32,7 @@ wallpaper_path="$3"
 
 # Se o caminho não foi informado como parâmetro...
 if [ -z "$wallpaper_path" ]; then
-    wallpaper_orig="$provas_wallpaper_path"
+    wallpaper_orig="$livecd_wallpaper_file"
 else
     wallpaper_orig="$wallpaper_path"
 fi
@@ -50,7 +50,7 @@ wallpaper_out="$wallpaper_in"
 
 # Adiciona a versão do Moodle Provas ao papel de parede
 if [ "$order" = "1" ] || [ "$order" = "3" ]; then
-    text="Moodle Provas LiveCD $provas_version Build $provas_build"
+    text="Moodle Provas LiveCD $livecd_version Build $livecd_build"
     font_size='18'
     font_color='white'
     #font_name='Helvetica'
@@ -74,7 +74,7 @@ fi
 # Adiciona o nome da instituição ao papel de parede
 if [ "$order" = "2" ] || [ "$order" = "3" ]; then
     if [ -z "$institution_name" ]; then
-        echo "Erro: A variável 'institution_name' não está definida, talvez o arquivo $provas_online_config não exista."
+        echo "Erro: A variável 'institution_name' não está definida, talvez o arquivo $provas_online_config_file não exista."
         exit 1
     fi
 
