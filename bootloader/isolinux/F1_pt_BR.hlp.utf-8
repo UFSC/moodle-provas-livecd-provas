@@ -1,4 +1,4 @@
-           0fBem-vindo ao LiveCD do Moodle Provas %PROVAS_VERSION% Build %BUILD_DATE% 07
+           0fBem-vindo ao LiveCD do Moodle Provas %LIVECD_VERSION% Build %BUILD_DATE% 07
 
 Este é o LiveCD para realização de provas online através do sistema Moodle.
 
@@ -7,22 +7,22 @@ em disco, mas ele utilizará partições swap já existentes, se disponíveis.
 
 O sistema não faz alterações no disco local e também não permite acesso a
 qualquer tipo de mídia, seja local ou remota, como pendrives, CDs, disco
-local e sites que não sejam o próprio site do Moodle provas.
+local e sites que não sejam o próprio site do Moodle Provas.
 
 0fMétodos de inicialização disponíveis:07
- 02* Iniciar Moodle Provas %PROVAS_VERSION%07
+ 02* Iniciar Moodle Provas %LIVECD_VERSION%07
     Inicia o sistema de provas em um computador comum. Esta é a opção
     mais apropriada na maioria dos casos.
- 02* Iniciar Moodle Provas %PROVAS_VERSION% [multiterminal #]07
+ 02* Iniciar Moodle Provas %LIVECD_VERSION% [multiterminal 1]07
     Inicia o sistema de provas nos dois terminais de um computador que
     suporte multiterminal, caso o computador não suporte multiterminal,
     apenas um monitor do computador ficará ativo.
-     * OBS: Utilize a opção [multiterminal 2] caso a primeira não funcione.
- 02* Verificar erros no CD07
-    Verifica se o CD contêm erros de leitura que podem prejudicar a
-    inicialização e o funcionamento do sistema de provas.
+ 02* Iniciar Moodle Provas %LIVECD_VERSION% [multiterminal 2]07
+    Realiza o mesmo que a opção anterior, [multiterminal 1], porém a ordem
+    de inicialização dos monitores do computador será invertida.
+     * OBS: Utilize esta opção somente se a anterior não funcionar.
 
 03Versão do kernel Linux:07 %KERNEL_VERSION% (%HARDWARE_ARCH%)
 
-
-0ePressione qualquer tecla para voltar ao menu anterior.07
+0ePressione qualquer tecla para voltar ao menu anterior, ou pressione07
+0ea tecla F2 para ver a descrição das outras opções.07

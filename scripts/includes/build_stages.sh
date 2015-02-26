@@ -70,11 +70,17 @@ make_config_pkg() {
         cp -f "$config_dir/images/wallpaper.png" "$working_dir/moodle-provas-config/opt/provas/images/"
     fi
 
-    msg_d "$sub_prefix Copiando o arquivo de configuração interno do LiveCD..."
-    cp -f "$provas_config_build" "$working_dir/moodle-provas-config/opt/provas/moodle_provas.conf"
+    msg_d "$sub_prefix Copiando o arquivo de configuração interno do LiveCD [${provas_config_file##*/}] ..."
+    cp -f "$config_dir/${provas_config_file##*/}" "$working_dir/moodle-provas-config$provas_config_file"
 
-    msd_d "$sub_prefix Atualizando a data de geração no arquivo de configuração..."
-    sed -i "s/%BUILD_DATE%/$build_date/g" "$working_dir/moodle-provas-config/opt/provas/moodle_provas.conf"
+    msd_d "$sub_prefix Atualizando a data de geração no arquivo de configuração [${provas_config_file##*/}] ..."
+    sed -i "s/%BUILD_DATE%/$build_date/g" "$working_dir/moodle-provas-config$provas_config_file"
+
+    if [ "$enable_default_online_config" = "yes" ]; then
+        msg_d "$sub_prefix Copiando o arquivo padrão de configuração online do LiveCD [${provas_online_config_file##*/}] ..." 
+        cp -f "$config_dir/${provas_online_config_file##*/}" "$working_dir/moodle-provas-config$provas_online_config_file" ||
+            msg_e "$sub_prefix ERRO: O arquivo '$config_dir/${provas_online_config_file##*/}' não pode ser lido."
+    fi
 
     msg_d "$sub_prefix Gerando o novo pacote do 'moodle-provas-config'..."
     build_debian_pkg "true" "$working_dir/moodle-provas-config" "$pkgs_built_dir"
@@ -243,17 +249,29 @@ make_bootmenu() {
 
     # Habilita as opções de multiterminal no menu de boot
     if [ "$enable_multiseat" = 'yes' ]; then
-        line_count=$(grep '## MULTITERMINAL' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
-        sed -i "/^## MULTITERMINAL/,+$line_count { /^## MULTITERMINAL/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
+        line_count=$(grep '## MULTISEAT' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
+        sed -i "/^## MULTISEAT/,+$line_count { /^## MULTISEAT/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
     fi
 
     # Habilita as opções de envio de logs no menu de boot.
     if [ "$enable_send_logs" = 'yes' ]; then
-        line_count=$(grep '## SEND_LOGS' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
-        sed -i "/^## SEND_LOGS/,+$line_count { /^## SEND_LOGS/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
+        line_count=$(grep '## SEND_LOGS_MONOSEAT' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
+        sed -i "/^## SEND_LOGS_MONOSEAT/,+$line_count { /^## SEND_LOGS_MONOSEAT/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
     fi
 
-    # Habilita o memtest no menu de boot.
+    # Habilita as opções de envio de logs para o multiterminal no menu de boot.
+    if [ "$enable_send_logs" = 'yes' ] && [ "$enable_multiseat" = 'yes' ]; then
+        line_count=$(grep '## SEND_LOGS_MULTISEAT' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
+        sed -i "/^## SEND_LOGS_MULTISEAT/,+$line_count { /^## SEND_LOGS_MULTISEAT/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
+    fi
+
+    # Habilita a opção de verificar a integridade da mídia no menu de boot.
+    if [ "$enable_check_media" = 'yes' ]; then
+        line_count=$(grep '## CHECK_MEDIA' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
+        sed -i "/^## CHECK_MEDIA/,+$line_count { /^## CHECK_MEDIA/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
+    fi
+
+    # Instala e habilita o memtest no menu de boot.
     if [ "$enable_memtest" = 'yes' ]; then
         mkdir "$dest_dir/memtest"
         cp '/boot/memtest86+.bin' "$dest_dir/memtest/mt86plus" ||
@@ -274,14 +292,18 @@ make_bootmenu() {
 
     sed -i "s/%MSG_TIMEOUT%/$msg_timeout/g" "$dest_dir/isolinux/menu.cfg.utf-8"
     sed -i "s/%MSG_BOTTOM%/$msg_bottom/g" "$dest_dir/isolinux/menu.cfg.utf-8"
-    sed -i "s/%PROVAS_VERSION%/$provas_version/g" "$dest_dir/isolinux/menu.cfg.utf-8"
+    sed -i "s/%LIVECD_VERSION%/$livecd_version/g" "$dest_dir/isolinux/menu.cfg.utf-8"
 
-    sed -i "s/%PROVAS_VERSION%/$provas_version/g" "$dest_dir/isolinux/pt_BR.hlp.utf-8"
-    sed -i "s/%BUILD_DATE%/$build_date/g" "$dest_dir/isolinux/pt_BR.hlp.utf-8"
-    sed -i "s/%HARDWARE_ARCH%/$livecd_hw_arch/g" "$dest_dir/isolinux/pt_BR.hlp.utf-8"
+    sed -i "s/%LIVECD_VERSION%/$livecd_version/g" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
+    sed -i "s/%BUILD_DATE%/$build_date/g" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
+    sed -i "s/%HARDWARE_ARCH%/$livecd_hw_arch/g" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
+
+    sed -i "s/%LIVECD_VERSION%/$livecd_version/g" "$dest_dir/isolinux/F2_pt_BR.hlp.utf-8"
+    sed -i "s/%BUILD_DATE%/$build_date/g" "$dest_dir/isolinux/F2_pt_BR.hlp.utf-8"
+    sed -i "s/%HARDWARE_ARCH%/$livecd_hw_arch/g" "$dest_dir/isolinux/F2_pt_BR.hlp.utf-8"
 
     if [ ! -z "$kernel_version" ]; then
-        sed -i "s/%KERNEL_VERSION%/$kernel_version/g" "$dest_dir/isolinux/pt_BR.hlp.utf-8"
+        sed -i "s/%KERNEL_VERSION%/$kernel_version/g" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
     fi
     
     # Copia os arquivos binários do ISOLINUX para o diretório 'isolinux' do LiveCD.
@@ -292,7 +314,8 @@ make_bootmenu() {
     
     # Converte os arquivos de utf-8 para latin-1, para que sejam exibidos corretamente no menu de boot
     iconv -f "utf-8" -t "iso8859-1" "$dest_dir/isolinux/menu.cfg.utf-8" > "$dest_dir/isolinux/menu.cfg"
-    iconv -f "utf-8" -t "iso8859-1" "$dest_dir/isolinux/pt_BR.hlp.utf-8" > "$dest_dir/isolinux/pt_BR.hlp"
+    iconv -f "utf-8" -t "iso8859-1" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8" > "$dest_dir/isolinux/F1_pt_BR.hlp"
+    iconv -f "utf-8" -t "iso8859-1" "$dest_dir/isolinux/F2_pt_BR.hlp.utf-8" > "$dest_dir/isolinux/F2_pt_BR.hlp"
     
     # Descomprime a fonte de console e salva no diretório 'isolinux' do LiveCD
     zcat "$console_font" > "$dest_dir/isolinux/font16.psf" || msg_e "$sub_prefix ERRO: Não foi possível extrair a fonte '$console_font'"
@@ -304,7 +327,8 @@ make_bootmenu() {
 
     # Remove os arquivos desnecessários
     rm "$dest_dir/isolinux/menu.cfg.utf-8"
-    rm "$dest_dir/isolinux/pt_BR.hlp.utf-8"
+    rm "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
+    rm "$dest_dir/isolinux/F2_pt_BR.hlp.utf-8"
 }
 
 # Gera o novo SquashFS, juntamente com os outros arquivos necessários para o seu funcionamento.
@@ -350,12 +374,12 @@ make_disk_info() {
     if [ "$enable_send_logs" = 'yes' ]; then
         enabled_options="$enabled_options send_logs"
     fi
- 
+
     if [ -z "$enabled_options" ]; then
         enabled_options='None'
     fi
 
-    echo -n "Moodle Provas $provas_version - Release $livecd_hw_arch (${build_date}-${build_time}) - Enabled options: $enabled_options" > info
+    echo -n "Moodle Provas $livecd_version - Release $livecd_hw_arch (${build_date}-${build_time}) - Enabled options: $enabled_options" > info
 
     cd - >>"$std_out" 2>>"$std_err"
 }

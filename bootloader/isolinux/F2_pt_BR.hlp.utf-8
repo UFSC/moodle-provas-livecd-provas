@@ -1,0 +1,28 @@
+                   0fLiveCD do Moodle Provas %LIVECD_VERSION% Build %BUILD_DATE% 07
+
+0f[+] Opções de diagnóstico:07
+ 02* Verificar problemas de leitura no CD07
+    Verifica se o CD contêm erros de leitura que podem prejudicar a
+    inicialização e o funcionamento do sistema de provas.
+ 02* Verificar problemas na memória do computador07
+    Verifica se há problemas na memória RAM do computador, problemas que
+    podem provocar o corrompimento de dados e mau funcionamento do sistema.
+ 02* Enviar logs para diagnóstico07
+    Após o sistema carregar, ele enviará dados coletados do computador para
+    um servidor remoto, onde poderão ser analisados pela equipe de suporte
+    ao Moodle Provas. Esta opção só deve ser utilizada se você foi orientado
+    a executá-la, dados enviados sem solicitação, serão ignorados.
+ 02* Enviar logs para diagnóstico [Multiterminal #]07
+    Mesma coisa que a opção anterior, porém para multiterminais.
+
+0fObservações:07
+ 02*07 Algumas das opções descritas aqui podem não estar ativadas no LiveCD.
+
+ 02*07 Caso o sistema do LiveCD não esteja funcionando corretamente, por favor
+realize uma verificação da mídia do CD e teste em outra máquina primeiro,
+caso o problema persista, entre em contato com o suporte técnico do Moodle
+Provas informando os detalhes do problema.
+
+ 02*07 Suporte técnico do Moodle Provas: %PROVAS_SUPPORT_EMAIL%
+
+0ePressione qualquer tecla para voltar ao menu anterior.07
