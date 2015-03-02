@@ -3,9 +3,9 @@
 
 
 from gi.repository import GLib, Gtk, GObject, Pango
-from time import sleep
 import threading
 import subprocess
+import traceback
 
 
 # NetworkTest Core Class
@@ -27,6 +27,7 @@ class NetworkTest():
         
         if not status:
             ss = output.split()
+            print(ss)
             iface = ss[ss.index("dev") + 1]
 
             status = 0
@@ -70,10 +71,6 @@ class NetworkTest():
 
         return self.run_command(cmd)
 
-    def update_UI(self):
-
-        return False
-
 
 # NetworkTest UI Classes
 class CellRendererClickablePixbuf(Gtk.CellRendererPixbuf):
@@ -91,7 +88,7 @@ class DetailsWindow(Gtk.Window):
     def __init__(self):
         super(DetailsWindow, self).__init__(title="Detalhes dos comandos executados")
         self.connect("delete-event", self.__hide)
-        self.set_default_size(730, 350)
+        self.set_default_size(700, 350)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.windowIcon = self.render_icon(Gtk.STOCK_INFO, Gtk.IconSize.MENU)
         self.set_icon(self.windowIcon)
@@ -115,7 +112,7 @@ class DetailsWindow(Gtk.Window):
         self.hide()
         return True
 
-    def setText(self, text):
+    def set_text(self, text):
         self.textBuffer.set_text(text)
 
 
@@ -125,7 +122,7 @@ class MainWindow(Gtk.Window):
         self.set_size_request(360, 250)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
-        self.connect("destroy", self.__onDestroy)
+        self.connect("destroy", self.__on_destroy)
         self.windowIcon = self.render_icon(Gtk.STOCK_NETWORK, Gtk.IconSize.MENU)
         self.set_icon(self.windowIcon)
 
@@ -144,7 +141,7 @@ class MainWindow(Gtk.Window):
         treeview.get_selection().set_mode(Gtk.SelectionMode.NONE)
 
         icon = Gtk.CellRendererPixbuf()
-        #spinner = Gtk.CellRendererSpinner()
+        spinner = Gtk.CellRendererSpinner()
         text = Gtk.CellRendererText()
         details = CellRendererClickablePixbuf()
 
@@ -160,90 +157,77 @@ class MainWindow(Gtk.Window):
         treeview.append_column(column_3)
 
         #treeview.connect("button-press-event", self.__onClick)
-        details.connect("clicked", self.__onClickDetails)
+        details.connect("clicked", self.__on_click_details)
 
         column_1.pack_start(icon, False)
-        #column_1.pack_start(spinner, False)
         column_1.add_attribute(icon, "stock_id", 0)
-        ##column_1.add_attribute(spinner, "pulse", 2)
-        ##column_1.add_attribute(spinner, "active", True)
-        # column_1.add_attribute(spinner, "active", 1)
-        # column_1.set_attributes(spinner, "pulse", 2)
+        column_1.pack_start(spinner, False)
+        column_1.add_attribute(spinner, "active", 1)
+        column_1.add_attribute(spinner, "pulse", 2)
+        #column_1.add_attribute(spinner, "active", 1)
+        #column_1.set_attributes(spinner, "pulse", 2)
 
         # column_1.set_attributes(icon, text=0)
 
-        button_execute = Gtk.Button("Executar testes")
-        button_execute.connect("clicked", self.__onClickExecute)
+        button_execute = Gtk.Button(label="Executar testes")
+        button_execute.connect("clicked", self.__on_click_execute)
+        #button_execute.set_size_request(100,20)
+        button_execute.set_margin_left(50)
+        button_execute.set_margin_right(50)
+        button_execute.set_margin_top(10)
+        button_execute.set_margin_bottom(15)
 
         self.box.pack_start(treeview, True, True, 0)
         self.box.pack_start(button_execute, True, True, 0)
 
-
-    def __refresh_ui(self, delay=0.0001, wait=0.0001):
-        """Use up all the events waiting to be run
-
-        :param delay: Time to wait before using events
-        :param wait: Time to wait between iterations of events
-
-        This function will block until all pending events are emitted. This is
-        useful in testing to ensure signals and other asynchronous functionality
-        is required to take place.
-
-        (c) PyGTKHelpers Authors 2005-2010
-        """
-        sleep(delay)
-        while Gtk.events_pending():
-            Gtk.main_iteration_do(False)
-            sleep(wait)
-
-    def __onDestroy(self, e):
+    def __on_destroy(self, e):
         Gtk.main_quit()
 
-
-    def __onClickDetails(self, e1, e2):
-        details.setText(self.store[e2][6])
+    def __on_click_details(self, e1, e2):
+        details.set_text(str(self.store[e2][6]))
         details.show_all()
 
-
-    def run(self, method):
-        GLib.idle_add(update_progress, i)
-
-    def __onClickExecute(self, e1):
-        thread = threading.Thread(target=self.run('nework.traceroute(\'provas3.moodle.ufsc.br\')'))
+    def __on_click_execute(self, e1):
+        thread = threading.Thread(target=self.process_list)
         thread.daemon = True
         thread.start()
 
-    # def __onClickExecute(self, e1):
-    #     for row in self.store:
-    #         row[0] = ''
-    #         row[1] = True
-    #         row[3] = ''
-    #         self.__refresh_ui()
-    #
-    #     for row in self.store:
-    #         method = row[4]
-    #         params = row[5]
-    #
-    #         try:
-    #             if params:
-    #                 status, output = getattr(network, method)(params)
-    #             else:
-    #                 status, output = getattr(network, method)()
-    #
-    #             row[3] = Gtk.STOCK_ADD
-    #             row[6] = output
-    #
-    #             # Se status não for igual a zero
-    #             if not status:
-    #                 row[0] = Gtk.STOCK_OK
-    #             else:
-    #                 row[0] = Gtk.STOCK_CANCEL
-    #
-    #         except Exception:
-    #             print(traceback.format_exc())
-    #
-    #         GLib.idle_add()
-    #         self.__refresh_ui()
+    def reset_list(self):
+        for row in self.store:
+            row[0] = ''
+            row[1] = True
+            row[3] = ''
+
+    def process_list(self):
+        self.reset_list()
+
+        for row in self.store:
+            method = row[4]
+            params = row[5]
+
+            try:
+                if params:
+                    status, output = getattr(network, method)(params)
+                else:
+                    status, output = getattr(network, method)()
+
+                GLib.idle_add(self.update_UI, status, output, row)
+
+            except Exception:
+                print(traceback.format_exc())
+
+
+
+    def update_UI(self, status, output, row):
+        row[3] = Gtk.STOCK_ADD
+        row[6] = str(output, 'utf-8')
+
+        # Se status não for igual a zero
+        if not status:
+            row[0] = Gtk.STOCK_APPLY
+        else:
+            row[0] = Gtk.STOCK_CANCEL
+
 
 
 if __name__ == "__main__":
@@ -253,7 +237,7 @@ if __name__ == "__main__":
     window.show_all()
 
     # Calling GObject.threads_init() is not needed for PyGObject 3.10.2+
-    GObject.threads_init()
+    #GObject.threads_init()
 
     #GObject.timeout_add(100, callback)
     Gtk.main()
