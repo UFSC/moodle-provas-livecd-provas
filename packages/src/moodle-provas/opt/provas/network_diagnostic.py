@@ -6,6 +6,9 @@ from gi.repository import GLib, Gtk, GObject, Pango
 import threading
 import subprocess
 import traceback
+import netifaces
+import os
+from includes.provas_config import ProvasConfig
 
 
 # NetworkTest Core Class
@@ -14,7 +17,8 @@ class NetworkTest():
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         output, error = process.communicate()
         status = process.wait()
-        
+        output = str(output, 'utf-8')
+
         if error:
             return status, error
         else:
@@ -22,19 +26,14 @@ class NetworkTest():
         
         
     def get_default_iface(self):
-        cmd = "ip route show | grep default"
-        status, output = self.run_command(cmd)
-        
-        if not status:
-            ss = output.split()
-            print(ss)
-            iface = ss[ss.index("dev") + 1]
-
+        try:
+            default_route_ipv4 = netifaces.gateways()['default'][netifaces.AF_INET]
+            default_iface = default_route_ipv4[1]
             status = 0
-            output = iface
-        else:
-            status = 1
-            output = "Não foi possível determinar a interface padrão, provavelmente não há uma rota padrão configurada."
+            output = default_iface
+        except:
+             status = 1
+             output = "Não foi possível determinar a interface padrão, provavelmente não há uma rota padrão configurada."
     
         return status, output
     
@@ -42,7 +41,7 @@ class NetworkTest():
     def has_network_iface(self):
         cmd = "lspci | grep -e 'Ethernet' -e 'Network' | wc -l"
         status, output = self.run_command(cmd)
-        
+
         if not status:
             if int(output) > 0:
                 return True
@@ -53,11 +52,12 @@ class NetworkTest():
     def get_ifaces(self):
         if self.has_network_iface():
             cmd = "lspci | grep -e 'Ethernet' -e 'Network'"
-            return self.run_command(cmd)
+            status, output =  self.run_command(cmd)
         else:
             status = 1
             output = "Nenhuma interface de rede foi detectada!"
-            return status, output
+
+        return status, output
     
     
     def ping_ipv4(self, host):
@@ -70,6 +70,7 @@ class NetworkTest():
         cmd = "mtr --report --report-cycles 3 " + host
 
         return self.run_command(cmd)
+
 
 
 # NetworkTest UI Classes
@@ -88,7 +89,7 @@ class DetailsWindow(Gtk.Window):
     def __init__(self):
         super(DetailsWindow, self).__init__(title="Detalhes dos comandos executados")
         self.connect("delete-event", self.__hide)
-        self.set_default_size(700, 350)
+        self.set_default_size(750, 300)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.windowIcon = self.render_icon(Gtk.STOCK_INFO, Gtk.IconSize.MENU)
         self.set_icon(self.windowIcon)
@@ -118,92 +119,91 @@ class DetailsWindow(Gtk.Window):
 
 class MainWindow(Gtk.Window):
     def __init__(self):
-        super(MainWindow, self).__init__(title="Diagnóstico da Conexão de Rede")
-        self.set_size_request(360, 250)
+        super(MainWindow, self).__init__(title="Diagnóstico da Conexão de Rede v0.2")
+        self.set_size_request(420, 260)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
         self.connect("destroy", self.__on_destroy)
         self.windowIcon = self.render_icon(Gtk.STOCK_NETWORK, Gtk.IconSize.MENU)
         self.set_icon(self.windowIcon)
 
-        self.box = Gtk.VBox(spacing=6)
-        self.add(self.box)
+        grid = Gtk.Grid()
+        self.add(grid)
 
-        # Ícone, Spinner, Descrição, "Mais detalhes", Método, Parâmetros do método, Detalhes
-        self.store = Gtk.ListStore(str, bool, str, str, str, str, str)
-        self.store.append([None, False, "Interfaces de rede detectadas", None, "get_ifaces", None, None])
-        self.store.append([None, False, "Interface de rede padrão", None, "get_default_iface", None, None])
-        self.store.append([None, False, "Ping ufsc.br", None, "ping_ipv4", "ufsc.br", None])
-        self.store.append([None, False, "Ping provas2.moodle.ufsc.br", None, "ping_ipv4", "provas2.moodle.ufsc.br", None])
-        self.store.append([None, False, "traceroute provas2.moodle.ufsc.br", None, "traceroute", "provas2.moodle.ufsc.br", None])
+        # Ícone, Descrição, "Mais detalhes", Método, Parâmetros do método, Detalhes
+        self.store = Gtk.ListStore(str, str, str, str, str, str)
+        self.store.append([None, "Interfaces de rede detectadas", None, "get_ifaces", None, None])
+        self.store.append([None, "Interface de rede padrão", None, "get_default_iface", None, None])
+        self.store.append([None, "Ping " + second_host, None, "ping_ipv4", second_host, None])
+        self.store.append([None, "Ping " + first_host, None, "ping_ipv4", first_host, None])
+        self.store.append([None, "traceroute " + second_host, None, "traceroute", "provas2.moodle.ufsc.br", None])
 
         treeview = Gtk.TreeView(model=self.store)
+        treeview.set_size_request(420, 230)
         treeview.get_selection().set_mode(Gtk.SelectionMode.NONE)
 
         icon = Gtk.CellRendererPixbuf()
-        spinner = Gtk.CellRendererSpinner()
         text = Gtk.CellRendererText()
         details = CellRendererClickablePixbuf()
 
         column_1 = Gtk.TreeViewColumn("Status")
-        column_2 = Gtk.TreeViewColumn("Verificação", text, text=2)
+        column_2 = Gtk.TreeViewColumn("Verificação", text, text=1)
         column_2.set_min_width(260)
         column_2.set_max_width(260)
-        # column_3 = Gtk.TreeViewColumn("Progresso", progress, value=3, inverted=1)
-        column_3 = Gtk.TreeViewColumn("Detalhes", details, stock_id=3)
+        column_3 = Gtk.TreeViewColumn("Detalhes", details, stock_id=2)
 
         treeview.append_column(column_1)
         treeview.append_column(column_2)
         treeview.append_column(column_3)
 
-        #treeview.connect("button-press-event", self.__onClick)
         details.connect("clicked", self.__on_click_details)
 
         column_1.pack_start(icon, False)
         column_1.add_attribute(icon, "stock_id", 0)
-        column_1.pack_start(spinner, False)
-        column_1.add_attribute(spinner, "active", 1)
-        column_1.add_attribute(spinner, "pulse", 2)
-        #column_1.add_attribute(spinner, "active", 1)
-        #column_1.set_attributes(spinner, "pulse", 2)
 
-        # column_1.set_attributes(icon, text=0)
+        self.spinner = Gtk.Spinner()
+        self.spinner.set_margin_top(10)
+        self.spinner.set_margin_bottom(10)
 
-        button_execute = Gtk.Button(label="Executar testes")
-        button_execute.connect("clicked", self.__on_click_execute)
-        #button_execute.set_size_request(100,20)
-        button_execute.set_margin_left(50)
-        button_execute.set_margin_right(50)
-        button_execute.set_margin_top(10)
-        button_execute.set_margin_bottom(15)
+        self.button_execute = Gtk.Button(label="Executar testes")
+        self.button_execute.connect("clicked", self.__on_click_execute)
+        self.button_execute.set_size_request(80, 40)
+        self.button_execute.set_margin_right(5)
+        self.button_execute.set_margin_top(5)
+        self.button_execute.set_margin_bottom(5)
 
-        self.box.pack_start(treeview, True, True, 0)
-        self.box.pack_start(button_execute, True, True, 0)
+        grid.attach(treeview, 0, 0, 2, 1)
+        grid.attach(self.spinner, 0, 1, 1, 1)
+        grid.attach(self.button_execute, 1, 1, 1, 1)
+
+        self.reset_list()
 
     def __on_destroy(self, e):
         Gtk.main_quit()
 
     def __on_click_details(self, e1, e2):
-        details.set_text(str(self.store[e2][6]))
+        details.set_text(str(self.store[e2][5]))
         details.show_all()
 
     def __on_click_execute(self, e1):
-        thread = threading.Thread(target=self.process_list)
-        thread.daemon = True
-        thread.start()
+        self.spinner.show()
+        self.spinner.start()
+        self.button_execute.set_sensitive(False)
+        self.thread_list = threading.Thread(target=self.process_list)
+        self.thread_list.daemon = True
+        self.thread_list.start()
 
     def reset_list(self):
         for row in self.store:
-            row[0] = ''
-            row[1] = True
-            row[3] = ''
+            row[0] = Gtk.STOCK_REMOVE
+            row[2] = ''
 
     def process_list(self):
         self.reset_list()
 
         for row in self.store:
-            method = row[4]
-            params = row[5]
+            method = row[3]
+            params = row[4]
 
             try:
                 if params:
@@ -216,11 +216,14 @@ class MainWindow(Gtk.Window):
             except Exception:
                 print(traceback.format_exc())
 
+        self.spinner.stop()
+        self.spinner.hide()
+        self.button_execute.set_sensitive(True)
 
 
     def update_UI(self, status, output, row):
-        row[3] = Gtk.STOCK_ADD
-        row[6] = str(output, 'utf-8')
+        row[2] = Gtk.STOCK_ADD
+        row[5] = str(output)
 
         # Se status não for igual a zero
         if not status:
@@ -229,15 +232,39 @@ class MainWindow(Gtk.Window):
             row[0] = Gtk.STOCK_CANCEL
 
 
+class App(Gtk.Window):
+    def error_message(self, title, description):
+        error_dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, title)
+        error_dialog.format_secondary_text(description)
+        error_dialog.run()
+        error_dialog.destroy()
+
 
 if __name__ == "__main__":
+    provas_config_file = '/opt/provas/moodle_provas.conf'
+    provas_online_config_file = '/opt/provas/moodle_provas_online.conf'
+
+    if os.path.exists(provas_online_config_file):
+        cd_online_config = ProvasConfig(provas_online_config_file)
+        first_host = cd_online_config['ntp_servers'].split()[0]
+        second_host = cd_online_config['moodle_provas_url'].split('/')[2]
+    elif os.path.exists(provas_config_file):
+        cd_config = ProvasConfig(provas_config_file)
+        first_host = cd_config['host_test_1']
+        second_host = cd_config['host_test_2']
+    else:
+        app = App()
+        app.error_message("Os arquivos de configuração não podem ser lidos", "Não consegui ler os arquivos " +
+                          provas_online_config_file + " e " + provas_config_file)
+        exit(1)
+
     network = NetworkTest()
     window = MainWindow()
     details = DetailsWindow()
     window.show_all()
 
     # Calling GObject.threads_init() is not needed for PyGObject 3.10.2+
-    #GObject.threads_init()
+    GObject.threads_init()
 
     #GObject.timeout_add(100, callback)
     Gtk.main()
