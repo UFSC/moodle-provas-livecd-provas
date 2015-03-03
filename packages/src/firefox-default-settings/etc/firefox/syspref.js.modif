@@ -39,6 +39,9 @@ lockPref("general.config.filename", "firefox.cfg");
 // Opção necessária se este arquivo não for codificado com ROT-13
 lockPref("general.config.obscure_value", 0);
 
+// Desativa o "Hello", que foi adicionado no Firefox 35.0 (App de chamadas de áudio e vídeo)
+lockPref("loop.enabled", false);
+
 // Configura o proxy com a opção "Sem proxy"
 lockPref("network.proxy.type", 0);
 

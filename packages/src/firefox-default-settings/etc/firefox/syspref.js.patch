@@ -1,6 +1,6 @@
 --- syspref.js.orig	2014-03-12 11:31:41.960054153 -0300
-+++ syspref.js.modif	2015-01-20 15:39:57.222154725 -0200
-@@ -2,3 +2,55 @@
++++ syspref.js.modif	2015-03-03 14:56:09.078967885 -0300
+@@ -2,3 +2,58 @@
  // Example: Homepage
  //pref("browser.startup.homepage", "http://www.weebls-stuff.com/wab/");
  
@@ -40,6 +40,9 @@
 +
 +// Opção necessária se este arquivo não for codificado com ROT-13
 +lockPref("general.config.obscure_value", 0);
++
++// Desativa o "Hello", que foi adicionado no Firefox 35.0 (App de chamadas de áudio e vídeo)
++lockPref("loop.enabled", false);
 +
 +// Configura o proxy com a opção "Sem proxy"
 +lockPref("network.proxy.type", 0);
