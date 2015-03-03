@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -8,6 +8,7 @@ import subprocess
 import traceback
 import netifaces
 import os
+import sys
 from includes.provas_config import ProvasConfig
 
 
@@ -195,7 +196,7 @@ class MainWindow(Gtk.Window):
 
     def reset_list(self):
         for row in self.store:
-            row[0] = Gtk.STOCK_REMOVE
+            row[0] = Gtk.STOCK_NO
             row[2] = ''
 
     def process_list(self):
@@ -232,31 +233,29 @@ class MainWindow(Gtk.Window):
             row[0] = Gtk.STOCK_CANCEL
 
 
-class App(Gtk.Window):
-    def error_message(self, title, description):
-        error_dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, title)
-        error_dialog.format_secondary_text(description)
-        error_dialog.run()
-        error_dialog.destroy()
-
-
 if __name__ == "__main__":
-    provas_config_file = '/opt/provas/moodle_provas.conf'
-    provas_online_config_file = '/opt/provas/moodle_provas_online.conf'
+    if len(sys.argv) < 2:
+        print("Você deve informar o caminho do arquivo de configuração do moodle provas (Ex: moodle_provas.conf)")
+        print("   Uso: " + sys.argv[0] + " </path/to/moodle_provas.conf>")
+        exit(1)
 
-    if os.path.exists(provas_online_config_file):
+    provas_config_file = sys.argv[1]
+
+    if not os.path.exists(provas_config_file):
+        print("Erro: O caminho para o arquivo '" + provas_config_file + "' não existe!")
+        exit(1)
+
+    cd_config = ProvasConfig(provas_config_file)
+
+    try:
+        provas_online_config_file = cd_config['provas_online_config_file']
         cd_online_config = ProvasConfig(provas_online_config_file)
         first_host = cd_online_config['ntp_servers'].split()[0]
         second_host = cd_online_config['moodle_provas_url'].split('/')[2]
-    elif os.path.exists(provas_config_file):
+    except:
         cd_config = ProvasConfig(provas_config_file)
         first_host = cd_config['host_test_1']
         second_host = cd_config['host_test_2']
-    else:
-        app = App()
-        app.error_message("Os arquivos de configuração não podem ser lidos", "Não consegui ler os arquivos " +
-                          provas_online_config_file + " e " + provas_config_file)
-        exit(1)
 
     network = NetworkTest()
     window = MainWindow()

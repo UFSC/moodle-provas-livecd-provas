@@ -4,7 +4,7 @@
 CHMOD='/bin/chmod'
 
 # Ajusta as permissões dos arquivos e diretórios
-$CHMOD 600 '/opt/provas/moodle_provas.conf'
+$CHMOD 644 '/opt/provas/moodle_provas'*'.conf'
 
 /opt/provas/update_desktop_wallpaper.sh 1 'no'
 source /opt/provas/moodle_provas.conf

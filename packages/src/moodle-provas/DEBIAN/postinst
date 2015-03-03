@@ -3,6 +3,15 @@
 
 PATCH='/usr/bin/patch'
 CHMOD='/bin/chmod'
+EASY_INSTALL='/usr/bin/easy_install3'
+PIP3='/usr/local/bin/pip3'
+
+
+# Instala o pacote netifaces requerido pelo network_diagnostic, mas primeiro precisa instalar
+# o pip3, senão o módulo será instalado apenas para o Python 2.7 (Ubuntu 12.04).
+# O comando easy_install3 é instalado pelo pacote python3-setuptools.
+$EASY_INSTALL pip
+$PIP3 install netifaces
 
 update-rc.d iptables-persistent start 37 2 3 4 5 . stop 37 0 1 6 . >/dev/null
 update-rc.d moodle-provas defaults >/dev/null
@@ -35,5 +44,5 @@ $CHMOD 700 '/opt/provas/send_logs.sh'
 $CHMOD 700 '/opt/provas/start_user_apps.sh'
 $CHMOD 700 '/opt/provas/start_X.sh'
 
-$CHMOD -R 700 '/opt/provas/includes'
+$CHMOD -R 755 '/opt/provas/includes'
 
