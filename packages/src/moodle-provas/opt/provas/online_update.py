@@ -78,7 +78,7 @@ class MainWindow(Gtk.Window):
         self.institutions = ''
 
         title = Gtk.Label()
-        title.set_text('<span size=\"25000\">Selecione a sua instituição abaixo e clique no botão "Prosseguir":</span>')
+        title.set_text('<span size=\"25000\">Selecione a sua instituição e clique em "Prosseguir":</span>')
         title.set_use_markup(True)
         title.set_line_wrap(True)
         title.set_justify(Gtk.Justification.CENTER)
@@ -104,7 +104,7 @@ class MainWindow(Gtk.Window):
                     exit(1)
                 confirmDialog.destroy()
 
-        current_livecd_version = config_cd['livecd_version']
+        current_livecd_version = cd_config['livecd_version']
         if current_livecd_version < server.livecd_minimum_version:
             errorExamVersionDialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
                                                        Gtk.ButtonsType.OK,
@@ -150,8 +150,8 @@ class MainWindow(Gtk.Window):
         # column_2.set_max_width(500)
         # column_3 = Gtk.TreeViewColumn("Página do Moodle", url, text=2)
         column_1 = Gtk.TreeViewColumn("Instituição", institution, text=1)
-        column_1.set_min_width(500)
-        column_1.set_max_width(600)
+        column_1.set_min_width(400)
+        column_1.set_max_width(500)
         column_2 = Gtk.TreeViewColumn("Página do Moodle", url, text=2)
 
         column_1.set_sort_column_id(0)
@@ -215,7 +215,7 @@ class MainWindow(Gtk.Window):
                                                       Gtk.ButtonsType.OK,
                                                       "Erro ao salvar o arquivo de configuração do Moodle Provas")
                 errorSavingDialog.format_secondary_text("Não foi possível salvar o arquivo " +
-                                                        config_cd['provas_online_config_file'] + "\n\n"
+                                                        cd_config['provas_online_config_file'] + "\n\n"
                                                         "Exceção: " + str(err))
                 errorSavingDialog.run()
                 errorSavingDialog.destroy()
@@ -241,7 +241,7 @@ if __name__ == "__main__":
         print("Erro: O caminho para o arquivo '" + provas_config_file + "' não existe!")
         exit(1)
 
-    config_cd = ProvasConfig(provas_config_file)
+    cd_config = ProvasConfig(provas_config_file)
     server = OnlineUpdate(provas_config_file)
     window = MainWindow()
     window.show_all()
