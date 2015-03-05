@@ -1,0 +1,38 @@
+{
+  "online_config_version":"1.0",
+  "livecd_minimum_version":"3.1",
+  "require_load_confirmation":"yes",
+  "mainstream_log_server_settings":{
+    "log_script_url":"https://wwwexe.inf.ufsc.br/~juliao/provas_receive_logs.php",
+    "log_script_token":"f0a320fd52383c42649d48ea545915a9",
+    "log_system_files":"/etc/X11/xorg* /var/log/auth.log /var/log/boot.log /var/log/casper.log /var/log/dmesg /var/log/firewall* /var/log/kern.log /var/log/moodle-provas.log /var/log/multiseat* /var/log/syslog /var/log/Xorg.*"
+  },
+  "institutions":[
+    {
+      "institution_name":"Universidade Federal de Santa Catarina",
+      "institution_moodle_support_email":"suporte@moodle.ufsc.br",
+      "moodle_provas_url":"https://provas3.moodle.ufsc.br",
+      "moodle_provas_receive_data_path":"/local/exam_authorization/receive_data.php",
+      "allowed_tcp_out_ipv4":"150.162.1.108#443 150.162.1.49#443 150.162.1.141#443",
+      "allowed_tcp_out_ipv6":"2801:84:0:1009:64e1:3d7:c3ac:f964#80 2801:84:0:1009:e611:5bff:fea6:8fab#80 fe80::e611:5bff:fea6:8fab#80",
+      "ntp_servers":"ntp.ufsc.br a.ntp.br",
+      "show_institution_name_in_desktop":"yes",
+      "custom_log_server_settings":{}
+    },
+    {
+      "institution_name":"Instituto Federal de Santa Catarina",
+      "institution_moodle_support_email":"suporte@moodle.ifsc.br",
+      "moodle_provas_url":"https://provas3.moodle.ifsc.br",
+      "moodle_provas_receive_data_path":"/local/exam_authorization/receive_data.php",
+      "allowed_tcp_out_ipv4":"150.162.1.108#443 150.162.1.49#443 150.162.1.141#443",
+      "allowed_tcp_out_ipv6":"2801:84:0:1009:64e1:3d7:c3ac:f964#80 2801:84:0:1009:e611:5bff:fea6:8fab#80 fe80::e611:5bff:fea6:8fab#80",
+      "ntp_servers":"ntp.ifsc.br a.ntp.br",
+      "show_institution_name_in_desktop":"yes",
+      "custom_log_server_settings":{
+        "log_script_url":"https://www.ifsc.edu.br/provas_receive_logs.php",
+        "log_script_token":"f0a320fd52383c42649d48ea545915a9",
+        "log_system_files":"/etc/X11/xorg* /var/log/*"
+      }
+    }
+  ]
+}
