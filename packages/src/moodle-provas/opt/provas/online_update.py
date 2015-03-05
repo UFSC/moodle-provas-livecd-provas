@@ -28,19 +28,20 @@ class OnlineUpdate():
         self.require_load_confirmation = True if self.config["require_load_confirmation"] == "yes" else False
         self.mainstream_log_server_settings = self.config["mainstream_log_server_settings"]
         self.institutions = self.config["institutions"]
+        print(self.institutions)
 
 
     def save_provas_config_file(self, institution_id):
         """
 
-        :param institution_id: str
+        :param institution_id: int
         :raise KeyError: Exception
 
         """
         try:
             institution = self.institutions[institution_id]
         except:
-            raise KeyError("Não existe uma instituição com o ID = " + institution_id)
+            raise KeyError("Não existe uma instituição com o ID = " + str(institution_id))
 
         # Check if the institution will use custom log_server_settings
         if institution["custom_log_server_settings"]:
@@ -85,7 +86,7 @@ class MainWindow(Gtk.Window):
         title.set_size_request(800, 300)
 
         # ID, Instituição, URL
-        self.store = Gtk.ListStore(str, str, str)
+        self.store = Gtk.ListStore(int, str, str)
 
         while True:
             try:
@@ -120,7 +121,8 @@ class MainWindow(Gtk.Window):
         # If there is only one institution, loads by default
         if len(server.institutions) == 1:
             try:
-                server.save_provas_config_file("1")
+                # Save the institution with index zero
+                server.save_provas_config_file(0)
             except Exception as err:
                 print(traceback.print_exc())
                 errorSavingDialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
@@ -133,9 +135,8 @@ class MainWindow(Gtk.Window):
                 exit(1)
             exit(0)
 
-        for institution_id in server.institutions.keys():
-            institution = server.institutions[institution_id]
-            self.store.append([str(institution_id), institution['institution_name'], institution['moodle_provas_url']])
+        for institution_id, institution in enumerate(server.institutions):
+            self.store.append([institution_id, institution['institution_name'], institution['moodle_provas_url']])
 
         self.treeview = Gtk.TreeView(model=self.store)
         self.selection = self.treeview.get_selection()
@@ -199,13 +200,13 @@ class MainWindow(Gtk.Window):
                 response = confirmDialog.run()
 
                 if response == Gtk.ResponseType.YES:
-                    institution_id = str(model[treeiter][0])
+                    institution_id = model[treeiter][0]
                     confirmDialog.destroy()
                 elif response == Gtk.ResponseType.NO:
                     confirmDialog.destroy()
                     return
             else:
-                institution_id = str(model[treeiter][0])
+                institution_id = model[treeiter][0]
 
             try:
                 server.save_provas_config_file(institution_id)
