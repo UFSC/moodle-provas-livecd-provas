@@ -290,17 +290,16 @@ make_bootmenu() {
     msg_d "$sub_prefix Configurando o bootloader..."
     sed -i "s/%TIMEOUT%/$boot_timeout/g" "$dest_dir/isolinux/isolinux.cfg"
 
-    sed -i "s/%MSG_TIMEOUT%/$msg_timeout/g" "$dest_dir/isolinux/menu.cfg.utf-8"
-    sed -i "s/%MSG_BOTTOM%/$msg_bottom/g" "$dest_dir/isolinux/menu.cfg.utf-8"
     sed -i "s/%LIVECD_VERSION%/$livecd_version/g" "$dest_dir/isolinux/menu.cfg.utf-8"
+    sed -i "s/%MSG_BOTTOM%/$msg_bottom/g" "$dest_dir/isolinux/menu.cfg.utf-8"
+    sed -i "s/%MSG_TIMEOUT%/$msg_timeout/g" "$dest_dir/isolinux/menu.cfg.utf-8"
 
-    sed -i "s/%LIVECD_VERSION%/$livecd_version/g" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
     sed -i "s/%BUILD_DATE%/$build_date/g" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
     sed -i "s/%HARDWARE_ARCH%/$livecd_hw_arch/g" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
+    sed -i "s/%LIVECD_VERSION%/$livecd_version/g" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
 
-    sed -i "s/%LIVECD_VERSION%/$livecd_version/g" "$dest_dir/isolinux/F2_pt_BR.hlp.utf-8"
     sed -i "s/%BUILD_DATE%/$build_date/g" "$dest_dir/isolinux/F2_pt_BR.hlp.utf-8"
-    sed -i "s/%HARDWARE_ARCH%/$livecd_hw_arch/g" "$dest_dir/isolinux/F2_pt_BR.hlp.utf-8"
+    sed -i "s/%LIVECD_VERSION%/$livecd_version/g" "$dest_dir/isolinux/F2_pt_BR.hlp.utf-8"
 
     if [ ! -z "$kernel_version" ]; then
         sed -i "s/%KERNEL_VERSION%/$kernel_version/g" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
