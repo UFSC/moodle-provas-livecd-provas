@@ -40,9 +40,12 @@ $CHMOD 400 '/etc/iptables/rules.v6'
 $CHMOD 700 '/opt/provas/cron_script.sh'
 $CHMOD 700 '/opt/provas/get_supported_seats.py'
 $CHMOD 700 '/opt/provas/init_script.sh'
+$CHMOD 755 '/opt/provas/network_diagnostic.py'
+$CHMOD 700 '/opt/provas/online_update.py'
 $CHMOD 700 '/opt/provas/send_logs.sh'
 $CHMOD 700 '/opt/provas/start_user_apps.sh'
 $CHMOD 700 '/opt/provas/start_X.sh'
+$CHMOD 700 '/opt/provas/update_desktop_wallpaper.sh'
 
 $CHMOD -R 755 '/opt/provas/includes'
 

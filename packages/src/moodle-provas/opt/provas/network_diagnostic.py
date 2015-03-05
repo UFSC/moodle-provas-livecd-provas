@@ -248,11 +248,13 @@ if __name__ == "__main__":
     cd_config = ProvasConfig(provas_config_file)
 
     try:
+        # Tenta ler os dados do arquivo de configuração online, mas primeiro descobre onde ele deveria estar.
         provas_online_config_file = cd_config['provas_online_config_file']
         cd_online_config = ProvasConfig(provas_online_config_file)
         first_host = cd_online_config['ntp_servers'].split()[0]
         second_host = cd_online_config['moodle_provas_url'].split('/')[2]
     except:
+        # Se não funcionar, usa os dados do arquivo de configuração do LiveCD.
         cd_config = ProvasConfig(provas_config_file)
         first_host = cd_config['host_test_1']
         second_host = cd_config['host_test_2']

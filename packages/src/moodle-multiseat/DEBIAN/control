@@ -1,15 +1,13 @@
 Package: moodle-multiseat
-Version: 3.1-2015021102
+Version: 3.1-2015030504
 Architecture: all
-Depends: gcc,
-         grep,
+Depends: grep,
          mawk,
          moodle-provas,
          pciutils,
          pulseaudio,
          pulseaudio-utils,
          python2.7,
-         python2.7-dev,
          python-gi,
          python-pip,
          python-yaml,
