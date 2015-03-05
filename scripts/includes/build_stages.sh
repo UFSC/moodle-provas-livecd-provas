@@ -60,9 +60,9 @@ make_config_pkg() {
     msg_d "$sub_prefix Copiando src do pacote 'moodle-provas-config' para um diretório temporário..."
     cp -Rf "$pkgs_src_dir/moodle-provas-config" "$working_dir/"
 
-    if [ -f "$config_dir/images/logout-banner.png" ]; then
+    if [ -f "$config_dir/images/logout_banner.png" ]; then
         msg_d "$sub_prefix Atualizando a imagem do banner de logout..."
-        cp -f "$config_dir/images/logout-banner.png" "$working_dir/moodle-provas-config/opt/provas/images/"
+        cp -f "$config_dir/images/logout_banner.png" "$working_dir/moodle-provas-config/opt/provas/images/"
     fi
 
     if [ -f "$config_dir/images/wallpaper.png" ]; then
