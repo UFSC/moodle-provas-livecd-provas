@@ -3,6 +3,7 @@
 
 provas_config_file='/opt/provas/moodle_provas.conf'
 [ -r "$provas_config_file" ] && source "$provas_config_file" || exit 1
+[ -r "$provas_online_config_file" ] && source "$provas_online_config_file" || exit 1
 
 functions_file="$provas_dir/includes/functions.sh"
 [ -r "$functions_file" ] && source "$functions_file" || exit 1
@@ -37,8 +38,9 @@ uname -a  >"$files_dir/cmd_uname-a.log" 2>&1
 log 'Comprimindo os arquivos...'
 tar czvf "/tmp/$filename" "$files_dir" >>"$log_file_provas" 2>&1 || exit 1
 
-log 'Enviando arquivo comprimido...'
-curl -k -F "auth=$log_server_auth" -F "file=@/tmp/$filename" "$log_server_script" >>"$log_file_provas" 2>&1 || exit 1
+# TODO: Possíveis erros de recebimento pelo servidor não estão sendo tratados aqui.
+log "Enviando arquivo comprimido para $log_script_url ..."
+curl -k -F "token=$log_script_token" -F "file=@/tmp/$filename" "$log_script_url" >>"$log_file_provas" 2>&1 || exit 1
 
 log 'Removendo os arquivos temporários...'
 rm -rf "$files_dir"

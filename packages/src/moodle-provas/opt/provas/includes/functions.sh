@@ -133,7 +133,7 @@ show_send_logs_wait() {
 # Mostra uma mensagem no monitor do primeiro usuário dizendo que houve sucesso no envio dos logs de diagnóstico.
 show_send_logs_ok() {
     pkill gxmessage
-    msg="Os arquivos de log foram enviados com sucesso, agora você pode desligar este computador e enviar um e-mail para $log_email informando que o procedimento foi realizado."
+    msg="Os arquivos de log foram enviados com sucesso, agora você pode desligar este computador e enviar um e-mail para $institution_moodle_support_email informando que o procedimento foi realizado."
 
     gxmessage -display ':1' -bg 'green' -geometry '450x200' -center -font 'ubuntu 13' -title 'Envio dos arquivos de log' -wrap "$msg"
 }
@@ -143,13 +143,16 @@ show_send_logs_bad() {
     pkill gxmessage
     msg='Erro no envio dos arquivos de log, informe o problema ao suporte técnico.'
 
-    gxmessage -display ':1' -bg 'red' -fg 'white' -geometry '700x500' -center -font 'ubuntu 13' -title "$msg" -file '/tmp/send_logs.log'
+    gxmessage -display ':1' -bg 'red' -fg 'white' -geometry '700x500' -center -font 'ubuntu 13' -title "$msg" -file "$provas_log_dir/send_logs.log"
 }
 
 # Prepara e envia os logs para o servidor remoto via POST, utilizando o script /opt/provas/send_logs.sh
 send_logs() {
     log 'Preparando para enviar os logs'
-    log 'Liberando o acesso ao servidor de logs'
+    log_server_host=$(echo $log_script_url | cut -d '/' -f3)
+    log_server_ip=$(dig $log_server_host a +short | tail -n1)
+    log "Liberando o acesso ao servidor de logs. HOST: $log_server_host IP: $log_server_ip PORTAS: 80 e 443"
+    $IPTABLES_IPV4 -A OUTPUT -d "$log_server_ip" -p tcp --dport 80 -j ACCEPT >>"$log_file_provas" 2>&1
     $IPTABLES_IPV4 -A OUTPUT -d "$log_server_ip" -p tcp --dport 443 -j ACCEPT >>"$log_file_provas" 2>&1
 
     export LANG="pt_BR.UTF-8"
@@ -158,7 +161,7 @@ send_logs() {
     show_send_logs_wait
 
     log "Executando o script que envia os logs, /opt/provas/send_logs.sh"
-    if /opt/provas/send_logs.sh >/tmp/send_logs.log 2>&1; then
+    if /opt/provas/send_logs.sh >$provas_log_dir/send_logs.log 2>&1; then
         show_send_logs_ok
     else
         log "Erro ao enviar os arquivos de log."
