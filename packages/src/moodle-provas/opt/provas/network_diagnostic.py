@@ -135,9 +135,9 @@ class MainWindow(Gtk.Window):
         self.store = Gtk.ListStore(str, str, str, str, str, str)
         self.store.append([None, "Interfaces de rede detectadas", None, "get_ifaces", None, None])
         self.store.append([None, "Interface de rede padrão", None, "get_default_iface", None, None])
-        self.store.append([None, "Ping " + second_host, None, "ping_ipv4", second_host, None])
         self.store.append([None, "Ping " + first_host, None, "ping_ipv4", first_host, None])
-        self.store.append([None, "traceroute " + second_host, None, "traceroute", "provas2.moodle.ufsc.br", None])
+        self.store.append([None, "Ping " + second_host, None, "ping_ipv4", second_host, None])
+        self.store.append([None, "traceroute " + first_host, None, "traceroute", first_host, None])
 
         treeview = Gtk.TreeView(model=self.store)
         treeview.set_size_request(420, 230)
@@ -251,8 +251,8 @@ if __name__ == "__main__":
         # Tenta ler os dados do arquivo de configuração online, mas primeiro descobre onde ele deveria estar.
         provas_online_config_file = cd_config['provas_online_config_file']
         cd_online_config = ProvasConfig(provas_online_config_file)
-        first_host = cd_online_config['ntp_servers'].split()[0]
-        second_host = cd_online_config['moodle_provas_url'].split('/')[2]
+        first_host = cd_online_config['moodle_provas_url'].split('/')[2]
+        second_host = cd_online_config['ntp_servers'].split()[0]
     except:
         # Se não funcionar, usa os dados do arquivo de configuração do LiveCD.
         cd_config = ProvasConfig(provas_config_file)
