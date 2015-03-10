@@ -366,6 +366,18 @@ make_disk_info() {
         enabled_options='admin'
     fi
 
+    if [ "$enable_check_media" = 'yes' ]; then
+        enabled_options="$enabled_options check_media"
+    fi
+
+    if [ "$enable_hardcoded_online_config" = 'yes' ]; then
+        enabled_options="$enabled_options hardcoded_online_config"
+    fi
+
+    if [ "$enable_memtest" = 'yes' ]; then
+        enabled_options="$enabled_options memtest"
+    fi
+
     if [ "$enable_multiseat" = 'yes' ]; then
         enabled_options="$enabled_options multiseat"
     fi
@@ -419,14 +431,6 @@ make_iso() {
     # só é possível desativá-lo alterando a opção no arquivo de configuração e executando a atualização dos pacotes.
     if $(grep -q "$admin_user" "$root_fs/etc/passwd" 2>/dev/null); then
         iso_name="${iso_name}_admin"
-    fi
-
-    if [ "$enable_multiseat" = 'yes' ]; then
-        iso_name="${iso_name}_multiseat"
-    fi
-
-    if [ "$enable_send_logs" = 'yes' ]; then
-        iso_name="${iso_name}_sendlogs"
     fi
 
     iso_name="$iso_name.iso"
