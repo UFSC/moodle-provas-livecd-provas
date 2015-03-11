@@ -76,7 +76,7 @@ make_config_pkg() {
     msd_d "$sub_prefix Atualizando a data de geração no arquivo de configuração [${provas_config_file##*/}] ..."
     sed -i "s/%BUILD_DATE%/$build_date/g" "$working_dir/moodle-provas-config$provas_config_file"
 
-    if [ "$enable_default_online_config" = "yes" ]; then
+    if [ "$enable_hardcoded_online_config" = "yes" ]; then
         msg_d "$sub_prefix Copiando o arquivo padrão de configuração online do LiveCD [${provas_online_config_file##*/}] ..." 
         cp -f "$config_dir/${provas_online_config_file##*/}" "$working_dir/moodle-provas-config$provas_online_config_file" ||
             msg_e "$sub_prefix ERRO: O arquivo '$config_dir/${provas_online_config_file##*/}' não pode ser lido."
