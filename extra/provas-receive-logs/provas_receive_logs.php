@@ -26,6 +26,8 @@ if (isset($_FILES['file'])) {
 
         echo "OK\n\tResposta do servidor: Arquivo '$filename' ($size bytes) recebido.\n";
     }
-    else
-        echo "*** Erro\n\tResposta do servidor: Erro na recepção do arquivo!\n";
+    else {
+        header('HTTP/1.1 500 Error receiving file', true, 500);
+        #echo "*** Erro\n\tResposta do servidor: Erro na recepção do arquivo!\n";
+    }
 }
