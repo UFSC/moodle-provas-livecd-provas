@@ -43,9 +43,7 @@ if [ -f "$provas_online_config_file" ]; then
     source "$provas_online_config_file"
 else
     log "O arquivo de configuração online padrão não existe ($provas_online_config_file)."
-    log "Liberando o acesso HTTP e HTTPS ao servidor de configuração"
-    $IPTABLES_IPV4 -A OUTPUT -d "$livecd_online_config_host_ip" -p tcp --dport 80 -j ACCEPT
-    $IPTABLES_IPV4 -A OUTPUT -d "$livecd_online_config_host_ip" -p tcp --dport 443 -j ACCEPT
+    allow_access_to_online_config_server
 
     log "Iniciando o programa de configuração online"
     export LANG="pt_BR.UTF-8"

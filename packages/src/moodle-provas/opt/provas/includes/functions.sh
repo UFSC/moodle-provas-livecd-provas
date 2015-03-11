@@ -193,8 +193,39 @@ configure_firewall() {
     configure_firewall_ipv4
     configure_firewall_ipv6
 
-    log "Salvando as regras atualizadas do firewall"
+    log "configure_firewall() Salvando as regras atualizadas do firewall"
     /etc/init.d/iptables-persistent save
+}
+
+# Libera o acesso aos ips do servidor de configuração online, que possue o arquivo JSON.
+allow_access_to_online_config_server() {
+    log "allow_access_to_online_config_server() Liberando o acesso HTTPS ao servidor de configuração no IPv4: $livecd_online_config_host_ip"
+    $IPTABLES_IPV4 -A OUTPUT -d "$livecd_online_config_host_ip" -p tcp --dport 443 -j ACCEPT
+
+#    Código que adiciona suporte a IPv6, não está ativado porque existem algumas dependências
+#    em outras partes, por exemplo a variável $livecd_local_ip depende da variável $livecd_online_config_host_ip ,
+#    os headers HTTP enviados pelo firefox contém apenas o IPv4, deveria conter também o IPv6, mas
+#    isso requer alterações no módulo de provas do servidor do Moodle.
+#    Código adicionado em 11/03/2015.
+#    livecd_online_config_host_ipv4=$(dig $livecd_online_config_host a +short)
+#    livecd_online_config_host_ipv6=$(dig $livecd_online_config_host aaaa +short)
+#
+#    log "allow_access_to_online_config_server() O host $livecd_online_config_host tem os endereços IPv4: '$livecd_online_config_host_ipv4'"
+#    log "allow_access_to_online_config_server() O host $livecd_online_config_host tem os endereços IPv6: '$livecd_online_config_host_ipv6'"
+#
+#    if [ -n "$livecd_online_config_host_ipv4" ]; then
+#        for ipv4 in $livecd_online_config_host_ipv4; do
+#            log "allow_access_to_online_config_server() Liberando o acesso HTTPS ao servidor de configuração no IPv4: $ipv4"
+#            $IPTABLES_IPV4 -A OUTPUT -d "$ipv4" -p tcp --dport 443 -j ACCEPT
+#        done
+#    fi
+#
+#    if [ -n "$livecd_online_config_host_ipv6" ]; then
+#        for ipv6 in $livecd_online_config_host_ipv6; do
+#            log "allow_access_to_online_config_server() Liberando o acesso HTTPS ao servidor de configuração no IPv6: $ipv6"
+#            $IPTABLES_IPV6 -A OUTPUT -d "$ipv6" -p tcp --dport 443 -j ACCEPT
+#        done
+#    fi
 }
 
 # Libera o acesso aos ips do servidor de logs, para onde os arquivos coletados serão enviados.
