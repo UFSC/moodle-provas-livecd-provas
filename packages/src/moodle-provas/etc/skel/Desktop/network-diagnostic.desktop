@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Network Diagnostic
+Name[pt_BR]=Diagnóstico da Rede
+Comment=Execute a network diagnostic
+Comment[pt_BR]=Executa uma série de testes na rede
+Icon=gnome-network-properties
+Exec=/opt/provas/network_diagnostic.py /opt/provas/moodle_provas.conf
+Terminal=false
+StartupNotify=true
+Type=Application
+Categories=GNOME;GTK;Settings;X-GNOME-NetworkSettings;
+NotShowIn=KDE;

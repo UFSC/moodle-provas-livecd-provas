@@ -37,9 +37,6 @@ if [ "$enable_multiseat" != "yes" ]; then
     apt-get purge moodle-multiseat -y >>"$std_out" 2>>"$std_err"
 fi
 
-#msg_d "Definindo o 'oracle-java7-jre' como o java padrão..."
-#update-alternatives --set java /usr/lib/oracle-java7-jre/bin/java >>"$std_out" 2>>"$std_err"
-
 msg_d "Configurando o locale padrão para $lang..."
 locale-gen pt >>"$std_out" 2>>"$std_err"
 update-locale LANG="$lang" LANGUAGE="$language" LC_ALL="$lc_all" >>"$std_out" 2>>"$std_err"
@@ -56,15 +53,6 @@ sed -i "s/# export FLAVOUR=.*/export FLAVOUR=\"$livecd_hostname\"/g" /etc/casper
 msg_d "Configurando o fuso horário padrão do sistema para a zona '$timezone'..."
 echo "$timezone" > /etc/timezone
 dpkg-reconfigure tzdata >>"$std_out" 2>>"$std_out"
-
-# Compilação e instalação dos drivers de vídeo da Silicon Motion, em especial o SM750
-# que é utilizado nos Multiterminais do Pregão 23/2012.
-#apt-get -y install xserver-xorg-dev-lts-saucy xutils-dev libpci-dev gawk autoconf build-essential libtool automake pkg-config
-#cd /tmp/siliconmotion_4.0.11
-#sh ./autogen.sh
-#./configure --prefix=/usr --disable-smirandr
-#make && make install prefix=/usr
-#apt-get -y autoremove xserver-xorg-dev-lts-saucy xutils-dev libpci-dev gawk autoconf build-essential libtool automake pkg-config
 
 
 finish_chroot

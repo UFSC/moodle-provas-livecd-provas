@@ -1,7 +1,9 @@
 #!/bin/bash
+#set -x
 
-provas_config='/opt/provas/moodle_provas.conf'
-[ -r "$provas_config" ] && source "$provas_config" || exit 1
+provas_config_file='/opt/provas/moodle_provas.conf'
+[ -r "$provas_config_file" ] && source "$provas_config_file" || exit 1
+[ -r "$provas_online_config_file" ] && source "$provas_online_config_file" || exit 1
 
 functions_file="$provas_dir/includes/functions.sh"
 [ -r "$functions_file" ] && source "$functions_file" || exit 1
@@ -19,7 +21,7 @@ mkdir "$files_dir"
 
 log "Copiando alguns arquivos do sistema para $files_dir..."
 for file in $log_system_files; do
-    cp "$file" "$files_dir/" >>"$log_file_provas" 2>&1
+    cp -R "$file" "$files_dir/"
 done
 
 log 'Gravando a saída de alguns comandos...'
@@ -34,14 +36,24 @@ ps aux >"$files_dir/cmd_ps-aux.log" 2>&1
 uname -a  >"$files_dir/cmd_uname-a.log" 2>&1
 
 log 'Comprimindo os arquivos...'
-tar czvf "/tmp/$filename" "$files_dir" >>"$log_file_provas" 2>&1 || exit 1
+tar czvf "/tmp/$filename" "$files_dir" || exit 1
 
-log 'Enviando arquivo comprimido...'
-curl -k -F "auth=$log_server_auth" -F "file=@/tmp/$filename" "$log_server_script" >>"$log_file_provas" 2>&1 || exit 1
+log "Enviando arquivo comprimido para $log_script_url ..."
+curl --fail -k -F "token=$log_script_token" -F "file=@/tmp/$filename" "$log_script_url"
+
+if [ $? -eq 0 ]; then
+    echo '  - Arquivo enviado com sucesso.'
+    status_code=0
+else
+    echo '  - Erro ao enviar o arquivo.'
+    status_code=1
+fi
 
 log 'Removendo os arquivos temporários...'
 rm -rf "$files_dir"
 rm -rf "/tmp/$filename"
 
 log 'Feito.'
+
+exit $status_code
 

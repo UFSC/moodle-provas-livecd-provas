@@ -133,7 +133,7 @@ show_send_logs_wait() {
 # Mostra uma mensagem no monitor do primeiro usuário dizendo que houve sucesso no envio dos logs de diagnóstico.
 show_send_logs_ok() {
     pkill gxmessage
-    msg="Os arquivos de log foram enviados com sucesso, agora você pode desligar este computador e enviar um e-mail para $log_email informando que o procedimento foi realizado."
+    msg="Os arquivos de log foram enviados com sucesso, agora você pode desligar este computador e enviar um e-mail para $institution_moodle_support_email informando que o procedimento foi realizado."
 
     gxmessage -display ':1' -bg 'green' -geometry '450x200' -center -font 'ubuntu 13' -title 'Envio dos arquivos de log' -wrap "$msg"
 }
@@ -143,35 +143,13 @@ show_send_logs_bad() {
     pkill gxmessage
     msg='Erro no envio dos arquivos de log, informe o problema ao suporte técnico.'
 
-    gxmessage -display ':1' -bg 'red' -fg 'white' -geometry '700x500' -center -font 'ubuntu 13' -title "$msg" -file '/tmp/send_logs.log'
-}
-
-# Prepara e envia os logs para o servidor remoto via POST, utilizando o script /opt/provas/send_logs.sh
-send_logs() {
-    log 'Preparando para enviar os logs'
-    log 'Liberando o acesso ao servidor de logs'
-    $IPTABLES -A OUTPUT -d "$log_server_ip" -p tcp --dport 443 -j ACCEPT >>"$log_file_provas" 2>&1
-
-    export LANG="pt_BR.UTF-8"
-    export XAUTHORITY="/home/${username_base}1/.Xauthority"
-    export DISPLAY=':1'
-    show_send_logs_wait
-
-    log "Executando o script que envia os logs, /opt/provas/send_logs.sh"
-    if /opt/provas/send_logs.sh >/tmp/send_logs.log 2>&1; then
-        show_send_logs_ok
-    else
-        log "Erro ao enviar os arquivos de log."
-        show_send_logs_bad
-    fi
-
-    exit
+    gxmessage -display ':1' -bg 'red' -fg 'white' -geometry '700x500' -center -font 'ubuntu 13' -title "$msg" -file "$provas_log_dir/send_logs.log"
 }
 
 # Configura a página inicial do navegador Mozilla Firefox.
 set_browser_homepage() {
     log 'Atualizando as configuração da página inicial do Firefox'
-    $SED -i "s|%homepage%|$provas_homepage|g" "$firefox_syspref"
+    $SED -i "s|about:blank|$moodle_provas_url|g" "$firefox_syspref"
 }
 
 # Configura o arquivo de autoconfig do navegador Mozilla Firefox.
@@ -183,28 +161,97 @@ configure_browser() {
     cp "$firefox_bin/$firefox_autoconfig.tpl" "$firefox_bin/$firefox_autoconfig"
 
     log "Atualizando as configurações do autoconfig do Firefox"
-    $SED -i "s|%provas_version%|$provas_version|g" "$firefox_bin/$firefox_autoconfig"
-    $SED -i "s|%local_ip%|$local_ip|g" "$firefox_bin/$firefox_autoconfig"
-    $SED -i "s|%local_network%|$local_network|g" "$firefox_bin/$firefox_autoconfig"
+    $SED -i "s|%livecd_version%|$livecd_version|g" "$firefox_bin/$firefox_autoconfig"
+    $SED -i "s|%livecd_local_ip%|$livecd_local_ip|g" "$firefox_bin/$firefox_autoconfig"
+    $SED -i "s|%livecd_local_network%|$livecd_local_network|g" "$firefox_bin/$firefox_autoconfig"
+}
+
+configure_firewall_ipv4() {
+    for entry in $allowed_tcp_out_ipv4; do
+        ip="${entry%#*}"
+        port="${entry#*#}"
+        protocol='tcp'
+
+        log "configure_firewall_ipv4(): Liberando o acesso ao IP $ip na PORTA $port com o protocolo $protocol"
+        $IPTABLES_IPV4 -A OUTPUT -d "$ip" -p "$protocol" --dport "$port" -j ACCEPT >>"$log_file_provas" 2>&1
+    done
+}
+
+configure_firewall_ipv6() {
+    for entry in $allowed_tcp_out_ipv6; do
+        ip="${entry%#*}"
+        port="${entry#*#}"
+        protocol='tcp'
+
+        log "configure_firewall_ipv6(): Liberando o acesso ao IP $ip na PORTA $port com o protocolo $protocol"
+        $IPTABLES_IPV6 -A OUTPUT -d "$ip" -p "$protocol" --dport "$port" -j ACCEPT >>"$log_file_provas" 2>&1
+    done
 }
 
 # Libera o acesso via HTTP e HTTPS aos IPs definidos no arquivo de configuração e salva as regras atualizadas.
 configure_firewall() {
-    # Libera o acesso aos IPs via HTTP (porta 80)
-    for ip in $allowed_ips_http; do
-        log "Liberando o acesso via HTTP para o IP $ip"
-        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 80 -j ACCEPT >>"$log_file_provas" 2>&1
-    done
+    configure_firewall_ipv4
+    configure_firewall_ipv6
 
-    # Libera o acesso aos IPs via HTTPS (porta 443)
-    for ip in $allowed_ips_https; do
-        log "Liberando o acesso via HTTPS para o IP $ip"
-        $IPTABLES -A OUTPUT -d "$ip" -p tcp --dport 443 -j ACCEPT >>"$log_file_provas" 2>&1
-    done
-
-    log "Salvando as regras do firewall atualizadas"
+    log "configure_firewall() Salvando as regras atualizadas do firewall"
     /etc/init.d/iptables-persistent save
 }
+
+# Libera o acesso aos ips do servidor de configuração online, que possue o arquivo JSON.
+allow_access_to_online_config_server() {
+    log "allow_access_to_online_config_server() Liberando o acesso HTTPS ao servidor de configuração no IPv4: $livecd_online_config_host_ip"
+    $IPTABLES_IPV4 -A OUTPUT -d "$livecd_online_config_host_ip" -p tcp --dport 443 -j ACCEPT
+
+#    Código que adiciona suporte a IPv6, não está ativado porque existem algumas dependências
+#    em outras partes, por exemplo a variável $livecd_local_ip depende da variável $livecd_online_config_host_ip ,
+#    os headers HTTP enviados pelo firefox contém apenas o IPv4, deveria conter também o IPv6, mas
+#    isso requer alterações no módulo de provas do servidor do Moodle.
+#    Código adicionado em 11/03/2015.
+#    livecd_online_config_host_ipv4=$(dig $livecd_online_config_host a +short)
+#    livecd_online_config_host_ipv6=$(dig $livecd_online_config_host aaaa +short)
+#
+#    log "allow_access_to_online_config_server() O host $livecd_online_config_host tem os endereços IPv4: '$livecd_online_config_host_ipv4'"
+#    log "allow_access_to_online_config_server() O host $livecd_online_config_host tem os endereços IPv6: '$livecd_online_config_host_ipv6'"
+#
+#    if [ -n "$livecd_online_config_host_ipv4" ]; then
+#        for ipv4 in $livecd_online_config_host_ipv4; do
+#            log "allow_access_to_online_config_server() Liberando o acesso HTTPS ao servidor de configuração no IPv4: $ipv4"
+#            $IPTABLES_IPV4 -A OUTPUT -d "$ipv4" -p tcp --dport 443 -j ACCEPT
+#        done
+#    fi
+#
+#    if [ -n "$livecd_online_config_host_ipv6" ]; then
+#        for ipv6 in $livecd_online_config_host_ipv6; do
+#            log "allow_access_to_online_config_server() Liberando o acesso HTTPS ao servidor de configuração no IPv6: $ipv6"
+#            $IPTABLES_IPV6 -A OUTPUT -d "$ipv6" -p tcp --dport 443 -j ACCEPT
+#        done
+#    fi
+}
+
+# Libera o acesso aos ips do servidor de logs, para onde os arquivos coletados serão enviados.
+allow_access_to_log_server() {
+    log_server_host=$(echo $log_script_url | cut -d '/' -f3)
+    log_server_ipv4=$(dig $log_server_host a +short)
+    log_server_ipv6=$(dig $log_server_host aaaa +short)
+
+    log "allow_access_to_log_server() O host $log_server_host tem os endereços IPv4: '$log_server_ipv4'"
+    log "allow_access_to_log_server() O host $log_server_host tem os endereços IPv6: '$log_server_ipv6'"
+
+    if [ -n "$log_server_ipv4" ]; then
+        for ipv4 in $log_server_ipv4; do
+            log "allow_access_to_log_server() Liberando o acesso HTTPS ao servidor de configuração no IPv4: $ipv4"
+            $IPTABLES_IPV4 -A OUTPUT -d "$ipv4" -p tcp --dport 443 -j ACCEPT
+        done
+    fi
+
+    if [ -n "$log_server_ipv6" ]; then
+        for ipv6 in $log_server_ipv6; do
+            log "allow_access_to_log_server() Liberando o acesso HTTPS ao servidor de configuração no IPv6: $ipv6"
+            $IPTABLES_IPV6 -A OUTPUT -d "$ipv6" -p tcp --dport 443 -j ACCEPT
+        done
+    fi
+}
+
 
 # Aguarda a sessão do usuário informado ser carregada para montar o diretório do userChrome.css.
 lock_firefox_userchrome_file_for_user() {
@@ -296,4 +343,25 @@ set_ntp_servers() {
     else
         log 'ERRO: O arquivo /etc/default/ntpdate não pode ser lido.'
     fi
+}
+
+# Prepara e envia os logs para o servidor remoto via POST, utilizando o script /opt/provas/send_logs.sh
+send_logs() {
+    log 'Preparando para enviar os logs'
+    allow_access_to_log_server
+
+    export LANG="pt_BR.UTF-8"
+    export XAUTHORITY="/home/${username_base}1/.Xauthority"
+    export DISPLAY=':1'
+    show_send_logs_wait
+
+    log "Executando o script que envia os logs, /opt/provas/send_logs.sh"
+    if /opt/provas/send_logs.sh >$provas_log_dir/send_logs.log 2>&1; then
+        show_send_logs_ok
+    else
+        log "Erro ao enviar os arquivos de log."
+        show_send_logs_bad
+    fi  
+
+    exit
 }

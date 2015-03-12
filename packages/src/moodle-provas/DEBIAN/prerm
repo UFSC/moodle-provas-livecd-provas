@@ -2,6 +2,10 @@
 #set -x
 
 PATCH='/usr/bin/patch -R'
+PIP3='/usr/local/bin/pip3'
+YES='/usr/bin/yes'
+
+$YES | $PIP3 uninstall netifaces
 
 # Remove os patches aplicados
 $PATCH '/etc/X11/Xwrapper.config' '/etc/X11/Xwrapper.config.patch'

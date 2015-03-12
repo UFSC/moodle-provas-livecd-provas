@@ -1,2 +1,2 @@
 #!/bin/sh
-lxsession-logout --banner "/opt/provas/images/logout-banner.png" --side=top --prompt "Deseja encerrar o sistema de provas?"
+lxsession-logout --banner "/opt/provas/images/logout_banner.png" --side=top --prompt "Deseja encerrar o sistema de provas?"

@@ -1,7 +1,8 @@
 #!/bin/bash
+#set -x
 
-provas_config='/opt/provas/moodle_provas.conf'
-[ -r "$provas_config" ] && source "$provas_config" || exit 1
+provas_config_file='/opt/provas/moodle_provas.conf'
+[ -r "$provas_config_file" ] && source "$provas_config_file" || exit 1
 
 functions_file="$provas_dir/includes/functions.sh"
 [ -r "$functions_file" ] && source "$functions_file" || exit 1
@@ -9,6 +10,9 @@ functions_file="$provas_dir/includes/functions.sh"
 
 # Verifica se o script foi executado com poder de root
 is_root
+
+# Prepara o diretório de logs
+mkdir -p "$provas_log_dir"
 
 # O sistema for inicializado por boot remoto
 if is_pxe_booted; then
@@ -42,6 +46,6 @@ fi
 
 # O script abaixo deve ser executado em background para não bloquear a inicialização
 # do sistema, é por isso também que ele é um arquivo separado e não parte deste script.
-log 'Iniciando o script /opt/provas/start_user_apps.sh em background'
-$provas_dir/start_user_apps.sh &
+log 'Iniciando o script $provas_dir/start_user_apps.sh em background'
+"$provas_dir/start_user_apps.sh" >$provas_log_dir/start_user_apps.log 2>&1 &
 

@@ -174,8 +174,11 @@ finish_chroot() {
     msg_d "Removendo os kernels antigos..."
     remove_old_kernels
 
-    msg_d "Removendo os kernel-headers..."
-    apt-get -y purge linux-headers* >>"$std_out" 2>>"$std_err"
+    msg_d "Removendo os pacotes definidos em 'pkgs_to_remove'..."
+    for pkg in $pkgs_to_remove; do
+        msg_d "- Removendo: $pkg"
+        apt-get -y purge "$pkg" >>"$std_out" 2>>"$std_err"
+    done
 
     msg_d "Removendo os pacotes desnecessários..."
     apt-get -y autoremove >>"$std_out" 2>>"$std_err"

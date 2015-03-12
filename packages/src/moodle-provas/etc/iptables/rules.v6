@@ -18,11 +18,12 @@
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 # Ping
+-A INPUT -p ipv6-icmp -j ACCEPT
 -A OUTPUT -p ipv6-icmp -j ACCEPT
 
 # SSH
--A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
--A OUTPUT -p tcp -m state --state RELATED,ESTABLISHED -m tcp --sport 22 -j ACCEPT
+#-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+#-A OUTPUT -p tcp -m state --state RELATED,ESTABLISHED -m tcp --sport 22 -j ACCEPT
 
 # DNS
 -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT

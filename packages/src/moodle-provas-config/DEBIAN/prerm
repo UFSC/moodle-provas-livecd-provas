@@ -3,7 +3,7 @@
 
 DIVERT="/usr/bin/dpkg-divert"
 
-rm -f "/opt/provas/images/logout-banner.png"
-$DIVERT --remove --rename "/opt/provas/images/logout-banner.png"
+rm -f "/opt/provas/images/logout_banner.png"
+$DIVERT --remove --rename "/opt/provas/images/logout_banner.png"
 rm -f "/opt/provas/images/wallpaper.png"
 $DIVERT --remove --rename "/opt/provas/images/wallpaper.png"

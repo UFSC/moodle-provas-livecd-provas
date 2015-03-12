@@ -1,13 +1,13 @@
 <?php
 
 $upload_dir = '/home/cco/juliao/public_exe/upload/';
-$auth = 'f0a320fd52383c42649d48ea545915a9';
+$token = 'f0a320fd52383c42649d48ea545915a9';
 
 #print_r($_FILES);  # DEBUG
 #print_r($_POST);  # DEBUG
 
-# Se auth não estiver definida ou for diferente do que deve ser
-if (! isset($_POST['auth']) || $_POST['auth'] != $auth)
+# Se o token não estiver definido ou for diferente do que deve ser...
+if (! isset($_POST['token']) || $_POST['token'] != $token)
     die ("*** Erro\n\tResposta do servidor: Erro de autenticação, talvez você esteja usando uma versão desatualizada.\n");
 
 
@@ -26,6 +26,8 @@ if (isset($_FILES['file'])) {
 
         echo "OK\n\tResposta do servidor: Arquivo '$filename' ($size bytes) recebido.\n";
     }
-    else
-        echo "*** Erro\n\tResposta do servidor: Erro na recepção do arquivo!\n";
+    else {
+        header('HTTP/1.1 500 Error receiving file', true, 500);
+        #echo "*** Erro\n\tResposta do servidor: Erro na recepção do arquivo!\n";
+    }
 }

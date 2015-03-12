@@ -24,6 +24,9 @@ apt-get update >>"$std_out" 2>>"$std_err"
 msg_d "Atualizando o sistema com 'dist-upgrade' (pode demorar vários minutos)..."
 apt-get dist-upgrade -y >>"$std_out" 2>>"$std_err"
 
+msg_d "Instalando todos os pacotes essenciais (pode demorar vários minutos)..."
+apt-get install $pkg_all -y >>"$std_out" 2>>"$std_err"
+
 # Neste passo é normal ocorrerem erros no 'dpkg -i', devido as dependências, por isso o stderr é redirecionado pra $std_out.
 msg_d "Instalando os pacotes do moodle provas..."
 dpkg -i /tmp/*.deb >>"$std_out" 2>>"$std_out"

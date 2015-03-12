@@ -1,13 +1,15 @@
 #!/bin/bash
+#set -x
 
-provas_config='/opt/provas/moodle_provas.conf'
-[ -r "$provas_config" ] && source "$provas_config" || exit 1
+provas_config_file='/opt/provas/moodle_provas.conf'
+[ -r "$provas_config_file" ] && source "$provas_config_file" || exit 1
 
 functions_file="$provas_dir/includes/functions.sh"
 [ -r "$functions_file" ] && source "$functions_file" || exit 1
 
 
-IPTABLES='/sbin/iptables'
+IPTABLES_IPV4='/sbin/iptables'
+IPTABLES_IPV6='/sbin/ip6tables'
 SED='/bin/sed'
 
 is_root
@@ -16,11 +18,6 @@ first_user_id='1'
 second_user_id='2'
 username="${username_base}1"
 
-# Configura os servidores NTP do computador, para sincronizar o horário do computador.
-set_ntp_servers
-
-# Configura o navegador de internet com a página inicial definida no arquivo de configuração.
-set_browser_homepage
 
 # Aguarda a sessão do usuário carregar (Xorg + Desktop)
 wait_session_load_for_user "$first_user_id"
@@ -37,9 +34,39 @@ if ! is_pxe_booted; then
         sleep 1
     done
 
-    log "A internet está funcionando, recarregando as variáveis 'local_ip' e 'local_network'."
-    source "$provas_config"
+    log "A internet está funcionando, recarregando as variáveis 'livecd_local_ip' e 'livecd_local_network'."
+    source "$provas_config_file"
 fi
+
+if [ -f "$provas_online_config_file" ]; then
+    log "Carregando arquivo de configuração online padrão: $provas_online_config_file"
+    source "$provas_online_config_file"
+else
+    log "O arquivo de configuração online padrão não existe ($provas_online_config_file)."
+    allow_access_to_online_config_server
+
+    log "Iniciando o programa de configuração online"
+    export LANG="pt_BR.UTF-8"
+    export XAUTHORITY="/home/$username/.Xauthority"
+    export DISPLAY=":$first_user_id"
+    "$provas_dir/online_update.py" "$provas_config_file" >$provas_log_dir/online_update.log 2>&1
+    if [ $? -eq 0 ]; then
+        source "$provas_online_config_file"
+    else
+        exit 1
+    fi
+fi
+
+if [ "$show_institution_name_in_desktop" = "yes" ]; then
+    log "Atualizando o papel de parede com o nome da instituição"
+    "$provas_dir/update_desktop_wallpaper.sh" 2 'yes' >$provas_log_dir/update_desktop_wallpaper.log 2>&1 &
+fi
+
+# Configura os servidores NTP do computador, para sincronizar o horário do computador.
+set_ntp_servers
+
+# Configura o navegador de internet com a página inicial definida no arquivo de configuração.
+set_browser_homepage
 
 # A configuração do autoconfig do Firefox só pode ser feita após a conexão com a internet estar funcionando.
 log 'Configurando o navegador Mozilla Firefox...'

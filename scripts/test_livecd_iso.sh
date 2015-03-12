@@ -5,14 +5,13 @@
 # ISO do LiveCD que foi gerada. No final a máquina virtual temporária poderá ser removida.
 # Este script deve ser inicializado somente a partir do 'main.sh'.
 
+# Nome que a máquina virtual terá no VirtualBox.
+vm_name="$vm_name_base $(random_16)"
 
-vm_name="Ubuntu Provas Teste $(random_16)"
-vm_path="$working_dir/test_iso_vm/$vm_name"
-vm_ram=512
-vm_vram=12
-vm_bridge_if="eth0"
+# Caminho completo para o diretório da máquina virtual.
+vm_path="$vm_path_base/$vm_name"
 
-
+# Remove a máquina virtual do VirtualBox e apaga os arquivos restantes.
 remove_vm() {
     vm_name="$1"
     msg_d "$sub_prefix Removendo a VM: '$vm_name'..."

@@ -1,5 +1,5 @@
 Package: moodle-provas
-Version: 2.0-2014101606
+Version: 3.1-2015031201
 Architecture: all
 Conflicts: iptables-persistent
 Depends: alsa-utils,
@@ -8,18 +8,21 @@ Depends: alsa-utils,
          coreutils,
          cron,
          curl,
-         firefox-default-settings (>= 2.0),
+         firefox-default-settings,
          grep,
+         imagemagick,
          iproute,
          iptables,
          iputils-ping,
-         lxde-default-settings (>= 2.0),
+         lxde-default-settings,
          mtr-tiny,
          network-manager-gnome,
-         patch (>= 2.6.1),
+         patch,
          pciutils,
          procps,
-         python2.7 (>= 2.7.3),
+         python2.7,
+         python3,
+         python3-gi,
          sed,
          usbutils
 Priority: required

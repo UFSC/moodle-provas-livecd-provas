@@ -260,7 +260,8 @@ build_debian_pkg() {
         # Se a opção de atualizar a versão do pacote estiver ativada...
         if [ "$update_version" = "true" -o "$update_version" = "TRUE" ]; then
             new_build="${build_date}01"
-            version=$(grep "Version:" "$package_src/DEBIAN/control" | awk '/Version:/{print $2}' | cut -d "-" -f 1)
+            #version=$(grep "Version:" "$package_src/DEBIAN/control" | awk '/Version:/{print $2}' | cut -d "-" -f 1)
+            version="$livecd_version"
             old_build=$(grep "Version:" "$package_src/DEBIAN/control" | awk '/Version:/{print $2}' | cut -d "-" -f 2)
 
             # Se estiver gerando uma nova versão no mesmo dia, não precisará incrementar até chegar a versão atual.
