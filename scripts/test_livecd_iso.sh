@@ -39,6 +39,9 @@ if [ ! -f "$last_iso" ]; then
 else
     msg_d "$sub_prefix ISO que será testada: " '-n'
     msg_w "${last_iso##*/}"
+    msg_d "$sub_prefix ISO info: " '-n'
+    get_iso_disk_info "$last_iso"
+    msg_d
 fi
 
 if [ -d "$vm_path" ]; then
