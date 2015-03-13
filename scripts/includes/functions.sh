@@ -397,3 +397,9 @@ get_kernel_version() {
     echo "$kernel_version"
 }
 
+get_iso_disk_info() {
+    iso_file="$1"
+    
+    isoinfo -J -i "$iso_file" -x '/.disk/info'
+}
+
