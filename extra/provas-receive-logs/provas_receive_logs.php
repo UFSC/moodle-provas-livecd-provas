@@ -1,5 +1,7 @@
 <?php
 
+# TODO: Limitar o tamanho do arquivo recebido e o número de vezes por hora.
+
 $upload_dir = '/home/cco/juliao/public_exe/upload/';
 $token = 'f0a320fd52383c42649d48ea545915a9';
 
