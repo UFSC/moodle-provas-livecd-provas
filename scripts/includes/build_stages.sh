@@ -73,7 +73,7 @@ make_config_pkg() {
     msg_d "$sub_prefix Copiando o arquivo de configuração interno do LiveCD [${provas_config_file##*/}] ..."
     cp -f "$config_dir/${provas_config_file##*/}" "$working_dir/moodle-provas-config$provas_config_file"
 
-    msd_d "$sub_prefix Atualizando a data de geração no arquivo de configuração [${provas_config_file##*/}] ..."
+    msg_d "$sub_prefix Atualizando a data de geração no arquivo de configuração [${provas_config_file##*/}] ..."
     sed -i "s/%BUILD_DATE%/$build_date/g" "$working_dir/moodle-provas-config$provas_config_file"
 
     if [ "$enable_hardcoded_online_config" = "yes" ]; then
