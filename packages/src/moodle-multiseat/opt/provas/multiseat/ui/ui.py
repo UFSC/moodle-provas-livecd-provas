@@ -51,10 +51,10 @@ class Window():
         self.seatIdValue.set_text(strSeats)
         self.vgaBusIdValue.set_text(vgaBusId)
 
-    def updateInfoInput(self, qtdAvailableKeyboards, qtdAssignedKeyboards, qtdAvailableMouses, qtdAssignedMouses):
+    def updateInfoInput(self, qtdAssignedKeyboards, qtdAvailableKeyboards, qtdAssignedMouses, qtdAvailableMouses):
         log.debug("%d - Updating info input at %s", self.seat, self.name)
-        strKeyboards = str(qtdAvailableKeyboards) + " de " + str(qtdAssignedKeyboards)
-        strMouses = str(qtdAvailableMouses) + " de " + str(qtdAssignedMouses)
+        strKeyboards = str(qtdAssignedKeyboards) + " de " + str(qtdAvailableKeyboards)
+        strMouses = str(qtdAssignedMouses) + " de " + str(qtdAvailableMouses)
         self.assignedKeyboardsValue.set_text(strKeyboards)
         self.assignedMousesValue.set_text(strMouses)
     
