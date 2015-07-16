@@ -44,6 +44,10 @@ else
     fi
 fi
 
+# Dá permissão de leitura nos logs para todo mundo, para que o script send_logs.sh possa copiá-los.
+# Em um sistema real isso não seria desejável, por questões de segurança, mas no LiveCD não é relevante.
+chmod -R o+r /var/log/*
+
 # O script abaixo deve ser executado em background para não bloquear a inicialização
 # do sistema, é por isso também que ele é um arquivo separado e não parte deste script.
 log 'Iniciando o script $provas_dir/start_user_apps.sh em background'

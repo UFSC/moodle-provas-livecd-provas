@@ -253,18 +253,6 @@ make_bootmenu() {
         sed -i "/^## MULTISEAT/,+$line_count { /^## MULTISEAT/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
     fi
 
-    # Habilita as opções de envio de logs no menu de boot.
-    if [ "$enable_send_logs" = 'yes' ]; then
-        line_count=$(grep '## SEND_LOGS_MONOSEAT' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
-        sed -i "/^## SEND_LOGS_MONOSEAT/,+$line_count { /^## SEND_LOGS_MONOSEAT/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
-    fi
-
-    # Habilita as opções de envio de logs para o multiterminal no menu de boot.
-    if [ "$enable_send_logs" = 'yes' ] && [ "$enable_multiseat" = 'yes' ]; then
-        line_count=$(grep '## SEND_LOGS_MULTISEAT' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
-        sed -i "/^## SEND_LOGS_MULTISEAT/,+$line_count { /^## SEND_LOGS_MULTISEAT/ b; s/^#//; }" "$dest_dir/isolinux/menu.cfg.utf-8"
-    fi
-
     # Habilita a opção de verificar a integridade da mídia no menu de boot.
     if [ "$enable_check_media" = 'yes' ]; then
         line_count=$(grep '## CHECK_MEDIA' "$dest_dir/isolinux/menu.cfg.utf-8" | cut -d ' ' -f 4)
@@ -382,15 +370,11 @@ make_disk_info() {
         enabled_options="$enabled_options multiseat"
     fi
 
-    if [ "$enable_send_logs" = 'yes' ]; then
-        enabled_options="$enabled_options send_logs"
-    fi
-
     if [ -z "$enabled_options" ]; then
         enabled_options='None'
     fi
 
-    echo -n "Moodle Provas $livecd_version - Release $livecd_hw_arch (${build_date}-${build_time}) - Enabled options: $enabled_options" > info
+    echo -ne "Moodle Provas $livecd_version - Release $livecd_hw_arch (${build_date}-${build_time})\nEnabled options: $enabled_options" > info
 
     cd - >>"$std_out" 2>>"$std_err"
 }

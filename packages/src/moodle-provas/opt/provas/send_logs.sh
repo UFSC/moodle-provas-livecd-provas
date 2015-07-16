@@ -9,51 +9,49 @@ functions_file="$provas_dir/includes/functions.sh"
 [ -r "$functions_file" ] && source "$functions_file" || exit 1
 
 
-# Diretório temporário onde os arquivos serão copiados
-files_dir='/tmp/logs'
-filename="logs-$(date +%Y%m%d-%Hh%M).tar.gz"
+# Redefine o arquivo de log para este script, pois ele não pode gravar no /var/log.
+log_file_provas="$HOME/livecd_diagnostic.log"
 
-
-if [ -d "$files_dir" ]; then
-    rm -rf "$files_dir"
+# Se o usuário NÃO autorizar o envio dos logs de diagnóstico, aborta o script...
+if ! user_input=$(should_send_logs); then
+    log "O envio dos logs de diagnóstico foi cancelado pelo usuário."
+    log '-------------------------------------------------------------'
+    exit 0
 fi
-mkdir "$files_dir"
 
-log "Copiando alguns arquivos do sistema para $files_dir..."
+# Diretório temporário onde os logs serão salvos
+base_dir="/tmp"
+tmp_dir="$(date +%Y%m%d-%Hh%M)"
+work_dir="$base_dir/$tmp_dir"
+
+logs_dir="$work_dir/logs"
+cmds_dir="$work_dir/cmds"
+filename="logs.tar.gz"
+
+if [ -d "$work_dir" ]; then
+    rm -rf "$work_dir"
+fi
+mkdir -p "$logs_dir" "$cmds_dir"
+
+log "Copiando alguns arquivos do sistema para $work_dir..."
 for file in $log_system_files; do
-    cp -R "$file" "$files_dir/"
+    cp -R "$file" "$logs_dir/"
 done
 
 log 'Gravando a saída de alguns comandos...'
-ck-list-sessions >"$files_dir/cmd_ck-list-sessions.log" 2>&1
-ip a >"$files_dir/cmd_ip-a.log" 2>&1
-lspci >"$files_dir/cmd_lspci.log" 2>&1
-lspci -vvv >"$files_dir/cmd_lspci-vvv.log" 2>&1
-lspci -nn >"$files_dir/cmd_lspci-nn.log" 2>&1
-lsusb -t >"$files_dir/cmd_lsusb-t.log" 2>&1
-lsusb -v >"$files_dir/cmd_lsusb-v.log" 2>&1
-ps aux >"$files_dir/cmd_ps-aux.log" 2>&1
-uname -a  >"$files_dir/cmd_uname-a.log" 2>&1
+ck-list-sessions >"$cmds_dir/ck-list-sessions.log" 2>&1
+date >"$cmds_dir/date.log" 2>&1
+ip a >"$cmds_dir/ip-a.log" 2>&1
+lspci >"$cmds_dir/lspci.log" 2>&1
+lspci -vvv >"$cmds_dir/lspci-vvv.log" 2>&1
+lspci -nn >"$cmds_dir/lspci-nn.log" 2>&1
+lsusb -t >"$cmds_dir/lsusb-t.log" 2>&1
+lsusb -v >"$cmds_dir/lsusb-v.log" 2>&1
+ps aux >"$cmds_dir/ps-aux.log" 2>&1
+uname -a  >"$cmds_dir/uname-a.log" 2>&1
 
 log 'Comprimindo os arquivos...'
-tar czvf "/tmp/$filename" "$files_dir" || exit 1
+tar czvf "$base_dir/$filename" -C "$base_dir" "$tmp_dir" || exit 1
 
-log "Enviando arquivo comprimido para $log_script_url ..."
-curl --fail -k -F "token=$log_script_token" -F "file=@/tmp/$filename" "$log_script_url"
-
-if [ $? -eq 0 ]; then
-    echo '  - Arquivo enviado com sucesso.'
-    status_code=0
-else
-    echo '  - Erro ao enviar o arquivo.'
-    status_code=1
-fi
-
-log 'Removendo os arquivos temporários...'
-rm -rf "$files_dir"
-rm -rf "/tmp/$filename"
-
-log 'Feito.'
-
-exit $status_code
+source $provas_dir/send_file.sh "/tmp/$filename" "$user_input"
 

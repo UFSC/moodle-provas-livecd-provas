@@ -7,7 +7,8 @@ log() {
     # O parâmetro '${0##*/}' insere o nome do arquivo que fez a chamada para a função
     log_msg="${0##*/} $1"
     date="$(date +"%F %T,%N")"
-    echo "${date:0:23} $log_msg" >> $log_file_provas
+
+    echo "${date:0:23} $log_msg" >> "$log_file_provas"
 }
 
 # Verifica se o /proc/cmdline contém a variável passada como argumento
@@ -28,11 +29,6 @@ cmdline_contains() {
 # Verifica se o sistema foi carregado através de boot remoto PXE
 is_pxe_booted() {
     return $(cmdline_contains 'netboot=nfs')
-}
-
-# Verifica se a opção de enviar logs foi ativada no boot
-should_send_logs() {
-    return $(cmdline_contains 'send_logs')
 }
 
 # Verifica se a opção de inverter as placas de vídeo em um multiterminal foi ativada no boot
@@ -123,33 +119,46 @@ show_no_connection() {
     gxmessage -display ":1" -bg orange -geometry 500x200 -center -font "ubuntu 13" -title "Conexão de rede" -wrap "$msg"
 }
 
-# Mostra uma mensagem no monitor do primeiro usuário dizendo para aguardar o envio dos logs de diagnóstico.
-show_send_logs_wait() {
-    msg='Aguarde os arquivos de log serem enviados.'
+should_send_logs() {
+    msg="As teclas 'Ctrl+PrintScreen' foram pressionadas, esta função gera arquivos de diagnóstico. \n\nVocê deseja enviar estes arquivos para a equipe de Suporte do Moodle?"
 
-    gxmessage -display ':1' -bg 'orange' -geometry '300x150' -center -font "ubuntu 16" -title 'Aguarde...' -wrap "$msg" &
+    #zenity --question --title 'Teclas Ctrl+PrintScreen pressionadas - LiveCD' --no-wrap --text "$msg"
+    zenity --forms --title='Teclas Ctrl+PrintScreen pressionadas - LiveCD' --text="$msg" --add-entry="Seu e-mail" --add-entry="Descrição do problema"
+    
+    # A opção --default-cancel só funciona a partir do zenity 3.16
+    #zenity --question --default-cancel --title 'Teclas PrintScreen pressionadas - LiveCD' --no-wrap --text "$msg"
 }
 
-# Mostra uma mensagem no monitor do primeiro usuário dizendo que houve sucesso no envio dos logs de diagnóstico.
-show_send_logs_ok() {
-    pkill gxmessage
-    msg="Os arquivos de log foram enviados com sucesso, agora você pode desligar este computador e enviar um e-mail para $institution_moodle_support_email informando que o procedimento foi realizado."
+should_send_screenshot() {
+    msg="A tecla 'PrintScreen' foi pressionada e uma cópia da tela atual foi gerada. \n\nVocê deseja enviar esta cópia para a equipe de Suporte do Moodle?"
 
-    gxmessage -display ':1' -bg 'green' -geometry '450x200' -center -font 'ubuntu 13' -title 'Envio dos arquivos de log' -wrap "$msg"
+    #zenity --question --title 'Tecla PrintScreen pressionada - LiveCD' --no-wrap --text "$msg"
+    zenity --forms --title='Tecla PrintScreen pressionada - LiveCD' --text="$msg" --add-entry="Seu e-mail" --add-entry="Descrição do problema"
+    
+    # A opção --default-cancel só funciona a partir do zenity 3.16
+    #zenity --question --default-cancel --title 'Tecla PrintScreen pressionada - LiveCD' --no-wrap --text "$msg"
 }
 
-# Mostra uma mensagem no monitor do primeiro usuário dizendo que ocorreu algum erro no envio dos logs de diagnóstico.
-show_send_logs_bad() {
-    pkill gxmessage
-    msg='Erro no envio dos arquivos de log, informe o problema ao suporte técnico.'
+# Mostra uma mensagem no monitor do usuário dizendo que houve sucesso no envio da screenshot
+show_send_file_success() {
+    # Devido a algum bug no zenity 3.4.0 (Ubuntu 12.04), ele deixa a janela com a altura bem maior do que o necessário quando
+    # o texto não tem quebras de linha e a opção --no-wrap não é utilizada, na versão 3.16 do zenity isso não ocorre.
+    msg="O arquivo foi enviado com sucesso para a equipe de Suporte do Moodle. \n\nCaso ache necessário, entre em contato através do e-mail $institution_moodle_support_email \npara registrar formalmente sua requisição."
 
-    gxmessage -display ':1' -bg 'red' -fg 'white' -geometry '700x500' -center -font 'ubuntu 13' -title "$msg" -file "$provas_log_dir/send_logs.log"
+    zenity --info --title 'Arquivo enviado com sucesso - LiveCD' --no-wrap --text "$msg"
+ }
+
+# Mostra uma mensagem no monitor do usuário dizendo que ocorreu algum erro no envio da screenshot
+show_send_file_error() {
+    msg='Erro ao enviar o arquivo para o servidor do Suporte do Moodle.'
+
+    zenity --error --title 'Erro no envio do arquivo - LiveCD' --no-wrap --text "$msg \n\nMensagem: $1"
 }
 
 # Configura a página inicial do navegador Mozilla Firefox.
 set_browser_homepage() {
     log 'Atualizando as configuração da página inicial do Firefox'
-    $SED -i "s|about:blank|$moodle_provas_url|g" "$firefox_syspref"
+    sed -i "s|about:blank|$moodle_provas_url|g" "$firefox_syspref"
 }
 
 # Configura o arquivo de autoconfig do navegador Mozilla Firefox.
@@ -161,9 +170,9 @@ configure_browser() {
     cp "$firefox_bin/$firefox_autoconfig.tpl" "$firefox_bin/$firefox_autoconfig"
 
     log "Atualizando as configurações do autoconfig do Firefox"
-    $SED -i "s|%livecd_version%|$livecd_version|g" "$firefox_bin/$firefox_autoconfig"
-    $SED -i "s|%livecd_local_ip%|$livecd_local_ip|g" "$firefox_bin/$firefox_autoconfig"
-    $SED -i "s|%livecd_local_network%|$livecd_local_network|g" "$firefox_bin/$firefox_autoconfig"
+    sed -i "s|%livecd_version%|$livecd_version|g" "$firefox_bin/$firefox_autoconfig"
+    sed -i "s|%livecd_local_ip%|$livecd_local_ip|g" "$firefox_bin/$firefox_autoconfig"
+    sed -i "s|%livecd_local_network%|$livecd_local_network|g" "$firefox_bin/$firefox_autoconfig"
 }
 
 configure_firewall_ipv4() {
@@ -228,31 +237,6 @@ allow_access_to_online_config_server() {
 #    fi
 }
 
-# Libera o acesso aos ips do servidor de logs, para onde os arquivos coletados serão enviados.
-allow_access_to_log_server() {
-    log_server_host=$(echo $log_script_url | cut -d '/' -f3)
-    log_server_ipv4=$(dig $log_server_host a +short)
-    log_server_ipv6=$(dig $log_server_host aaaa +short)
-
-    log "allow_access_to_log_server() O host $log_server_host tem os endereços IPv4: '$log_server_ipv4'"
-    log "allow_access_to_log_server() O host $log_server_host tem os endereços IPv6: '$log_server_ipv6'"
-
-    if [ -n "$log_server_ipv4" ]; then
-        for ipv4 in $log_server_ipv4; do
-            log "allow_access_to_log_server() Liberando o acesso HTTPS ao servidor de configuração no IPv4: $ipv4"
-            $IPTABLES_IPV4 -A OUTPUT -d "$ipv4" -p tcp --dport 443 -j ACCEPT
-        done
-    fi
-
-    if [ -n "$log_server_ipv6" ]; then
-        for ipv6 in $log_server_ipv6; do
-            log "allow_access_to_log_server() Liberando o acesso HTTPS ao servidor de configuração no IPv6: $ipv6"
-            $IPTABLES_IPV6 -A OUTPUT -d "$ipv6" -p tcp --dport 443 -j ACCEPT
-        done
-    fi
-}
-
-
 # Aguarda a sessão do usuário informado ser carregada para montar o diretório do userChrome.css.
 lock_firefox_userchrome_file_for_user() {
     user_id="$1"
@@ -281,6 +265,29 @@ wait_session_load_for_user() {
     log "Aguardando alguns segundos para a sessão do usuário '$username' carregar..."
     sleep 2
 }
+
+# Habilita a tecla PrintScreen na sessão do usuário informado.
+enable_printscreen_key() {
+    user_id="$1"
+    username="${username_base}${user_id}"
+
+    log "Habilitando a tecla 'Ctrl+PrintScreen no xbindkeys para o usuário '$username'"
+    echo "\"$provas_dir/send_logs.sh\"" > /home/$username/.xbindkeysrc
+    echo "    m:0x4 + c:107" >> /home/$username/.xbindkeysrc
+    echo "    Control + Print" >> /home/$username/.xbindkeysrc
+
+    log "Habilitando a tecla 'PrintScreen no xbindkeys para o usuário '$username'"
+    echo "\"$provas_dir/send_screenshot.sh\"" >> /home/$username/.xbindkeysrc
+    echo "    m:0x0 + c:107" >> /home/$username/.xbindkeysrc
+    echo "    Print" >> /home/$username/.xbindkeysrc
+
+    log "Executando o xbindkeys na sessão do usuário '$username'"
+    export LANG="pt_BR.UTF-8"
+    export XAUTHORITY="/home/$username/.Xauthority"
+    export DISPLAY=":$user_id"
+    su - "$username" -c xbindkeys &
+}
+
 
 # Inicia o navegador Mozilla Firefox na sessão do usuário informado.
 start_browser_for_user() {
@@ -334,6 +341,7 @@ start_normal_mode() {
     su - "${username_base}1" -c 'startx -- :1 -br -audit 0 -novtswitch -nolisten tcp' &
 }
 
+# Atualiza a lista de servidores NTP e força a atualização do horário
 set_ntp_servers() {
     if [ -e '/etc/default/ntpdate' ]; then
         log "Definindo os novos servidores NTP no arquivo /etc/default/ntpdate: $ntp_servers"
@@ -345,23 +353,3 @@ set_ntp_servers() {
     fi
 }
 
-# Prepara e envia os logs para o servidor remoto via POST, utilizando o script /opt/provas/send_logs.sh
-send_logs() {
-    log 'Preparando para enviar os logs'
-    allow_access_to_log_server
-
-    export LANG="pt_BR.UTF-8"
-    export XAUTHORITY="/home/${username_base}1/.Xauthority"
-    export DISPLAY=':1'
-    show_send_logs_wait
-
-    log "Executando o script que envia os logs, /opt/provas/send_logs.sh"
-    if /opt/provas/send_logs.sh >$provas_log_dir/send_logs.log 2>&1; then
-        show_send_logs_ok
-    else
-        log "Erro ao enviar os arquivos de log."
-        show_send_logs_bad
-    fi  
-
-    exit
-}
