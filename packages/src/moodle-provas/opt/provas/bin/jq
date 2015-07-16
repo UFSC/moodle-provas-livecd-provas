@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Executa a versão correta do 'jq' dependendo da arquitetura da máquina, 32 ou 64-bit.
+# 'jq' disponível em http://stedolan.github.io/jq/download/ (julho/2015)
+
+arch="$(uname -m)"
+dir="$(dirname $0)"
+params="$@"
+
+if [ "$arch" = "x86_64" ]; then
+    "$dir/jq64" $params
+else
+    "$dir/jq32" $params
+fi
+
