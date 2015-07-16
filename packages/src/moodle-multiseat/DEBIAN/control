@@ -1,5 +1,5 @@
 Package: moodle-multiseat
-Version: 3.1-2015031201
+Version: 3.1-2015071601
 Architecture: all
 Depends: grep,
          mawk,
