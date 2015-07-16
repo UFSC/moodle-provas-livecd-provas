@@ -11,14 +11,11 @@ functions_file="$provas_dir/includes/functions.sh"
 
 if is_internet_online; then
     url="${moodle_provas_url}${moodle_provas_receive_data_path}"
-    header1="MOODLE-PROVAS-VERSION:$livecd_version"
-    header2="MOODLE-PROVAS-IP:$livecd_local_ip"
-    header3="MOODLE-PROVAS-NETWORK:$livecd_local_network"
 
     # Envia os dados via POST, o --insecure é necessário se o certificado for auto-assinado
     log "Enviando os dados via POST..."
-    log "header1 = '$header1'"
-    log "header2 = '$header2'"
-    log "header3 = '$header3'"
-    curl --insecure --header "$header1" --header "$header2" --header "$header3" "$url"
+    log "http_header1 = '$http_header1'"
+    log "http_header2 = '$http_header2'"
+    log "http_header3 = '$http_header3'"
+    curl -k -H "$http_header1" -H "$http_header2" -H "$http_header3" "$url"
 fi
