@@ -12,7 +12,7 @@ default monoseat
 
 #####################################################################################
 #  OBSERVAÇÃO IMPORTANTE: O título de cada seção do menu é utilizado pela função    #
-#  make_bootmenu() no arquivo scripts/includes/build_stages.sh, incluíndo o número  #
+#  make_bootmenu() no arquivo scripts/includes/build_stages.sh, inclusive o número  #
 #  de linhas, portanto ambos devem ser mantidos no formato em que estão e o número  #
 #  de linhas deve ser atualizado sempre que necessário. Ex.: ## MONOSEAT - 4 lines  #
 #####################################################################################
@@ -37,10 +37,7 @@ label monoseat
 
 
 menu separator
-menu separator
 
-# Início do submenu
-menu begin [+] Opções de diagnóstico
 
 ## CHECK_MEDIA - 4 lines
 #label check_media
@@ -49,34 +46,8 @@ menu begin [+] Opções de diagnóstico
 #  append boot=casper integrity-check initrd=/casper/initrd.lz -- splash
 
 
-## MEMTEST - 4 lines
+## MEMTEST - 3 lines
 #label memtest
 #  menu label Verificar problemas na memória do computador
 #  kernel /memtest/mt86plus
-#  menu separator
-
-## SEND_LOGS_MONOSEAT - 4 lines
-#label sendlogs_monoseat
-#  menu label Enviar logs para diagnóstico
-#  kernel /casper/vmlinuz
-#  append boot=casper initrd=/casper/initrd.lz -- send_logs
-
-## SEND_LOGS_MULTISEAT - 8 lines
-#label sendlogs_multiseat1
-#  menu label Enviar logs para diagnóstico [Multiterminal 1]
-#  kernel /casper/vmlinuz
-#  append boot=casper initrd=/casper/initrd.lz -- multiseat send_logs
-#label sendlogs_multiseat2
-#  menu label Enviar logs para diagnóstico [Multiterminal 2]
-#  kernel /casper/vmlinuz
-#  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas send_logs
-
-menu separator
-menu separator
-
-label go_back
-  menu label << ^Voltar
-  menu goto .top
-
-menu end
 

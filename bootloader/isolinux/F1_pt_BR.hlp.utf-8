@@ -2,7 +2,7 @@
 
 Este é o LiveCD para realização de provas online através do sistema Moodle.
 
-O sistema requer pelo menos 384MB de memória RAM e não requer nenhum espaço
+O sistema requer pelo menos 512MB de memória RAM e não requer nenhum espaço
 em disco, mas ele utilizará partições swap já existentes, se disponíveis.
 
 O sistema não faz alterações no disco local e também não permite acesso a
@@ -24,5 +24,5 @@ locais e sites que não sejam o próprio site do Moodle Provas.
 
 03Versão do kernel Linux:07 %KERNEL_VERSION% (%HARDWARE_ARCH%)
 
-0ePressione qualquer tecla para voltar ao menu anterior, ou pressione07
-0ea tecla F2 para ver a descrição das outras opções.07
+0ePressione a tecla F2 para ver a descrição das outras opções ou pressione07
+0equalquer outra tecla para voltar ao menu anterior.07
