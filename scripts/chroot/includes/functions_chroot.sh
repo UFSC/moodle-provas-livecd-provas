@@ -70,6 +70,9 @@ init_chroot() {
     msg_d "Desativando o modo interativo do apt-get..."
     export DEBIAN_FRONTEND="noninteractive"
 
+    msg_d "Configurando a compressão do INITRD para '$initrd_compression'"
+    sed -i "s/COMPRESS=.*/COMPRESS=$initrd_compression/" '/etc/initramfs-tools/initramfs.conf'
+
     cd $base_dir
 }
 

@@ -300,6 +300,22 @@ is_root_fs_valid() {
     return 0
 }
 
+check_kernel_size() {
+    kernel_file=$(ls "$root_fs/boot/vmlinuz"* | tail -1)
+    kernel_size=$(du "$kernel_file" | cut -f1)
+    kernel_size=$(($kernel_size/1024))
+
+    msg "$sub_prefix Tamanho do KERNEL: $kernel_size MB"
+}
+
+check_initrd_size() { 
+    initrd_file=$(ls "$root_fs/boot/initrd"* | tail -1)
+    initrd_size=$(du "$initrd_file" | cut -f1)
+    initrd_size=$(($initrd_size/1024))
+
+    msg "$sub_prefix Tamanho do INITRD ($initrd_compression): $initrd_size MB"
+ }
+
 check_iso_size() {
     iso_file="$1"
     iso_size=""

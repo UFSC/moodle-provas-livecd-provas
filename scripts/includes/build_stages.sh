@@ -429,6 +429,8 @@ make_iso() {
     # O comando "${iso_name/iso/md5}" troca a extensão 'iso' por 'md5', este recurso é chamado de 'parameter substitution'.
     md5sum "$iso_name" > "${iso_name/iso/md5}" 2>>"$std_err" && msg_ok 'OK'
 
+    check_kernel_size
+    check_initrd_size
     check_iso_size "$iso_name"
 
     cd - >>"$std_out" 2>>"$std_err"
