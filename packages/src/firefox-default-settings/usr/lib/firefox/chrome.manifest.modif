@@ -1,4 +1,13 @@
 manifest components/components.manifest
-override chrome://browser/content/aboutPrivateBrowsing.xhtml data:text/html,Disabled
-override chrome://global/content/config.xul data:text/html,Disabled
-override chrome://mozapps/content/extensions/extensions.xul data:text/html,Disabled
+
+# Desativa o about:config
+override chrome://global/content/config.xul data:text/html,Desativado
+
+# Desativa o about:addons
+override chrome://mozapps/content/extensions/extensions.xul data:text/html,Desativado
+
+# Desativa o about:preferences
+override chrome://browser/content/preferences/in-content/preferences.xul data:text/html,Desativado
+
+# Desativa o about:app-manager
+override chrome://browser/content/devtools/app-manager/index.xul data:text/html,Desativado

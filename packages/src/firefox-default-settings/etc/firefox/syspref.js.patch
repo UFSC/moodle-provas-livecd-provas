@@ -1,6 +1,6 @@
 --- syspref.js.orig	2014-03-12 11:31:41.960054153 -0300
-+++ syspref.js.modif	2015-03-03 14:56:09.078967885 -0300
-@@ -2,3 +2,58 @@
++++ syspref.js.modif	2015-08-10 15:04:19.466402656 -0300
+@@ -2,3 +2,66 @@
  // Example: Homepage
  //pref("browser.startup.homepage", "http://www.weebls-stuff.com/wab/");
  
@@ -11,6 +11,11 @@
 +
 +// Não salva os arquivos automaticamente, pergunta ao usuário
 +lockPref("browser.download.useDownloadDir", false);
++
++// Desativa a página de últimos sites visitados (Tiles) e as miniaturas geradas (Firefox 24)
++lockPref("browser.newtab.url", "about:blank");
++lockPref("browser.pagethumbnails.capturing_disabled", true);
++lockPref("pageThumbs.enabled", false);
 +
 +// Desativa a mensagem 'Know your rights' na primeira execução do Firefox
 +lockPref("browser.rights.3.shown", true);
@@ -46,6 +51,9 @@
 +
 +// Configura o proxy com a opção "Sem proxy"
 +lockPref("network.proxy.type", 0);
++
++// Desativa o modo "Leitor" que foi adicionado no Firefox 38
++lockPref("reader.parse-on-load.enabled", false);
 +
 +// Desativa a opção de salvar senhas
 +lockPref("signon.rememberSignons", false);

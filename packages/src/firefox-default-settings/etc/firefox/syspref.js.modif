@@ -10,6 +10,11 @@ lockPref("app.update.enabled", false);
 // Não salva os arquivos automaticamente, pergunta ao usuário
 lockPref("browser.download.useDownloadDir", false);
 
+// Desativa a página de últimos sites visitados (Tiles) e as miniaturas geradas (Firefox 24)
+lockPref("browser.newtab.url", "about:blank");
+lockPref("browser.pagethumbnails.capturing_disabled", true);
+lockPref("pageThumbs.enabled", false);
+
 // Desativa a mensagem 'Know your rights' na primeira execução do Firefox
 lockPref("browser.rights.3.shown", true);
 
@@ -44,6 +49,9 @@ lockPref("loop.enabled", false);
 
 // Configura o proxy com a opção "Sem proxy"
 lockPref("network.proxy.type", 0);
+
+// Desativa o modo "Leitor" que foi adicionado no Firefox 38
+lockPref("reader.parse-on-load.enabled", false);
 
 // Desativa a opção de salvar senhas
 lockPref("signon.rememberSignons", false);
