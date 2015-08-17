@@ -38,6 +38,10 @@ if ! is_pxe_booted; then
     source "$provas_config_file"
 fi
 
+# Configura os servidores NTP do computador, para sincronizar o horário do computador.
+# (Primeira configuração, para agilizar a atualização do horário do computador).
+set_ntp_servers
+
 if [ -f "$provas_online_config_file" ]; then
     log "Carregando arquivo de configuração online padrão: $provas_online_config_file"
     source "$provas_online_config_file"
@@ -66,8 +70,7 @@ fi
 if [ "$allow_screenshots" = "yes" ]; then
     enable_printscreen_key "$first_user_id"
 fi
-
-# Configura os servidores NTP do computador, para sincronizar o horário do computador.
+# Reconfigura os servidores NTP do computador com os definidos na configuração online.
 set_ntp_servers
 
 # Configura o navegador de internet com a página inicial definida no arquivo de configuração.
