@@ -114,29 +114,23 @@ get_nfs_server_address() {
 
 # Mostra uma mensagem no monitor do primeiro usuário com a mensagem de problema na conexão de rede.
 show_no_connection() {
-    msg='A conexão de rede não está funcionando e talvez você precise configurá-la manualmente. Para que esta mensagem não apareça novamente, configure a conexão de rede e clique em OK.'
+    msg='A conexão com a internet não está funcionando, talvez você precise configurar \nmanualmente a conexão de rede. Para que esta mensagem não apareça novamente, \nconfigure a conexão de rede e clique em OK.'
 
-    gxmessage -display ":1" -bg orange -geometry 500x200 -center -font "ubuntu 13" -title "Conexão de rede" -wrap "$msg"
+    zenity --info --title 'Problema na conexão com a internet' --no-wrap --text "$msg"
 }
 
+# Pergunta ao usuário se ele quer enviar os arquivos de log e oferece a opção de digitar um e-mail e uma descrição do problema.
 should_send_logs() {
-    msg="As teclas 'Ctrl+PrintScreen' foram pressionadas, esta função gera arquivos de diagnóstico. \n\nVocê deseja enviar estes arquivos para a equipe de Suporte do Moodle?"
+    msg="As teclas <b>Ctrl</b>+<b>PrintScreen</b> foram pressionadas, esta função gera <b>arquivos de diagnóstico</b>. \n\nVocê deseja enviar estes arquivos para a equipe de Suporte do Moodle?"
 
-    #zenity --question --title 'Teclas Ctrl+PrintScreen pressionadas - LiveCD' --no-wrap --text "$msg"
-    zenity --forms --title='Teclas Ctrl+PrintScreen pressionadas - LiveCD' --text="$msg" --add-entry="Seu e-mail" --add-entry="Descrição do problema"
-    
-    # A opção --default-cancel só funciona a partir do zenity 3.16
-    #zenity --question --default-cancel --title 'Teclas PrintScreen pressionadas - LiveCD' --no-wrap --text "$msg"
+    zenity --forms --title='Teclas Ctrl+PrintScreen pressionadas' --text="$msg" --add-entry="Seu e-mail" --add-entry="Descrição do problema"
 }
 
+# Pergunta ao usuário se ele quer enviar uma foto da tela e oferece a opção de digitar um e-mail e uma descrição do problema.
 should_send_screenshot() {
-    msg="A tecla 'PrintScreen' foi pressionada e uma cópia da tela atual foi gerada. \n\nVocê deseja enviar esta cópia para a equipe de Suporte do Moodle?"
+    msg="A tecla <b>PrintScreen</b> foi pressionada e uma <b>cópia da tela atual</b> foi gerada e salva na área de trabalho. \n\nVocê deseja enviar esta cópia para a equipe de Suporte do Moodle?"
 
-    #zenity --question --title 'Tecla PrintScreen pressionada - LiveCD' --no-wrap --text "$msg"
-    zenity --forms --title='Tecla PrintScreen pressionada - LiveCD' --text="$msg" --add-entry="Seu e-mail" --add-entry="Descrição do problema"
-    
-    # A opção --default-cancel só funciona a partir do zenity 3.16
-    #zenity --question --default-cancel --title 'Tecla PrintScreen pressionada - LiveCD' --no-wrap --text "$msg"
+    zenity --forms --title='Tecla PrintScreen pressionada' --text="$msg" --add-entry="Seu e-mail" --add-entry="Descrição do problema"
 }
 
 # Mostra uma mensagem no monitor do usuário dizendo que houve sucesso no envio da screenshot
@@ -145,14 +139,19 @@ show_send_file_success() {
     # o texto não tem quebras de linha e a opção --no-wrap não é utilizada, na versão 3.16 do zenity isso não ocorre.
     msg="O arquivo foi enviado com sucesso para a equipe de Suporte do Moodle. \n\nCaso ache necessário, entre em contato através do e-mail $institution_moodle_support_email \npara registrar formalmente sua requisição."
 
-    zenity --info --title 'Arquivo enviado com sucesso - LiveCD' --no-wrap --text "$msg"
+    zenity --info --title 'Arquivo enviado com sucesso' --no-wrap --text "$msg"
  }
 
 # Mostra uma mensagem no monitor do usuário dizendo que ocorreu algum erro no envio da screenshot
 show_send_file_error() {
     msg='Erro ao enviar o arquivo para o servidor do Suporte do Moodle.'
 
-    zenity --error --title 'Erro no envio do arquivo - LiveCD' --no-wrap --text "$msg \n\nMensagem: $1"
+    # A opção --no-markup deve ser usada, pois podem ocorrer erros no zenity se a mensagem a ser impressa contiver tags HTML
+    # (uma página de erro, por exemplo), assim as quebras de linhas devem ser feitas aqui, não dá pra usar o \n com --no-markup.
+    zenity --error --no-markup --title 'Erro no envio do arquivo' --no-wrap --text "$msg
+
+Mensagem:
+$1"
 }
 
 # Configura a página inicial do navegador Mozilla Firefox.
@@ -175,6 +174,7 @@ configure_browser() {
     sed -i "s|%livecd_local_network%|$livecd_local_network|g" "$firefox_bin/$firefox_autoconfig"
 }
 
+# Libera o acesso de saída aos IPs e portas definidos na variável $allowed_tcp_out_ipv4
 configure_firewall_ipv4() {
     for entry in $allowed_tcp_out_ipv4; do
         ip="${entry%#*}"
@@ -186,6 +186,7 @@ configure_firewall_ipv4() {
     done
 }
 
+# Libera o acesso de saída aos IPs e portas definidos na variável $allowed_tcp_out_ipv6
 configure_firewall_ipv6() {
     for entry in $allowed_tcp_out_ipv6; do
         ip="${entry%#*}"
@@ -197,7 +198,7 @@ configure_firewall_ipv6() {
     done
 }
 
-# Libera o acesso via HTTP e HTTPS aos IPs definidos no arquivo de configuração e salva as regras atualizadas.
+# Libera o acesso de saída de acordo com as listas de IPs e portas liberadas, em seguida salva as regras atualizadas.
 configure_firewall() {
     configure_firewall_ipv4
     configure_firewall_ipv6
@@ -265,29 +266,6 @@ wait_session_load_for_user() {
     log "Aguardando alguns segundos para a sessão do usuário '$username' carregar..."
     sleep 2
 }
-
-# Habilita a tecla PrintScreen na sessão do usuário informado.
-enable_printscreen_key() {
-    user_id="$1"
-    username="${username_base}${user_id}"
-
-    log "Habilitando a tecla 'Ctrl+PrintScreen no xbindkeys para o usuário '$username'"
-    echo "\"$provas_dir/send_logs.sh\"" > /home/$username/.xbindkeysrc
-    echo "    m:0x4 + c:107" >> /home/$username/.xbindkeysrc
-    echo "    Control + Print" >> /home/$username/.xbindkeysrc
-
-    log "Habilitando a tecla 'PrintScreen no xbindkeys para o usuário '$username'"
-    echo "\"$provas_dir/send_screenshot.sh\"" >> /home/$username/.xbindkeysrc
-    echo "    m:0x0 + c:107" >> /home/$username/.xbindkeysrc
-    echo "    Print" >> /home/$username/.xbindkeysrc
-
-    log "Executando o xbindkeys na sessão do usuário '$username'"
-    export LANG="pt_BR.UTF-8"
-    export XAUTHORITY="/home/$username/.Xauthority"
-    export DISPLAY=":$user_id"
-    su - "$username" -c xbindkeys &
-}
-
 
 # Inicia o navegador Mozilla Firefox na sessão do usuário informado.
 start_browser_for_user() {

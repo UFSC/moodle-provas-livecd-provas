@@ -48,6 +48,16 @@ fi
 # Em um sistema real isso não seria desejável, por questões de segurança, mas no LiveCD não é relevante.
 chmod -R o+r /var/log/*
 
+log 'Habilita as teclas PrintScreen e Ctrl+PrintScreen globalmente no /etc/xbindkeysrc...'
+cat > /etc/xbindkeysrc <<EOF
+"$provas_dir/send_logs.sh"
+    m:0x4 + c:107
+    Control + Print
+"$provas_dir/send_screenshot.sh"
+    m:0x0 + c:107
+    Print"
+EOF
+
 # O script abaixo deve ser executado em background para não bloquear a inicialização
 # do sistema, é por isso também que ele é um arquivo separado e não parte deste script.
 log 'Iniciando o script $provas_dir/start_user_apps.sh em background'

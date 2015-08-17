@@ -25,8 +25,7 @@ class OnlineUpdate():
 
         self.config = json.loads(json_data)
         self.livecd_minimum_version = self.config["livecd_minimum_version"]
-        self.require_load_confirmation = True if self.config["require_load_confirmation"] == "yes" else False
-        self.mainstream_log_server_settings = self.config["mainstream_log_server_settings"]
+        self.require_institution_confirm = True if self.config["require_institution_confirm"] == "yes" else False
         self.institutions = self.config["institutions"]
         print(self.institutions)
 
@@ -43,25 +42,23 @@ class OnlineUpdate():
         except:
             raise KeyError("Não existe uma instituição com o ID = " + str(institution_id))
 
-        # Check if the institution will use custom log_server_settings
-        if institution["custom_log_server_settings"]:
-            log_server_settings = institution["custom_log_server_settings"]
-        else:
-            log_server_settings = self.mainstream_log_server_settings
-
         provas_config_file = open(self.config_cd['provas_online_config_file'], 'w')
         provas_config_file.write('#!/bin/bash\n\n')
 
         # Write the general settings
         for key in sorted(institution.keys()):
-            if key != "custom_log_server_settings":
-                print(str(key) + "=\"" + str(institution[key]) + "\"")
+            if key == "diagnostic_server_settings":
+                diagnostic_server_settings = institution["diagnostic_server_settings"]
+                if diagnostic_server_settings:
+                    provas_config_file.write("diagnostic_server_enabled=\"yes\"\n")
+                    for key in sorted(diagnostic_server_settings.keys()):
+                        provas_config_file.write(str(key) + "=\"" + str(diagnostic_server_settings[key]) + "\"\n")
+                else:
+                    provas_config_file.write("diagnostic_server_enabled=\"no\"\n")
+            else:
                 provas_config_file.write(str(key) + "=\"" + str(institution[key]) + "\"\n")
 
-        # Write the log server settings
-        for key in sorted(log_server_settings.keys()):
-            print(str(key) + "=\"" + str(log_server_settings[key]) + "\"")
-            provas_config_file.write(str(key) + "=\"" + str(log_server_settings[key]) + "\"\n")
+
 
         provas_config_file.close()
 
@@ -79,7 +76,7 @@ class MainWindow(Gtk.Window):
         self.institutions = ''
 
         title = Gtk.Label()
-        title.set_text('<span size=\"25000\">Selecione a sua instituição e clique em "Prosseguir":</span>')
+        title.set_text('<span size=\"25000\">Selecione a sua instituição e clique em Prosseguir</span>')
         title.set_use_markup(True)
         title.set_line_wrap(True)
         title.set_justify(Gtk.Justification.CENTER)
@@ -191,12 +188,11 @@ class MainWindow(Gtk.Window):
     def __onClickSubmit(self, e1):
         model, treeiter = self.selection.get_selected()
         if treeiter != None:
-            if server.require_load_confirmation:
+            if server.require_institution_confirm:
                 confirmDialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.QUESTION,
-                                                  Gtk.ButtonsType.YES_NO, "Confirmação")
+                                Gtk.ButtonsType.YES_NO, "Você selecionou a opção:")
                 confirmDialog.format_secondary_markup(
-                    "Você selecionou a opção:\n\n <b>" + str(model[treeiter][1]) + " (" + str(
-                        model[treeiter][2]) + ")</b>\n\nClique em Sim para confirmar.")
+                    "<i>" + str(model[treeiter][1]) + "</i>\n\nClique em Sim para confirmar.")
                 response = confirmDialog.run()
 
                 if response == Gtk.ResponseType.YES:

@@ -12,10 +12,15 @@ functions_file="$provas_dir/includes/functions.sh"
 # Redefine o arquivo de log para este script, pois ele não pode gravar no /var/log.
 log_file_provas="$HOME/livecd_diagnostic.log"
 
-# Se o usuário NÃO autorizar o envio dos logs de diagnóstico, aborta o script...
-if ! user_input=$(should_send_logs); then
-    log "O envio dos logs de diagnóstico foi cancelado pelo usuário."
-    log '-------------------------------------------------------------'
+# Só prossegue se os parâmetros do diagnostic_server estão definidos.
+if [ "$diagnostic_server_enabled" = "no" ]; then
+    log "Os parâmetros do diagnostic_server não foram definidos, esta opção está desativada."
+    exit 0
+fi
+
+# Só prossegue se o envio de logs estiver ativado.
+if [ "$diag_allow_send_logs" = "no" ]; then
+    log "O envio de logs está desativado."
     exit 0
 fi
 
@@ -34,7 +39,7 @@ fi
 mkdir -p "$logs_dir" "$cmds_dir"
 
 log "Copiando alguns arquivos do sistema para $work_dir..."
-for file in $log_system_files; do
+for file in $diag_system_files_to_copy; do
     cp -R "$file" "$logs_dir/"
 done
 
@@ -52,6 +57,13 @@ uname -a  >"$cmds_dir/uname-a.log" 2>&1
 
 log 'Comprimindo os arquivos...'
 tar czvf "$base_dir/$filename" -C "$base_dir" "$tmp_dir" || exit 1
+
+# Se o usuário NÃO autorizar o envio dos logs de diagnóstico, aborta o script...
+if ! user_input=$(should_send_logs); then
+    log "O envio dos logs de diagnóstico foi cancelado pelo usuário."
+    log '-------------------------------------------------------------'
+    exit 0
+fi
 
 source $provas_dir/send_file.sh "/tmp/$filename" "$user_input"
 

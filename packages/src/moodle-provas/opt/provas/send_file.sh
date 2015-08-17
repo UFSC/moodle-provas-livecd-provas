@@ -1,8 +1,12 @@
 #!/bin/bash
 #set -x
 
-# OBS: Este script só pode ser executado pelo comando 'source' em algum arquivo que tenha carregado
+# OBS: Este script só pode ser carregado pelo comando 'source' em algum arquivo que tenha carregado
 # o arquivo de configurações e o arquivo de funções do moodle provas.
+if [ -z "$provas_dir" ]; then
+    echo "ERRO: Este arquivo não pode ser executado diretamente."
+    exit 1
+fi
 
 filename="$1"
 user_input="$2"
@@ -17,25 +21,34 @@ curl_err="/tmp/curl-err.log"
 [ -f "$curl_output" ] && rm -f "$curl_output"
 [ -f "$curl_err" ] && rm -f "$curl_err"
 
-#url="${moodle_provas_url}${log_script_receive_file_path}"
-url="https://wwwexe.inf.ufsc.br${log_script_receive_file_path}"
+#url="${moodle_provas_url}${diag_script_receive_file_path}"
+url="https://${livecd_online_config_host}${diag_script_receive_file_path}"
+
+log "E-mail informado pelo usuário: '$email'"
+log "Descrição informada pelo usuário: '$description'"
 
 log "Enviando o arquivo '$filename' para o endereço '$url'"
-curl -o "$curl_output" -k -H "$http_header1" -H "$http_header2" -H "$http_header3" \
+curl -m "$diag_upload_timeout" -o "$curl_output" -k -H "$http_header1" -H "$http_header2" -H "$http_header3" \
     -H "$http_header_email" -H "$http_header_description" \
-    -F "token=$log_script_token" -F "file=@$filename" "$url" 2>"$curl_err" | \
+    -F "token=$diag_script_token" -F "file=@$filename" "$url" 2>"$curl_err" | \
     stdbuf -oL tr '\r' '\n' | grep -o --line-buffered '[0-9]*\.[0-9]' | \
-    zenity --progress --title="Enviando..." --text="Aguarde, o arquivo está sendo enviado" --auto-close
+    zenity --progress --no-cancel --title="Enviando..." --text="Aguarde, o arquivo está sendo enviado" --auto-close
 
 result="$PIPESTATUS"
 
 if [ "$result" -eq 0 ]; then
-    output=$(<"$curl_output")
-    upload_status=$(echo "$output" | "$provas_dir/bin/jq" '.status')
-    upload_msg=$(echo "$output" | "$provas_dir/bin/jq" '.msg')
+    output="$(tail -6 "$curl_output")"
+
+    if echo "$output" | "$provas_dir/bin/jq" '.status' >/dev/null 2>&1; then
+        upload_status=$(echo "$output" | "$provas_dir/bin/jq" '.status')
+        upload_msg="$(echo "$output" | "$provas_dir/bin/jq" '.msg')"
+    else
+        upload_status=$?
+        upload_msg="$output"
+    fi
 else
     upload_status="$result"
-    upload_msg="$(<"$curl_err")"
+    upload_msg="$(tail -6 "$curl_err")"
 fi
 
 if [ $upload_status -eq 0 ]; then

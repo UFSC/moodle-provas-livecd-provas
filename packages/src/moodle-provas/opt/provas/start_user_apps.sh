@@ -66,10 +66,6 @@ if [ "$show_institution_name_in_desktop" = "yes" ]; then
     "$provas_dir/update_desktop_wallpaper.sh" 2 'yes' >$provas_log_dir/update_desktop_wallpaper.log 2>&1 &
 fi
 
-# Habilita o envio de screenshots para um servidor remoto, para o primeiro usuário.
-if [ "$allow_screenshots" = "yes" ]; then
-    enable_printscreen_key "$first_user_id"
-fi
 # Reconfigura os servidores NTP do computador com os definidos na configuração online.
 set_ntp_servers
 
@@ -95,11 +91,6 @@ start_browser_for_user "$first_user_id"
 log 'Verificando se o computador é um multiterminal...'
 if is_multiseat; then
     log 'O computador é um multiterminal, iniciando a configuração para o segundo usuário...'
-
-    # Habilita o envio de screenshots para um servidor remoto, para o segundo usuário.
-    if [ "$allow_screenshots" = "yes" ]; then
-        enable_printscreen_key "$second_user_id"
-    fi
 
     # Aguarda a sessão do usuário carregar (Xorg + Desktop)
     wait_session_load_for_user "$second_user_id"
