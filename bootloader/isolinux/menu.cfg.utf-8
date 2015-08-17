@@ -22,18 +22,18 @@ default monoseat
 label monoseat
   menu label Iniciar Moodle Provas %LIVECD_VERSION%
   kernel /casper/vmlinuz
-  append boot=casper initrd=/casper/initrd.lz --
+  append boot=casper initrd=/casper/initrd.%INITRD_COMPRESSION% --
 
 
 ## MULTISEAT - 8 lines
 #label multiseat1
 #  menu label Iniciar Moodle Provas %LIVECD_VERSION% [Multiterminal 1]
 #  kernel /casper/vmlinuz
-#  append boot=casper initrd=/casper/initrd.lz -- multiseat
+#  append boot=casper initrd=/casper/initrd.%INITRD_COMPRESSION% -- multiseat
 #label multiseat2
 #  menu label Iniciar Moodle Provas %LIVECD_VERSION% [Multiterminal 2]
 #  kernel /casper/vmlinuz
-#  append boot=casper initrd=/casper/initrd.lz -- multiseat switch_vgas
+#  append boot=casper initrd=/casper/initrd.%INITRD_COMPRESSION% -- multiseat switch_vgas
 
 
 menu separator
@@ -43,7 +43,7 @@ menu separator
 #label check_media
 #  menu label Verificar problemas de leitura no CD
 #  kernel /casper/vmlinuz
-#  append boot=casper integrity-check initrd=/casper/initrd.lz -- splash
+#  append boot=casper integrity-check initrd=/casper/initrd.%INITRD_COMPRESSION% -- splash
 
 
 ## MEMTEST - 3 lines

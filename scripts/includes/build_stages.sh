@@ -210,7 +210,12 @@ chroot_shell() {
 #  -------------------------------------
 
 # Atualiza a versão do kernel utilizado no boot do livecd
-update_kernel() {
+update_kernel_iso() {
+    if [ ! -f "$root_fs/boot/vmlinuz-"* ] && [ ! -f "$root_fs/boot/initrd-"* ]; then
+        msg_w "$sub_prefix AVISO: O kernel e o initrd já estão atualizados"
+        return
+    fi
+
     kernel_version="$(get_kernel_version)"
 
     if [ -z "$kernel_version" ]; then
@@ -218,13 +223,15 @@ update_kernel() {
         return
     fi
 
+    # O kernel e o initrd não precisam estar dentro do /boot do filesystem, pois são carregados
+    # a partir da ISO, do diretório do casper, por isso eles são movidos, para poupar algum espaço.
     msg_d "$sub_prefix Atualizando o kernel do Live-CD para a versão: $kernel_version"
-    sudo cp -f "$root_fs/boot/initrd.img-$kernel_version" "$root_iso/$squashfs_dir/initrd.lz"
-    sudo cp -f "$root_fs/boot/vmlinuz-$kernel_version" "$root_iso/$squashfs_dir/vmlinuz"
+    sudo mv -f "$root_fs/boot/initrd.img-$kernel_version" "$root_iso/$squashfs_dir/initrd.$initrd_compression"
+    sudo mv -f "$root_fs/boot/vmlinuz-$kernel_version" "$root_iso/$squashfs_dir/vmlinuz"
 
     # Corrige o proprietário e grupo dos arquivos
     group=$(id -g -n $USER)
-    sudo chown "$USER:$group" "$root_iso/$squashfs_dir/initrd.lz"
+    sudo chown "$USER:$group" "$root_iso/$squashfs_dir/initrd.$initrd_compression"
     sudo chown "$USER:$group" "$root_iso/$squashfs_dir/vmlinuz"
 }
 
@@ -261,7 +268,12 @@ make_bootmenu() {
 
     # Instala e habilita o memtest no menu de boot.
     if [ "$enable_memtest" = 'yes' ]; then
+        msg_d "$sub_prefix Copiando o memtest..."
+        if [ -d "$dest_dir/memtest" ]; then
+            rm -rf "$dest_dir/memtest"
+        fi
         mkdir "$dest_dir/memtest"
+
         cp '/boot/memtest86+.bin' "$dest_dir/memtest/mt86plus" ||
             msg_e "$sub_prefix ERRO: O arquivo do 'memtest' não existe no caminho: /boot/memtest86+.bin"
 
@@ -271,9 +283,9 @@ make_bootmenu() {
 
     kernel_version="$(get_kernel_version)"
     if [ -z "$kernel_version" ]; then
-        msg_w "$sub_prefix AVISO: Não foi possível obter a versão do kernel, talvez você não possua um root_fs válido."
+        msg_w "$sub_prefix AVISO: Não foi possível obter a versão do kernel."
     fi
-    
+ 
     # Substitui as variáveis presentes nos arquivos de configuração
     msg_d "$sub_prefix Configurando o bootloader..."
     sed -i "s/%TIMEOUT%/$boot_timeout/g" "$dest_dir/isolinux/isolinux.cfg"
@@ -281,6 +293,7 @@ make_bootmenu() {
     sed -i "s/%LIVECD_VERSION%/$livecd_version/g" "$dest_dir/isolinux/menu.cfg.utf-8"
     sed -i "s/%MSG_BOTTOM%/$msg_bottom/g" "$dest_dir/isolinux/menu.cfg.utf-8"
     sed -i "s/%MSG_TIMEOUT%/$msg_timeout/g" "$dest_dir/isolinux/menu.cfg.utf-8"
+    sed -i "s/%INITRD_COMPRESSION%/$initrd_compression/g" "$dest_dir/isolinux/menu.cfg.utf-8"
 
     sed -i "s/%BUILD_DATE%/$build_date/g" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
     sed -i "s/%HARDWARE_ARCH%/$livecd_hw_arch/g" "$dest_dir/isolinux/F1_pt_BR.hlp.utf-8"
@@ -404,7 +417,6 @@ make_iso() {
 
     msg "$sub_prefix Iniciando a geração da nova ISO..."
 
-    update_kernel
     make_bootmenu
     make_disk_info
     make_md5sum

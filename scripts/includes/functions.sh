@@ -173,7 +173,7 @@ check_dependencies() {
 
 install_dependencies() {
     # Se este arquivo existir é porque as dependências já estão instaladas
-    if [ -f "$working_dir/OK_DEPENDENCIES" ]; then
+    if [ -f "$working_dir/DEPENDENCIES_OK" ]; then
         return
     elif [ ! -d "$working_dir" ]; then
         mkdir "$working_dir"
@@ -196,7 +196,7 @@ install_dependencies() {
             must_install=$(check_dependencies)
             if [ -z "$must_install" ]; then
                 msg_ok "$sub_prefix Pacotes instalados com sucesso."
-                touch "$working_dir/OK_DEPENDENCIES"
+                touch "$working_dir/DEPENDENCIES_OK"
             else
                 msg_e "$sub_prefix Erro ao instalar os pacotes"
                 exit 1
@@ -206,7 +206,7 @@ install_dependencies() {
             exit 1
         fi
     else
-        touch "$working_dir/OK_DEPENDENCIES"
+        touch "$working_dir/DEPENDENCIES_OK"
     fi
 }
 
@@ -301,16 +301,14 @@ is_root_fs_valid() {
 }
 
 check_kernel_size() {
-    kernel_file=$(ls "$root_fs/boot/vmlinuz"* | tail -1)
-    kernel_size=$(du "$kernel_file" | cut -f1)
+    kernel_size=$(du "$root_iso/$squashfs_dir/vmlinuz" | cut -f1)
     kernel_size=$(($kernel_size/1024))
 
     msg "$sub_prefix Tamanho do KERNEL: $kernel_size MB"
 }
 
-check_initrd_size() { 
-    initrd_file=$(ls "$root_fs/boot/initrd"* | tail -1)
-    initrd_size=$(du "$initrd_file" | cut -f1)
+check_initrd_size() {
+    initrd_size=$(du "$root_iso/$squashfs_dir/initrd.$initrd_compression" | cut -f1)
     initrd_size=$(($initrd_size/1024))
 
     msg "$sub_prefix Tamanho do INITRD ($initrd_compression): $initrd_size MB"
@@ -404,8 +402,10 @@ check_hw_arch() {
 }
 
 get_kernel_version() {
-    if ls -u "$root_fs/boot/vmlinuz"* >/dev/null 2>&1; then
-        kernel_version=$(ls "$root_fs/boot/vmlinuz"* | tail -1 | xargs basename | cut -c 9-)
+
+    if ls -u "$root_fs/boot/config"* >/dev/null 2>&1; then
+        # Pega a versão do config, pois o kernel pode já ter sido movido para o diretório da ISO.
+        kernel_version=$(ls "$root_fs/boot/config"* | tail -1 | xargs basename | cut -c 8-)
     else
         kernel_version=''
     fi

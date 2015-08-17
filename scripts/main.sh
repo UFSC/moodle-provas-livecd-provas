@@ -102,6 +102,7 @@ while true; do
             start_msg
             prepare_files
             chroot_install
+            update_kernel_iso
             make_squashfs
             make_iso
             end_msg
@@ -112,6 +113,7 @@ while true; do
             sudo -v
             start_msg
             chroot_upgrade
+            update_kernel_iso
             make_squashfs
             make_iso
             end_msg
@@ -129,6 +131,7 @@ while true; do
         4 )
             sudo -v
             start_msg
+            update_kernel_iso
             make_squashfs
             make_iso
             end_msg
