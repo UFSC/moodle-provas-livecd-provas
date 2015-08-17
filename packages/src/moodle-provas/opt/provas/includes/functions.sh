@@ -128,7 +128,7 @@ should_send_logs() {
 
 # Pergunta ao usuário se ele quer enviar uma foto da tela e oferece a opção de digitar um e-mail e uma descrição do problema.
 should_send_screenshot() {
-    msg="A tecla <b>PrintScreen</b> foi pressionada e uma <b>cópia da tela atual</b> foi gerada e salva na área de trabalho. \n\nVocê deseja enviar esta cópia para a equipe de Suporte do Moodle?"
+    msg="A tecla <b>PrintScreen</b> foi pressionada e uma <b>imagem da tela atual</b> foi salva na área de trabalho. \n\nVocê deseja enviar esta imagem para a equipe de Suporte do Moodle?"
 
     zenity --forms --title='Tecla PrintScreen pressionada' --text="$msg" --add-entry="Seu e-mail" --add-entry="Descrição do problema"
 }
