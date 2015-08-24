@@ -1,0 +1,11 @@
+Package: oracle-java8-jre
+Version: 1.8.0u60-2015082101
+Architecture: all
+Maintainer: moodle@contato.ufsc.br
+Provides: default-jre, java-runtime, oracle-java8-plugin, oracle-java8-jre
+Conflicts: oracle-java7-jre
+Replaces: oracle-java7-jre
+Section: utils
+Priority: optional
+Homepage: http://www.oracle.com
+Description: Oracle Java virtual machine

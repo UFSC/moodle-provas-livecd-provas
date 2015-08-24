@@ -1,0 +1,5 @@
+#! /bin/sh
+#set -x
+
+update-alternatives --remove java /usr/lib/oracle-java8-jre/bin/java
+

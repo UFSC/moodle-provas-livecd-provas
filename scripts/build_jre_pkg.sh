@@ -18,7 +18,7 @@ if [ "$livecd_hw_arch" = 'amd64' ]; then
 fi
 
 jre_file="${jre_url##*/}"
-pkg_name='oracle-java7-jre'
+pkg_name='oracle-java8-jre'
 date="$(date +%Y%m%d)01"
 
 old_dir="$(pwd)"
