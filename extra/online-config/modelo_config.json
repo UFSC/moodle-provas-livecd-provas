@@ -1,24 +1,25 @@
 {
   "online_config_version":"1.2",
-  "livecd_minimum_version":"3.1",
-  "require_load_confirmation":"yes",
-  "allow_screenshots":"yes",
-  "mainstream_log_server_settings":{
-    "log_script_receive_file_path":"/~juliao/provas_receive_file.php",
-    "log_script_token":"9f036ba23ec2f7009c827eaa736e96d2",
-    "log_system_files":"/etc/X11/xorg* /var/log/*"
-  },
+  "livecd_minimum_version":"3.2",
+  "require_institution_confirm":"yes",
   "institutions":[
     {
       "institution_name":"Universidade Federal de Santa Catarina",
-      "institution_moodle_support_email":"suporte@moodle.ufsc.br",
+      "institution_moodle_support_email":"moodle@contato.ufsc.br",
       "moodle_provas_url":"https://provas3.moodle.ufsc.br",
       "moodle_provas_receive_data_path":"/local/exam_authorization/receive_data.php",
       "allowed_tcp_out_ipv4":"150.162.1.108#443 150.162.1.49#443 150.162.1.141#443",
       "allowed_tcp_out_ipv6":"2801:84:0:1009:64e1:3d7:c3ac:f964#80 2801:84:0:1009:64e1:3d7:c3ac:f964#443",
       "ntp_servers":"ntp.ufsc.br a.ntp.br b.ntp.br",
       "show_institution_name_in_desktop":"yes",
-      "custom_log_server_settings":{}
+      "diagnostic_server_settings":{
+        "diag_allow_send_logs":"no",
+        "diag_allow_send_screenshots":"no",
+        "diag_script_receive_file_path":"/~juliao/diagnostic_receive_data.php",
+        "diag_script_token":"b49837d1fea65f892651057ae5c31f6f",
+        "diag_system_files_to_copy":"/etc/X11/xorg* /var/log/*",
+        "diag_upload_timeout":"30"
+      }
     },
     {
       "institution_name":"Instituto Exemplo de Santa Catarina",
@@ -29,11 +30,7 @@
       "allowed_tcp_out_ipv6":"2801:84:0:1009:64e1:3d7:c3ac:f964#80",
       "ntp_servers":"ntp.exemplo.br a.ntp.br",
       "show_institution_name_in_desktop":"yes",
-      "custom_log_server_settings":{
-        "log_script_receive_file_path":"/provas_receive_file.php",
-        "log_script_token":"f0a320fd52383c42649d48ea545915a9",
-        "log_system_files":"/etc/X11/xorg* /var/log/*"
-      }
+      "diagnostic_server_settings":{}
     }
   ]
 }
