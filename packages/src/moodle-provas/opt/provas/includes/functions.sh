@@ -114,14 +114,15 @@ get_nfs_server_address() {
 
 # Mostra uma mensagem no monitor do primeiro usuário com a mensagem de problema na conexão de rede.
 show_no_connection() {
-    msg='A conexão com a internet não está funcionando, talvez você precise configurar \nmanualmente a conexão de rede. Para que esta mensagem não apareça novamente, \nconfigure a conexão de rede e clique em OK.'
+    msg='A conexão com a Internet não está funcionando. Verifique se há algum problema temporário na \nrede local ou na conexão com a Internet. Outra possibilidade é que seja necessário configurar \nmanualmente a conexão de rede cabeada ou rede sem fio do computador. \n\nSe o problema persistir, sugerimos consultar o administrador da rede local.'
 
-    zenity --info --title 'Problema na conexão com a internet' --no-wrap --text "$msg"
+    #zenity --info --title 'Problema na conexão com a Internet' --no-wrap --text "$msg"
+    zenity --error --title 'Problema na conexão com a Internet' --no-wrap --text "$msg"
 }
 
 # Pergunta ao usuário se ele quer enviar os arquivos de log e oferece a opção de digitar um e-mail e uma descrição do problema.
 should_send_logs() {
-    msg="As teclas <b>Ctrl</b>+<b>PrintScreen</b> foram pressionadas, esta função gera <b>arquivos de diagnóstico</b>. \n\nVocê deseja enviar estes arquivos para a equipe de Suporte do Moodle?"
+    msg="As teclas <b>Ctrl</b>+<b>PrintScreen</b> foram pressionadas, resultando na coleta de uma série de <b>dados para diagnóstico</b>. \n\nVocê deseja enviar estes dados para a equipe de suporte do Moodle?"
 
     zenity --forms --title='Teclas Ctrl+PrintScreen pressionadas' --text="$msg" --add-entry="Seu e-mail" --add-entry="Descrição do problema"
 }
@@ -137,18 +138,18 @@ should_send_screenshot() {
 show_send_file_success() {
     # Devido a algum bug no zenity 3.4.0 (Ubuntu 12.04), ele deixa a janela com a altura bem maior do que o necessário quando
     # o texto não tem quebras de linha e a opção --no-wrap não é utilizada, na versão 3.16 do zenity isso não ocorre.
-    msg="O arquivo foi enviado com sucesso para a equipe de Suporte do Moodle. \n\nCaso ache necessário, entre em contato através do e-mail $institution_moodle_support_email \npara registrar formalmente sua requisição."
+    msg="Os dados foram enviados para a equipe de suporte do Moodle. \n\nSe necessário, entre em contato através do e-mail $institution_moodle_support_email ."
 
-    zenity --info --title 'Arquivo enviado com sucesso' --no-wrap --text "$msg"
+    zenity --info --title "Dados enviados" --no-wrap --text "$msg"
  }
 
 # Mostra uma mensagem no monitor do usuário dizendo que ocorreu algum erro no envio da screenshot
 show_send_file_error() {
-    msg='Erro ao enviar o arquivo para o servidor do Suporte do Moodle.'
+    msg='Erro ao enviar os dados para o servidor da equipe de suporte do Moodle.'
 
     # A opção --no-markup deve ser usada, pois podem ocorrer erros no zenity se a mensagem a ser impressa contiver tags HTML
     # (uma página de erro, por exemplo), assim as quebras de linhas devem ser feitas aqui, não dá pra usar o \n com --no-markup.
-    zenity --error --no-markup --title 'Erro no envio do arquivo' --no-wrap --text "$msg
+    zenity --error --no-markup --title 'Erro no envio dos dados' --no-wrap --text "$msg
 
 Mensagem:
 $1"

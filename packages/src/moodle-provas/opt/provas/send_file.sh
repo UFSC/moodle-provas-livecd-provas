@@ -11,8 +11,10 @@ fi
 filename="$1"
 user_input="$2"
 
-email="${user_input%|*}"
-description="${user_input#*|}"
+email="${user_input%|*}"  # Extrai o e-mail da string
+email="${email:0:1000}"   # Limita a string em 1000 caracteres
+description="${user_input#*|}"  # Extrai o e-mail da string
+description="${description:0:8000}"  # Limita a string em 8000 caracteres (devido a limitação de 8KiB por campo do header HTTP no Apache)
 http_header_email="LIVECD-USER-EMAIL:$email"
 http_header_description="LIVECD-USER-DESCRIPTION:$description"
 
@@ -21,8 +23,8 @@ curl_err="/tmp/curl-err.log"
 [ -f "$curl_output" ] && rm -f "$curl_output"
 [ -f "$curl_err" ] && rm -f "$curl_err"
 
-#url="${moodle_provas_url}${diag_script_receive_file_path}"
-url="https://${livecd_online_config_host}${diag_script_receive_file_path}"
+url="${moodle_provas_url}${diag_script_receive_file_path}"
+#url="https://${livecd_online_config_host}${diag_script_receive_file_path}"
 
 log "E-mail informado pelo usuário: '$email'"
 log "Descrição informada pelo usuário: '$description'"
@@ -32,7 +34,7 @@ curl -m "$diag_upload_timeout" -o "$curl_output" -k -H "$http_header1" -H "$http
     -H "$http_header_email" -H "$http_header_description" \
     -F "token=$diag_script_token" -F "file=@$filename" "$url" 2>"$curl_err" | \
     stdbuf -oL tr '\r' '\n' | grep -o --line-buffered '[0-9]*\.[0-9]' | \
-    zenity --progress --no-cancel --title="Enviando..." --text="Aguarde, o arquivo está sendo enviado" --auto-close
+    zenity --progress --no-cancel --title="Enviando..." --text="Aguarde, os dados estão sendo enviados" --auto-close
 
 result="$PIPESTATUS"
 
