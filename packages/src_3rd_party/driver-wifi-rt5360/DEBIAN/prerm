@@ -1,0 +1,7 @@
+#!/bin/bash
+
+WIFIMOD="rt5360sta"
+echo "Unloading module $WIFIMOD"
+rmmod $WIFIMOD
+
+exit 0

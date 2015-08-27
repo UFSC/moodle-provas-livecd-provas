@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Building module with dkms
+dkms add -m rt5360 -v 2610
+dkms build -m rt5360 -v 2610
+dkms install -m rt5360 -v 2610
+
+echo "Running depmod..."
+/sbin/depmod -a $(uname -r)
+
+echo "Loading module rt5360sta..."
+modprobe rt5360sta
+
+exit 0

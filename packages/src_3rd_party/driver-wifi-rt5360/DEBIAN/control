@@ -1,0 +1,8 @@
+Package: driver-wifi-rt5360
+Version: 2.6.1.0E
+Maintainer: Admin Moodle UFSC <admin@moodle.ufsc.br>
+Architecture: all
+Section: main
+Priority: important
+Depends: dkms
+Description: Driver para a placa de rede sem fio "D-Link DWA-525 rev.A2" que utiliza o chipset "Ralink RT-5360", para os computadores "Positivo Master D365" do "Pregão 23/2012", baseado na versão utilizada no Linux Educacional 5.0 da c3sl.ufpr.br . O código foi baixado do site da D-Link de http://www.dlink.com/uk/en/support/product/dwa-525-wireless-n-150-pci-adapter?revision=deu_reva#downloads em 11/08/2015. O kernel Linux possui uma versão experimental do driver para essa placa desde a versão 3.10 pelo menos, através do módulo rt2800pci, mas ainda não foi testada nos computadores do "Pregão 23/2012".
