@@ -60,7 +60,7 @@ fi
 
 
 msg_d "$sub_prefix Criando e registrando a VM '$vm_name' no VirtualBox..."
-VBoxManage createvm --name "$vm_name" --ostype "Ubuntu" --register >>"$std_out" 2>>"$std_err"
+VBoxManage createvm --name "$vm_name" --ostype "Ubuntu_64" --register >>"$std_out" 2>>"$std_err"
 
 msg_d "$sub_prefix Configurando a VM '$vm_name'..."
 VBoxManage modifyvm "$vm_name" --memory "$vm_ram" --vram "$vm_vram" --nic1 bridged --bridgeadapter1 "$vm_bridge_if" --audio pulse --audiocontroller ac97 --usb on >>"$std_out" 2>>"$std_err"
