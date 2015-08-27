@@ -1,7 +1,0 @@
-#!/bin/bash
-
-WIFIMOD="rt5592sta"
-echo "Unloading module $WIFIMOD"
-rmmod $WIFIMOD || true
-
-exit 0

@@ -1,6 +1,0 @@
-#!/bin/bash
-
-#echo "Running depmod..."
-#/sbin/depmod -a 3.2.0-40-generic-pae
-
-exit 0
