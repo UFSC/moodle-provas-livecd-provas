@@ -1,27 +1,28 @@
-Script em PHP para receber os logs gerados pelo LiveCD caso a opção enable_send_logs do config/livecd_provas.conf esteja ativada.
+Descrição:
+
+Este script em PHP serve para receber as screenshots e os logs gerados pelo LiveCD, caso o usuário pressione as teclas PrintScreen e Ctrl+PrintScreen, respectivamente, e essas funções estejam autorizadas no arquivo de configuração online.
 
 Requisitos:
-- Servidor web com suporte a PHP 5.x.
+
+- Servidor web com suporte a PHP 5.x (deve ser o mesmo do Moodle Provas).
+- Diretório com permissão de gravação pelo webserver.
 
 
-Instalação e configuração:
+Configuração:
 
-Copie o script para algum diretório do servidor que seja acessível via internet, crie um diretório 'upload' em algum local, dê permissão de escrita para o servidor web e atualize a variável $upload_dir do script 'provas_receive_logs.php'.
+É necessário configurar três parâmetros dentro do script, que são os seguintes:
 
-O nome do script e o nome do diretório de upload podem ser alterados, porém lembre-se de alterar também a URL do arquivo de configuração do LiveCD, conforme descrito abaixo. 
+- $upload_dir: Diretório onde os arquivos recebidos serão salvos, deve ter permissão de gravação pelo webserver.
+- $max_size_upload_dir: Tamanho máximo do diretório onde esses arquivos são salvos (é a soma do tamanho de todos arquivos).
+- $token: Token de autorização para o envio dos arquivos.
 
-No arquivo de configuração do LiveCD (config/moodle_provas.conf), as seguintes variáveis devem ser atualizadas de acordo com o servidor Web onde o script 'provas_receive_logs.php' foi instalado, abaixo a descrição das variáveis.
+Instalação:
 
+Copie o script para algum diretório do servidor que seja acessível via internet, configure os parâmetros descritos acima e certifique-se de que o script consiga gravar no diretório de upload.
 
-# Endereço IP do servidor Web onde está o script provas_receive_logs.php
-log_server_ip='150.162.60.25'
-
-# URL completa do script que deve receber os logs via upload
-log_server_script='https://wwwexe.inf.ufsc.br/~juliao/provas_receive_logs.php'
-
-# Chave de autenticação (é a senha configurada no arquivo 'provas_receive_logs.php')
-log_server_auth='f0a320fd52383c42649d48ea545915a9'
+O nome do script e o nome do diretório de upload podem ser alterados, porém lembre-se de alterar também o caminho do script no arquivo de configuração online, parâmetro "diag_script_receive_file_path".
 
 
+OBS1: O servidor onde este script deve ser instalado, precisa ser o mesmo onde o Moodle Provas está instalado, pois os scripts utilizam o Host do Moodle Provas para enviar os arquivos.
 
-OBS: A chave de autenticação serve apenas para fazer uma autenticação simples, mas pode ser utilizada também para invalidar cópias antigas do LiveCD, caso o script 'provas_receive_logs.php' seja modificado e torne-se incompatível com as versões anteriores.
+OBS2: O token serve apenas para autorizar o envio de arquivos pelos usuários, lembre-se que ao alterar esse token, a função de envio de arquivos dos CDs antigos que o utilizam, deixaram de funcionar.
