@@ -10,12 +10,23 @@ functions_file="$provas_dir/includes/functions.sh"
 
 
 if is_internet_online; then
-    url="${moodle_provas_url}${moodle_provas_receive_data_path}"
+    url="${moodle_provas_url}/webservice/rest/server.php"
+    webservice="local_exam_authorization_receive_file"
 
-    # Envia os dados via POST, o --insecure é necessário se o certificado for auto-assinado
-    log "Enviando os dados via POST..."
-    log "http_header1 = '$http_header1'"
-    log "http_header2 = '$http_header2'"
-    log "http_header3 = '$http_header3'"
-    curl -k -H "$http_header1" -H "$http_header2" -H "$http_header3" "$url"
+    param1="wstoken=$moodle_webservices_token"
+    param2="moodlewsrestformat=json"
+    param3="wsfunction=$webservice"
+
+    data1="exam_client_ip=$livecd_local_ip"
+    data2="exam_client_network=$livecd_local_network"
+
+    log "Enviando os seguintes dados para o webservice '$webservice':"
+    log "data1 = '$data1'"
+    log "data2 = '$data2'"
+
+    # Envia os dados via POST, o --insecure (-k) é necessário se o certificado for auto-assinado
+    reply=$(curl -F "$param1" -F "$param2" -F "$param3" -F "$data1" -F "$data2" "$url")
+
+    log "Resposta do servidor:"
+    log "$reply"
 fi
