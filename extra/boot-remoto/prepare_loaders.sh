@@ -26,6 +26,9 @@ for loader in $loaders; do
     cp $syslinux_version/$loader/com32/libutil/libutil.c32 "$loader"
     cp $syslinux_version/$loader/com32/menu/vesamenu.c32 "$loader"
     cp $syslinux_version/$loader/com32/modules/reboot.c32 "$loader"
+    ln -s '../pxelinux.cfg' "$loader/pxelinux.cfg"
+    ln -s '../export' "$loader/export"
+
 done
 
 # BIOS
