@@ -11,7 +11,7 @@ functions_file="$provas_dir/includes/functions.sh"
 
 if is_internet_online; then
     url="${moodle_provas_url}/webservice/rest/server.php"
-    webservice="local_exam_authorization_receive_file"
+    webservice="local_exam_authorization_receive_data"
 
     param1="wstoken=$moodle_webservices_token"
     param2="moodlewsrestformat=json"
@@ -25,7 +25,7 @@ if is_internet_online; then
     log "data2 = '$data2'"
 
     # Envia os dados via POST, o --insecure (-k) é necessário se o certificado for auto-assinado
-    reply=$(curl -F "$param1" -F "$param2" -F "$param3" -F "$data1" -F "$data2" "$url")
+    reply=$(curl -k -F "$param1" -F "$param2" -F "$param3" -F "$data1" -F "$data2" "$url")
 
     log "Resposta do servidor:"
     log "$reply"

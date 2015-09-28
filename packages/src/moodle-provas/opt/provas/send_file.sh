@@ -52,10 +52,10 @@ if [ "$result" -eq 0 ]; then
     output="$(tail -6 "$curl_output")"
 
     # Se for uma exceção do Moodle:
-    if echo "$output" | "$provas_dir/bin/jq" '.exception' >/dev/null 2>&1; then
+    if echo "$output" | "$provas_dir/bin/jq" -e '.exception' >/dev/null 2>&1; then
         upload_status=1
         upload_msg="Exceção no Moodle: $(echo "$output" | "$provas_dir/bin/jq" '.message')"
-    else if echo "$output" | "$provas_dir/bin/jq" '.status' >/dev/null 2>&1; then
+    elif echo "$output" | "$provas_dir/bin/jq" -e '.status' >/dev/null 2>&1; then
         upload_status=$(echo "$output" | "$provas_dir/bin/jq" '.status')
         upload_msg="$(echo "$output" | "$provas_dir/bin/jq" '.message')"
     else
