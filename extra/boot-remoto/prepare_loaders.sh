@@ -4,7 +4,7 @@
 # Configure a versão do Syslinux abaixo com a mais recente disponível.
 
 syslinux_version='syslinux-6.03'
-syslinux_file="${syslinux_version}.tar.xz"
+syslinux_file="${syslinux_version}.tar.gz"
 url="https://www.kernel.org/pub/linux/utils/boot/syslinux/$syslinux_file"
 
 bios_dir='bios'
@@ -18,7 +18,7 @@ if [ ! -f "$syslinux_file" ]; then
 fi
 
 rm -rf "$syslinux_version" "$bios_dir" "$efi32_dir" "$efi64_dir"
-tar xJvf "$syslinux_file"
+tar xzvf "$syslinux_file"
 
 for loader in $loaders; do
     mkdir "$loader"
@@ -26,6 +26,7 @@ for loader in $loaders; do
     cp $syslinux_version/$loader/com32/libutil/libutil.c32 "$loader"
     cp $syslinux_version/$loader/com32/menu/vesamenu.c32 "$loader"
     cp $syslinux_version/$loader/com32/modules/reboot.c32 "$loader"
+    cp $syslinux_version/$loader/com32/chain/chain.c32 "$loader"
     ln -s '../pxelinux.cfg' "$loader/pxelinux.cfg"
     ln -s '../export' "$loader/export"
 
@@ -34,6 +35,8 @@ done
 # BIOS
 cp $syslinux_version/$bios_dir/core/pxelinux.0 "$bios_dir"
 cp $syslinux_version/$bios_dir/com32/elflink/ldlinux/ldlinux.c32 "$bios_dir"
+# BIOS WDS
+cp $syslinux_version/$bios_dir/com32/modules/pxechn.c32 "$bios_dir"
 
 # EFI32
 cp $syslinux_version/$efi32_dir/efi/syslinux.efi "$efi32_dir"
