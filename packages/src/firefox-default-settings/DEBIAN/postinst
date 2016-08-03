@@ -4,4 +4,3 @@
 PATCH='/usr/bin/patch'
 
 $PATCH '/etc/firefox/syspref.js' '/etc/firefox/syspref.js.patch'
-$PATCH '/usr/lib/firefox/chrome.manifest' '/usr/lib/firefox/chrome.manifest.patch'
